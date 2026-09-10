@@ -1,82 +1,82 @@
 ---
 name: "context-map"
-description: "Produza um mapa dos arquivos relevantes para uma tarefa, incluindo arquivos a modificar, dependências, testes relacionados, padrões de referência e riscos, antes de escrever qualquer código. Use quando a pessoa quiser delimitar o impacto, planejar alterações ou entender quais arquivos uma tarefa afeta antes da implementação."
+description: "Produce a map of the files relevant to a task — files to modify, dependencies, related tests, reference patterns, and risks — before any code is written. Use when the user wants to scope impact, plan changes, or understand which files a task touches before implementing."
 ---
-# Mapa de contexto
+# Context map
 
-Crie um mapa escrito de tudo o que uma tarefa afeta antes de escrever qualquer código. O mapa transforma uma alteração em aberto em um plano delimitado e revisável. Assim, quem implementa edita os arquivos corretos, atualiza as dependências certas, escreve os testes adequados e identifica os riscos antecipadamente.
+Build a written map of everything a task touches before any code is written. The map converts an open-ended change into a bounded, reviewable plan, so the implementer edits the right files, updates the right dependents, writes the right tests, and sees the risks up front.
 
 > [!IMPORTANT]
-> Não inicie a implementação até que o mapa de contexto esteja escrito e revisado. O mapa é o artefato produzido por esta skill. A programação só começa depois da aprovação do mapa.
+> Do not start implementation until the context map is written and reviewed. The map is the artifact this skill produces; coding begins only after it is agreed.
 
-## Quando usar
+## When to invoke
 
-- "Delimite o impacto de adicionar um campo de status à API de pagamentos antes de eu programar."
-- "Quais arquivos esta refatoração afeta e quais testes os cobrem?"
-- "Mapeie o raio de impacto da alteração desta interface de repositório."
-- "Planeje as alterações de arquivos para esta funcionalidade da Etapa 3 antes da implementação."
+- "Scope the impact of adding a status field to the payment API before I code it."
+- "Which files does this refactor touch, and what tests cover them?"
+- "Map the blast radius of changing this repository interface."
+- "Plan the file changes for this Stage 3 feature before implementation."
 
-## Como criar o mapa
+## How to build the map
 
-1. **Reformule a tarefa em uma frase.** Descreva o resultado observável, não o detalhe de implementação.
-2. **Localize os pontos de entrada.** Encontre os arquivos responsáveis pelo comportamento, como controladores, serviços, componentes ou migrações.
-3. **Rastreie as dependências diretas.** Siga as importações e exportações de cada arquivo para descobrir o que quebra se uma assinatura mudar.
-4. **Encontre os testes.** Identifique os testes unitários e de integração que já cobrem o código afetado e registre onde falta cobertura.
-5. **Colete padrões de referência.** Indique um arquivo existente que já resolva um problema semelhante para reproduzir sua estrutura.
-6. **Avalie os riscos.** Sinalize explicitamente alterações em interfaces de programação de aplicações (APIs) públicas, migrações de banco de dados e mudanças em configurações ou segredos.
+1. **Restate the task in one sentence.** Name the observable outcome, not the implementation detail.
+2. **Locate the entry points.** Find the files that own the behavior: controllers, services, components, or migrations.
+3. **Trace direct dependencies.** Follow imports and exports into and out of each file to find what breaks if a signature changes.
+4. **Find the tests.** Identify unit and integration tests that already cover the affected code, and note where coverage is missing.
+5. **Collect reference patterns.** Point to an existing file that already solves a similar problem, to copy its shape.
+6. **Assess risk.** Flag public API changes, database migrations, and configuration or secret changes explicitly.
 
 > [!NOTE]
-> Nesta imersão, `backend/` e `frontend/` não existem até a Etapa 3. Portanto, o mapa de uma nova funcionalidade lista arquivos a **criar**, não apenas arquivos a modificar. `infra/` já existe. Trate tudo em `01-archaeology/legacy-sifap/` como evidência somente leitura e nunca afirme o conteúdo de um programa ou campo legado. Em vez disso, cite o critério de leitura em [`01-archaeology/LEGACY-EXPLORATION-CHECKLIST.md`](../../../01-archaeology/LEGACY-EXPLORATION-CHECKLIST.md).
+> In this workshop `backend/` and `frontend/` do not exist until Stage 3, so a map for a new feature lists files to **create**, not only files to modify. `infra/` already exists. Treat everything under `01-archaeology/legacy-sifap/` as read-only evidence and never assert what a legacy program or field contains — cite the reading gate in [`01-archaeology/LEGACY-EXPLORATION-CHECKLIST.md`](../../../01-archaeology/LEGACY-EXPLORATION-CHECKLIST.md) instead.
 
-## Sinais de escopo
+## Scope signals
 
-| Sinal | Significado | Ação |
+| Signal | Meaning | Action |
 |---|---|---|
-| A alteração afeta um contrato público `/api/v1` | O raio de impacto alcança todos os chamadores | Liste os chamadores e planeje uma nota de compatibilidade da API |
-| A alteração modifica uma entidade JPA ou um esquema | É necessária uma migração | Adicione uma linha `db/migration` ao mapa |
-| Nenhum teste cobre o código de destino | Risco de regressão | Adicione uma linha "teste a escrever" antes de programar |
-| Já existe uma funcionalidade semelhante | Oportunidade de reutilização | Registre-a como padrão de referência a seguir |
+| The change touches a public `/api/v1` contract | Blast radius reaches every caller | List the callers and plan an API-compatibility note |
+| The change alters a JPA entity or schema | A migration is required | Add a `db/migration` row to the map |
+| No test covers the target code | Regression risk | Add a "test to write" row before coding |
+| A similar feature already exists | Reuse opportunity | Record it as a reference pattern to follow |
 
-## Modelo de saída
+## Output template
 
 ```markdown
-## Mapa de contexto: adicionar um campo de status a Payment
+## Context map: add a status field to Payment
 
-### Arquivos a criar ou modificar
-| Arquivo | Criar ou modificar | Finalidade | Alteração |
+### Files to create or modify
+| File | Create or modify | Purpose | Change |
 |---|---|---|---|
-| backend/src/main/java/com/sifap/payment/PaymentController.java | modificar | Ponto de entrada REST | Adicionar PATCH `/api/v1/payments/{id}/status` |
-| backend/src/main/java/com/sifap/payment/PaymentStatus.java | criar | Enumeração de status | Definir valores e transições permitidos |
+| backend/src/main/java/com/sifap/payment/PaymentController.java | modify | REST entry point | Add PATCH `/api/v1/payments/{id}/status` |
+| backend/src/main/java/com/sifap/payment/PaymentStatus.java | create | Status enum | Define allowed values and transitions |
 
-### Dependências a verificar
-| Arquivo | Relacionamento |
+### Dependencies to check
+| File | Relationship |
 |---|---|
-| backend/src/main/java/com/sifap/payment/PaymentService.java | Chama o mapeamento modificado do controlador |
-| frontend/app/payments/page.tsx | Renderiza o status retornado pela API |
+| backend/src/main/java/com/sifap/payment/PaymentService.java | Calls the modified controller mapping |
+| frontend/app/payments/page.tsx | Renders the status returned by the API |
 
-### Testes
-| Teste | Status | Cobertura |
+### Tests
+| Test | Status | Coverage |
 |---|---|---|
-| backend/src/test/java/com/sifap/payment/PaymentControllerTest.java | existe | Estender para o novo ponto de extremidade |
-| Teste de transição de PaymentStatus | a escrever | Novo comportamento da máquina de estados |
+| backend/src/test/java/com/sifap/payment/PaymentControllerTest.java | exists | Extend for the new endpoint |
+| PaymentStatus transition test | to write | New state-machine behavior |
 
-### Padrões de referência
-| Arquivo | Padrão a seguir |
+### Reference patterns
+| File | Pattern to follow |
 |---|---|
-| backend/src/main/java/com/sifap/benefit/BenefitController.java | Estrutura existente de PATCH com `@Valid` |
+| backend/src/main/java/com/sifap/benefit/BenefitController.java | Existing PATCH plus `@Valid` shape |
 
-### Riscos
-- [ ] Alteração incompatível em um contrato público `/api/v1`
-- [ ] Migração de banco de dados necessária
-- [ ] Alteração de configuração ou segredo necessária
-- [ ] O comportamento legado deve ser confirmado com as evidências somente leitura em `01-archaeology/legacy-sifap/`
+### Risks
+- [ ] Breaking change to a public `/api/v1` contract
+- [ ] Database migration required
+- [ ] Configuration or secret change required
+- [ ] Legacy behavior must be confirmed against read-only `01-archaeology/legacy-sifap/` evidence
 ```
 
-## Critérios de qualidade
+## Quality gate
 
-- [ ] Cada arquivo afetado pela tarefa está listado como criar ou modificar, com a alteração concreta descrita.
-- [ ] As dependências diretas de cada assinatura alterada estão listadas.
-- [ ] Os testes existentes estão identificados e os testes ausentes estão marcados como "a escrever".
-- [ ] Pelo menos um padrão de referência está citado ou sua ausência está declarada.
-- [ ] Os riscos de API pública, migração e configuração estão sinalizados antes do início da programação.
-- [ ] Todo item derivado do legado cita evidências somente leitura e não afirma o conteúdo de programas legados.
+- [ ] Every file the task touches is listed as create or modify, with the concrete change described.
+- [ ] Direct dependents of each changed signature are listed.
+- [ ] Existing tests are identified and missing tests are marked "to write".
+- [ ] At least one reference pattern is cited, or its absence is stated.
+- [ ] Public API, migration, and configuration risks are flagged before coding starts.
+- [ ] Any legacy-derived item cites read-only evidence and asserts no legacy program contents.

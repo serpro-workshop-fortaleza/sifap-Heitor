@@ -1,155 +1,155 @@
-# Agente revisor de Bicep
+# Bicep Reviewer Agent
 
-Revisa o código Bicep gerado e corrige automaticamente os problemas encontrados.
+Reviews generated Bicep code and automatically fixes any issues found.
 
-## Ordem da revisão
+## Review Order
 
-### Etapa 1: compilação do Bicep (execute primeiro)
+### Step 1: Bicep Compilation (Run First)
 
-Compile o Bicep de fato **antes** de usar a lista de verificação. Não declare aprovação com base somente em inspeção visual.
+Run actual Bicep compilation **before** the checklist. Do not declare "pass" based on visual inspection alone.
 
 ```powershell
 az bicep build --file main.bicep 2>&1
 ```
 
-Colete todos os avisos (`WARNING`) e erros (`ERROR`) do resultado da compilação. Esses dados fundamentam a revisão.
+Collect all WARNINGs and ERRORs from the compilation results. This is the foundational data for the review.
 
-### Etapa 2: corrigir erros e avisos de compilação
+### Step 2: Fix Compilation Errors/Warnings
 
-Corrija os problemas encontrados na compilação:
+Fix issues found in compilation results:
 
-- **Erro (`ERROR`)** → corrija e compile novamente
-- **Aviso (`WARNING`)** → trate conforme os critérios abaixo
+- **ERROR** → Must fix and recompile
+- **WARNING** → Handle according to the criteria below
 
-**🚨 Critérios de tratamento de avisos (`WARNING`): não force correções desnecessárias**
+**🚨 WARNING Handling Criteria — Do Not Force Unnecessary Fixes:**
 
-Avisos não bloqueiam a implantação. Tentar resolvê-los muitas vezes introduz erros de implantação. Use estes critérios:
+WARNINGs do not block deployment. Attempting to resolve warnings often introduces deployment errors, so use the following criteria:
 
-| Tipo de aviso (`WARNING`) | Ação | Motivo |
+| WARNING Type | Action | Reason |
 |---|---|---|
-| BCP081 (tipo não definido) | **Mantenha como está** (se a versão da API for a mais recente confirmada no Microsoft Docs) | As definições locais de tipo da CLI do Bicep ainda não foram atualizadas. Não afeta a implantação |
-| BCP035 (propriedade ausente) | **Avalie com cuidado**: consulte o Microsoft Docs para confirmar se a propriedade é obrigatória; caso contrário, mantenha como está | Adicionar propriedades pode causar falhas de implantação por incompatibilidade (por exemplo, `computeMode`) |
-| BCP187 (tipo de sku/kind não verificado) | **Mantenha como está** | Os valores confirmados no Microsoft Docs funcionarão corretamente na implantação |
-| no-hardcoded-env-urls | **Mantenha como está** | Os nomes de DNS Zone inevitavelmente exigem valores fixos |
+| BCP081 (type not defined) | **Leave as-is** (if API version is the latest confirmed from MS Docs) | Local Bicep CLI type definitions are not yet updated. No impact on deployment |
+| BCP035 (missing property) | **Judge carefully** — Check MS Docs to verify if the property is actually required; if not, leave as-is | Adding properties can cause deployment failures due to compatibility issues (e.g., computeMode) |
+| BCP187 (sku/kind type unverified) | **Leave as-is** | Values confirmed from MS Docs will work correctly at deployment |
+| no-hardcoded-env-urls | **Leave as-is** | DNS Zone names inevitably require hardcoding |
 
-**Nunca faça o seguinte:**
+**Never do the following:**
 
-- Não use versões anteriores da API para resolver avisos (mantenha a versão estável mais recente)
-- Não adicione propriedades sem confirmação no Microsoft Docs para resolver avisos
-- Não force correções para chegar a "zero avisos"
+- Downgrade API versions to resolve WARNINGs (maintain latest stable)
+- Add properties not confirmed in MS Docs to resolve WARNINGs
+- Force fixes targeting "zero warnings"
 
-**Princípio: documente os avisos no resultado da revisão, mas não os corrija se não bloquearem a implantação.**
+**Principle: Document WARNINGs in review results, but do not fix them if they don't block deployment.**
 
-Problemas e respostas comuns:
+Common issues and responses:
 
-- BCP081 (tipo não definido) → a versão da API provavelmente está incorreta. Consulte o Microsoft Docs e use a versão estável mais recente
-- BCP036 (incompatibilidade de tipo) → verifique maiúsculas/minúsculas e o tipo do valor da propriedade e corrija
-- BCP037 (propriedade não permitida) → consulte o Microsoft Docs para verificar o suporte nessa versão da API
-- no-hardcoded-env-urls → URLs fixas em nomes de DNS Zone podem ser inevitáveis no Bicep. Registre isso no resultado
+- BCP081 (type not defined) → API version is likely incorrect. Fetch MS Docs and update to the actual latest stable version
+- BCP036 (type mismatch) → Check property value casing and type, then fix
+- BCP037 (property not allowed) → Check MS Docs to verify if the property is supported in that API version
+- no-hardcoded-env-urls → Hardcoded URLs in DNS Zone names etc. are sometimes unavoidable in Bicep. Note in review results
 
-### Etapa 3: aplicar a lista de verificação
+### Step 3: Checklist Review
 
-Revise os itens abaixo após a compilação ser aprovada. Consulte todas as armadilhas em `references/service-gotchas.md`.
+Review the following items after compilation passes. See `references/service-gotchas.md` for full gotchas.
 
-#### Crítico (correção obrigatória)
+#### Critical (Must Fix)
 
-- [ ] A configuração `customSubDomainName` do Microsoft Foundry existe. **Ela não pode ser alterada após a criação; se estiver ausente, exclua e recrie o recurso**
-- [ ] Ao usar Microsoft Foundry, **o Foundry Project (`accounts/projects`) existe**. Sem ele, o portal não fica disponível
-- [ ] Microsoft Foundry `identity: { type: 'SystemAssigned' }`. Sem isso, a criação do Project falha
-- [ ] `publicNetworkAccess: 'Disabled'` em todos os serviços que usam PE
-- [ ] ADLS Gen2 `isHnsEnabled: true`. Sem isso, o recurso se torna Blob Storage comum
-- [ ] pe-subnet `privateEndpointNetworkPolicies: 'Disabled'`. Sem isso, a criação do PE falha
-- [ ] Há um Private DNS Zone Group para cada PE
+- [ ] Microsoft Foundry `customSubDomainName` setting exists — **Cannot be changed after creation; if missing, resource must be deleted and recreated**
+- [ ] When using Microsoft Foundry, **Foundry Project (`accounts/projects`) must exist** — Portal access unavailable without it
+- [ ] Microsoft Foundry `identity: { type: 'SystemAssigned' }` — Project creation fails without it
+- [ ] `publicNetworkAccess: 'Disabled'` — All services using PE
+- [ ] ADLS Gen2 `isHnsEnabled: true` — Without it, becomes regular Blob Storage
+- [ ] pe-subnet `privateEndpointNetworkPolicies: 'Disabled'` — PE creation fails without it
+- [ ] Private DNS Zone Group — Must exist for every PE
 - [ ] Key Vault `enablePurgeProtection: true`
 
-#### Alto (correção recomendada)
+#### High (Recommended Fix)
 
 - [ ] Storage `allowBlobPublicAccess: false`, `minimumTlsVersion: 'TLS1_2'`
 - [ ] Private DNS Zone VNet Link `registrationEnabled: false`
-- [ ] Os tipos de recurso e valores de `kind` de cada serviço correspondem a `references/ai-data.md` ou ao Microsoft Docs
-- [ ] Implantações de modelos: ordem garantida (`dependsOn`)
-- [ ] Não há valores confidenciais nos arquivos de parâmetros. **Remova-os imediatamente se encontrados**
+- [ ] Resource types and kind values per service match `references/ai-data.md` or MS Docs
+- [ ] Model deployments: Order guaranteed (`dependsOn`)
+- [ ] No sensitive values in parameter files — **Remove immediately if found**
 
-#### Médio (recomendado)
+#### Medium (Recommended)
 
-- [ ] Prevenção de colisões de nomes de recursos com `uniqueString()`
-- [ ] Uso de dependências implícitas por referências de recursos
+- [ ] Resource name collision prevention using `uniqueString()`
+- [ ] Leverage implicit dependencies through resource references
 
-### Etapa 4: verificar regressão de valores fixos (evitar vazamento de informações dinâmicas)
+### Step 4: Hardcoding Regression Check (Prevent Dynamic Information Leakage)
 
-Verifique se os itens abaixo não estão definidos como valores literais fixos no código Bicep:
+Verify the following items are not hardcoded as literal values in the Bicep code:
 
-#### Parametrização obrigatória (sem valores fixos)
+#### Must Be Parameterized (No Hardcoding)
 
-- [ ] `location`: nomes literais de regiões (`'eastus'`, `'koreacentral'` etc.) não são usados diretamente; o valor é passado por `param location`
-- [ ] Nome/versão do modelo: não são literais; use valores confirmados na Fase 1 e cuja disponibilidade foi validada na Etapa 0
-- [ ] SKU: use os valores confirmados
+- [ ] `location` — Literal region names (`'eastus'`, `'koreacentral'`, etc.) are not used directly; passed via `param location`
+- [ ] Model name/version — Not literals; use values confirmed in Phase 1 and validated for availability in Step 0
+- [ ] SKU — Use values confirmed with the user
 
-#### Verificar se valores dinâmicos não voltaram às referências
+#### Verify Dynamic Values Have Not Regressed Into References
 
-Isso não faz parte diretamente do escopo da revisão. Porém, remova versões específicas de API, listas de SKUs ou regiões fixadas em comentários ou descrições de parâmetros. Substitua-as por orientação para consultar o Microsoft Docs.
+This is not directly within this review's scope, but if specific API versions, SKU lists, or region lists are hardcoded in code comments or parameter descriptions, remove them and replace with "Check MS Docs" guidance.
 
-#### Verificação de violações das regras de decisão
+#### Decision Rule Violation Check
 
-- [ ] Se `kind: 'OpenAI'` for usado em vez de Foundry → altere para `kind: 'AIServices'`, salvo solicitação explícita
-- [ ] Se Hub (`MachineLearningServices`) for usado para IA/RAG em geral → altere para Foundry, salvo solicitação explícita
-- [ ] Se um recurso autônomo do Azure OpenAI for usado → sugira avaliar o Foundry, salvo solicitação explícita ou indicação de necessidade no Microsoft Docs
+- [ ] If `kind: 'OpenAI'` is used instead of Foundry → Change to `kind: 'AIServices'` unless the user explicitly requested it
+- [ ] If Hub (`MachineLearningServices`) is used for general AI/RAG → Change to Foundry unless the user explicitly requested it
+- [ ] If a standalone Azure OpenAI resource is used → Suggest reviewing Foundry usage unless the user explicitly requested it or Docs indicate it's necessary
 
-### Etapa 5: compilar novamente após as correções
+### Step 5: Recompile After Fixes
 
-Se as Etapas 2 a 4 resultarem em alterações, execute `az bicep build` novamente para verificar se não surgiram novos erros.
+If any changes were made in Steps 2–4, run `az bicep build` again to verify no new errors were introduced.
 
-### Limitações de `az bicep build`
+### Limitations of `az bicep build`
 
-A compilação valida somente sintaxe e tipos. Ela não detecta os itens abaixo, que são verificados pela análise de alterações (`az deployment group what-if`) da Fase 4:
+Compilation only validates syntax and types. The following items cannot be caught by compilation and are finally verified in Phase 4's `az deployment group what-if`:
 
-- SKU desativada ou indisponível
-- Disponibilidade regional do serviço
-- Validade do nome do modelo
-- Propriedades disponíveis somente em versão prévia
-- Alterações de políticas do serviço (cota, capacidade etc.)
+- Retired/unavailable SKU
+- Per-region service availability
+- Model name validity
+- Preview-only properties
+- Service policy changes (quota, capacity, etc.)
 
-Informe essas limitações no resultado da revisão para esclarecer a importância da análise de alterações (`what-if`).
+State these limitations in the review results so the user understands the importance of the what-if step.
 
-### Etapa 6: relatar os resultados
+### Step 6: Report Results
 
 ```markdown
-## Resultado da revisão do código Bicep
+## Bicep Code Review Results
 
-**Resultado da compilação**: [APROVADO/N avisos]
-**Lista de verificação**: ✅ X itens aprovados / ⚠️ X avisos
-**Verificação de valores fixos**: [APROVADO / N violações]
-**Correções automáticas**: X itens
+**Compilation Result**: [PASS/WARNING N items]
+**Checklist**: ✅ Passed X items / ⚠️ Warnings X items
+**Hardcoding Check**: [PASS / N violations]
+**Auto-fixed**: X items
 
-### Avisos de compilação restantes
-- [Conteúdo do aviso, incluindo o motivo pelo qual não pode ser corrigido]
+### Compilation Warnings (Remaining)
+- [Warning content — including reason why it cannot be fixed]
 
-### Detalhes das correções automáticas
-- [Arquivo:número da linha] Antes → Depois (motivo)
+### Auto-fix Details
+- [File:line number] Before → After (reason)
 
-### Violações de valores fixos (se houver)
-- [Arquivo:número da linha] [Detalhes da violação] → [Método de correção]
+### Hardcoding Violations (If Any)
+- [File:line number] [Violation details] → [Fix method]
 
-**Conclusão**: [Pronto para implantação / Revisão manual obrigatória]
+**Conclusion**: [Ready for deployment / Manual review required]
 ```
 
-### Etapa 7: transição para a Fase 4 com mensagem obrigatória de tranquilização
+### Step 7: Phase 4 Transition — Reassurance Message Required
 
-Ao perguntar se deve seguir para a Fase 4 após a aprovação da revisão, **sempre inclua uma mensagem tranquilizadora**.
-A palavra "implantação" pode gerar receio. Explique claramente que a análise de alterações (`what-if`) é uma etapa segura de validação.
+When asking whether to proceed to Phase 4 after passing code review, **always include a message to reassure the user**.
+Users may feel uneasy about the word "deployment", so clearly communicate that what-if is a safe validation step.
 
 ```
 ask_user({
-  question: "A revisão do código foi aprovada! Deseja seguir para a próxima etapa?\n\n⚡ Isso NÃO implanta imediatamente:\n  1️⃣ Análise de alterações (what-if): simula o que será criado (não é uma implantação; é segura)\n  2️⃣ Diagrama de visualização: revise em um diagrama a arquitetura que será implantada\n  3️⃣ Confirmação final: a implantação real só ocorre após sua revisão e aprovação do diagrama\n\nNada será implantado sem sua aprovação.",
+  question: "Code review passed! Ready to proceed to the next step?\n\n⚡ This does NOT deploy immediately:\n  1️⃣ What-if validation — Simulates what will be created (not a deployment, safe)\n  2️⃣ Preview diagram — Review the architecture to be deployed as a diagram\n  3️⃣ Final confirmation — Actual deployment only after you review the diagram and approve\n\nNothing will be deployed without your approval.",
   choices: [
-    "Seguir para a próxima etapa (análise de alterações + diagrama de visualização) (Recomendado)",
-    "Quero somente o código; farei a implantação depois"
+    "Proceed to next step (what-if validation + preview diagram) (Recommended)",
+    "Just give me the code, I'll deploy later"
   ]
 })
 ```
 
-**Pontos principais:**
+**Key points:**
 
-- Sempre informe: "Isso NÃO implanta imediatamente"
-- Explique o processo de três etapas: análise de alterações → diagrama de visualização → confirmação final
-- Tranquilize com: "Nada será implantado sem sua aprovação"
+- Always state "This does NOT deploy immediately"
+- Explain the 3-step process: what-if → preview diagram → final confirmation
+- Reassure with "Nothing will be deployed without your approval"

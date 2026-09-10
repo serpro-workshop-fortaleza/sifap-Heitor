@@ -1,81 +1,81 @@
-# Software Architect: kit do Copilot
+# Software Architect — Copilot Kit
 
-> **Trilha:** [Kit do Time](../../README.md) › [Personas](../OVERVIEW.md) › **Software Architect**
+> **Trail:** [Team Kit](../../README.md) › [Personas](../OVERVIEW.md) › **Software Architect**
 
-**Inventário do kit do Copilot para a persona Software Architect.** Lista os artefatos ativos, onde estão localizados em `.github/` e as boas práticas específicas deste papel.
+**Inventory of the Copilot kit for the Software Architect persona.** Lists the active artifacts, where they live under `.github/`, and best practices specific to this role.
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Pessoa que atua como Software Architect na imersão |
-| **Dupla** | 2 · Arquitetura (com o Enterprise Architect) |
-| **Fase do SDLC** | Design → Supervisão da Implementação |
-| **Pré-requisitos** | Leitura de [PERSONA.md](PERSONA.md) concluída |
-| **Resultado esperado** | Kit validado e prompts acessíveis no GitHub Copilot |
+| **Target audience** | Person acting as Software Architect in the workshop |
+| **Pair** | 2 · Architecture (with the Enterprise Architect) |
+| **SDLC phase** | Design → Implementation Oversight |
+| **Prerequisites** | [PERSONA.md](PERSONA.md) read |
+| **Expected outcome** | Kit validated, prompts accessible in Copilot Chat |
 
 > [!IMPORTANT]
-> Leia [PERSONA.md](PERSONA.md) antes de continuar. O perfil explica a missão, o handoff e as rubricas de avaliação.
+> Read [PERSONA.md](PERSONA.md) before continuing. The profile explains the mission, handoff, and evaluation rubrics.
 
 ---
 
-## Conceito
+## Concept
 
-O Software Architect é responsável pela estrutura interna do sistema. Esse papel define como os módulos são organizados, onde começam e terminam os bounded contexts (limites do Domain-Driven Design) e quais abstrações são expostas. No SIFAP (Sistema de Fiscalização e Administração de Pagamentos), esse papel produz o plano técnico que a equipe de implementação seguirá: `CODEMAP.md`, a estrutura de pacotes e os ADRs de design interno.
+The Software Architect owns the system's internal structure. This role defines how modules are organized, where bounded contexts (Domain-Driven Design boundaries) begin and end, and which abstractions are exposed. In SIFAP (Payment Inspection and Administration System), this role produces the technical plan the implementation team will follow — `CODEMAP.md`, the package structure, and internal design ADRs.
 
 ---
 
-## Kit da persona
+## Persona kit
 
-| **Artefato** | Tipo | Finalidade |
+| **Artifact** | Type | Purpose |
 |---|---|---|
-| `PERSONA.md` | Perfil | Responsabilidades, handoff, prompts e rubrica |
-| `.github/agents/software-architect.agent.md` | Agente | Arquitetura de software |
+| `PERSONA.md` | Profile | Responsibilities, handoff, prompts, and rubric |
+| `.github/agents/software-architect.agent.md` | Agent | Software architecture |
 | `.github/prompts/persona-software-architect-codemap.prompt.md` | Prompt | `/codemap` |
 | `.github/prompts/persona-software-architect-impl-plan.prompt.md` | Prompt | `/impl-plan` |
 | `.github/prompts/persona-software-architect-api-validate.prompt.md` | Prompt | `/api-validate` |
-| `.github/instructions/backend.instructions.md` | Instruções | Convenções de backend |
-| `.github/instructions/frontend.instructions.md` | Instruções | Convenções de frontend |
+| `.github/instructions/backend.instructions.md` | Instructions | Backend conventions |
+| `.github/instructions/frontend.instructions.md` | Instructions | Frontend conventions |
 
 ---
 
-## Onde ficam os artefatos
+## Where the artifacts live
 
-Os artefatos ativos estão consolidados no diretório `.github/` da raiz:
+The active artifacts are consolidated under the root `.github/` directory:
 
-| **Tipo** | Caminho |
+| **Type** | Path |
 |---|---|
-| Agentes | `.github/agents/` |
+| Agents | `.github/agents/` |
 | Prompts | `.github/prompts/persona-*.prompt.md` |
 | Skills | `.github/skills/` |
-| Instruções | `.github/instructions/` |
+| Instructions | `.github/instructions/` |
 
-Use esse diretório como referência. Os arquivos ativos ficam somente no diretório `.github/` da raiz. Edite-os nesse local quando for necessária alguma manutenção.
+Use this directory as the reference. Active files live only under the root `.github/` directory — edit them there when maintenance is needed.
 
-Se o kit incluir `mcp.json` e a pessoa facilitadora solicitar MCP local, copie somente esse arquivo para `.vscode/mcp.json`.
-
----
-
-## Boas práticas
-
-- Prefira composição a herança, limites claros a abstrações genéricas e dados claros a código engenhoso.
-- Contratos de API são um compromisso público. Quebre-os somente com versionamento e um guia de migração.
-- Mantenha as regras de negócio fora do banco de dados e do framework.
-- Um diretório `util` em crescimento geralmente indica a ausência de um bounded context.
+If the kit includes `mcp.json` and the facilitator requests local MCP, copy only that file to `.vscode/mcp.json`.
 
 ---
 
-## Referências
+## Best practices
 
-- [Arquitetura Limpa: Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Domain-Driven Design: Eric Evans](https://www.domainlanguage.com/ddd/)
-- [Arquitetura Hexagonal: Alistair Cockburn](https://alistair.cockburn.us/hexagonal-architecture/)
-- [Guias de Arquitetura do Microsoft .NET](https://learn.microsoft.com/dotnet/architecture/)
+- Prefer composition over inheritance, clear boundaries over generic abstractions, and clear data over clever code.
+- API contracts are a public commitment; break them only with versioning and a migration guide.
+- Keep business rules out of the database and framework.
+- A growing `util` directory usually indicates a missing bounded context.
 
 ---
 
-### Continue lendo
+## References
 
-| Anterior | Próximo |
+- [Clean Architecture — Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Domain-Driven Design — Eric Evans](https://www.domainlanguage.com/ddd/)
+- [Hexagonal Architecture — Alistair Cockburn](https://alistair.cockburn.us/hexagonal-architecture/)
+- [Microsoft .NET Architecture Guides](https://learn.microsoft.com/dotnet/architecture/)
+
+---
+
+### Continue reading
+
+| Previous | Next |
 |---|---|
-| [OVERVIEW](../OVERVIEW.md)<br/><sub>Tabela das 10 personas.</sub> | [PERSONA.md](PERSONA.md)<br/><sub>Perfil desta persona.</sub> |
+| [OVERVIEW](../OVERVIEW.md)<br/><sub>Table of the 10 personas.</sub> | [PERSONA.md](PERSONA.md)<br/><sub>Profile for this persona.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

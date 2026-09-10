@@ -1,135 +1,135 @@
-# STATUS diário — Painel de progresso
+# Daily STATUS — Progress Dashboard
 
-> **Trilha:** [Kit do Time](../README.md) › [Documentação](README.md) › **STATUS**
+> **Path:** [Team Kit](../README.md) › [Docs](README.md) › **STATUS**
 
-**Painel de acompanhamento da imersão em tempo real:** status dos estágios, handoffs e métricas do dia.
+**Real-time workshop tracking dashboard:** stage status, handoffs, and daily metrics.
 
-![Painel de status diário](https://img.shields.io/badge/Painel-Status%20di%C3%A1rio-171717?style=flat-square) ![Atualização a cada 30 minutos](https://img.shields.io/badge/Atualiza%C3%A7%C3%A3o-A%20cada%2030%20min-737373?style=flat-square) ![Responsável: Technical Lead](https://img.shields.io/badge/Respons%C3%A1vel-Technical%20Lead-A3A3A3?style=flat-square)
+![Dashboard](https://img.shields.io/badge/Dashboard-Daily%20status-171717?style=flat-square) ![Update](https://img.shields.io/badge/Update-every%2030%20min-737373?style=flat-square) ![Owner](https://img.shields.io/badge/Owner-Technical%20Lead-A3A3A3?style=flat-square)
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Technical Lead (atualiza) e facilitador (consulta rapidamente) |
-| **Frequência de atualização** | A cada 30 minutos ou em cada transição de estágio |
-| **Resultado esperado** | Visão de uma página do que está pronto, em andamento e bloqueado |
+| **Target audience** | Technical Lead (updates) and facilitator (reads at a glance) |
+| **Update frequency** | Every 30 minutes or at each stage transition |
+| **Expected outcome** | One-page view of what is ready, in progress, and blocked |
 
 ---
 
-## Status geral
+## Overall status
 
-| Indicador | Status | Observações |
+| Indicator | Status | Notes |
 |---|---|---|
-| Time inteiro presente | — | Atualize: OK ou Parcial |
-| Ferramentas locais validadas em 5/5 laptops | — | — |
-| Branch `develop` protegida | — | — |
-| CI verde em `develop` | — | — |
-| Demonstração ensaiada | — | — |
+| Entire team present | — | Update: OK or Partial |
+| Local tools validated on 5/5 laptops | — | — |
+| `develop` branch protected | — | — |
+| CI green on `develop` | — | — |
+| Demo rehearsed | — | — |
 
 ---
 
-## Progresso nos quatro estágios
+## Progress across the four stages
 
-| Estágio | Status | Responsável | Início | DoD concluída? | Observações |
+| Stage | Status | Owner | Start | DoD complete? | Notes |
 |---|---|---|---|---|---|
-| **1 — Arqueologia** | Não iniciado | Todas as duplas | — | Não | — |
-| **2 — Especificação** | Aguardando o handoff H1 | Dupla 2 | — | Não | — |
-| **3 — Implementação** | Aguardando o handoff H2 | Duplas 3 e 4 | — | Não | — |
-| **4 — Evolução** | Aguardando o handoff H3 | Dupla 5 | — | Não | — |
+| **1 — Archaeology** | Not started | All pairs | — | No | — |
+| **2 — Specification** | Waiting for handoff H1 | Pair 2 | — | No | — |
+| **3 — Implementation** | Waiting for handoff H2 | Pairs 3 and 4 | — | No | — |
+| **4 — Evolution** | Waiting for handoff H3 | Pair 5 | — | No | — |
 
-**Legenda de status:** Não iniciado · Em andamento · Concluído · Atrasado · Bloqueado
+**Status legend:** Not started · In progress · Complete · Delayed · Blocked
 
 ---
 
-## Handoffs dos estágios
+## Stage handoffs
 
-| Handoff | Origem e destino | Quando | Status |
+| Handoff | From and to | When | Status |
 |---|---|---|---|
-| **H1** | Dupla 1 para Dupla 2 | Fim do Estágio 1 | Não concluído |
-| **H2** | Dupla 2 para Duplas 3 e 4 | Fim do Estágio 2 | Não concluído |
-| **H3** | Duplas 3 e 4 para Dupla 5 | Fim do Estágio 3 | Não concluído |
+| **H1** | Pair 1 to Pair 2 | End of Stage 1 | Not completed |
+| **H2** | Pair 2 to Pairs 3 and 4 | End of Stage 2 | Not completed |
+| **H3** | Pairs 3 and 4 to Pair 5 | End of Stage 3 | Not completed |
 
 > [!NOTE]
-> Cada handoff é uma conversa síncrona de cinco minutos entre as duplas que entregam e recebem. O cronograma detalhado está em [`00-TEAM-FLOW.md`](../00-TEAM-FLOW.md).
+> Each handoff is a five-minute synchronous conversation between the delivering and receiving pairs. The detailed schedule is in [`00-TEAM-FLOW.md`](../00-TEAM-FLOW.md).
 
 ---
 
-## Métricas do dia
+## Daily metrics
 
-| Métrica | Meta | Atual |
+| Metric | Target | Current |
 |---|---|---|
-| Fontes do legado confirmadas para o escopo | Todo REQ-ID | — |
-| Especificação formal (`spec.md`, `plan.md`, `tasks.md`) | Uma funcionalidade completa | — |
-| Decisões de escopo registradas | Pelo menos uma | — |
-| Primeiro incremento implementado | Um | — |
-| Cobertura de testes do backend | Pelo menos 70% | — |
-| Cobertura de testes do frontend | Pelo menos 60% | — |
-| Issues criadas para o modo Agent | Pelo menos uma | — |
-| PRs integrados em `develop` | — | — |
+| Legacy sources confirmed for the scope | Every REQ-ID | — |
+| Formal specification (`spec.md`, `plan.md`, `tasks.md`) | One complete feature | — |
+| Scope decisions recorded | At least one | — |
+| First increment implemented | One | — |
+| Backend test coverage | At least 70% | — |
+| Frontend test coverage | At least 60% | — |
+| Issues created for Agent mode | At least one | — |
+| PRs merged into `develop` | — | — |
 
 ---
 
-## Alertas ativos
+## Active alerts
 
 > [!WARNING]
-> Adicione uma entrada abaixo sempre que surgir um bloqueio ou risco. O Technical Lead a lê em voz alta no próximo stand-up.
+> Add an entry below whenever a blocker or risk appears. The Technical Lead reads it aloud at the next stand-up.
 
-- [ ] (nenhum alerta atual)
-
----
-
-## Marcos alcançados
-
-Marque cada marco quando ele for alcançado:
-
-- [ ] **Primeira regra de negócio documentada com `Programa de origem`** — entrada do Estágio 1 concluída.
-- [ ] **Primeira especificação EARS escrita** com o campo `source_legacy:` preenchido.
-- [ ] **Primeira decisão de escopo registrada** e vinculada ao plano.
-- [ ] **CI verde no primeiro Pull Request** — pipeline de integração aprovado.
-- [ ] **Primeiro endpoint REST funcionando** e visível pelo Swagger.
-- [ ] **Cobertura de testes do backend igual ou superior a 70%**.
-- [ ] **Primeiro Pull Request do modo Agent revisado e integrado**.
-- [ ] **Plano do Terraform concluído sem erros**.
-- [ ] **Demonstração final do SIFAP 2.0 concluída com sucesso**.
+- [ ] (no current alerts)
 
 ---
 
-## Registro do stand-up (uma frase por dupla em cada transição)
+## Milestones reached
 
-### H1 — fim do Estágio 1
+Check each milestone as it is achieved:
 
-| Dupla | Persona | Registro |
+- [ ] **First business rule documented with `Source Program`** — Stage 1 entry completed.
+- [ ] **First EARS specification written** with the `source_legacy:` field completed.
+- [ ] **First scope decision recorded** and linked to the plan.
+- [ ] **CI green on the first Pull Request** — integration pipeline approved.
+- [ ] **First REST endpoint working** and visible through Swagger.
+- [ ] **Backend test coverage at or above 70%**.
+- [ ] **First Agent-mode Pull Request reviewed and merged**.
+- [ ] **Terraform plan completed without errors**.
+- [ ] **Final SIFAP 2.0 demonstration completed successfully**.
+
+---
+
+## Stand-up record (one sentence per pair at each transition)
+
+### H1 — end of Stage 1
+
+| Pair | Persona | Record |
 |---|---|---|
-| Dupla 1 | Visão (PO + RE) | ___ |
-| Dupla 2 | Arquitetura (EA + SA) | ___ |
-| Dupla 3 | Implementação (TL + Dev) | ___ |
-| Dupla 4 | Qualidade (DBA + QA) | ___ |
-| Dupla 5 | Operações (DevOps + TW) | ___ |
+| Pair 1 | Vision (PO + RE) | ___ |
+| Pair 2 | Architecture (EA + SA) | ___ |
+| Pair 3 | Implementation (TL + Dev) | ___ |
+| Pair 4 | Quality (DBA + QA) | ___ |
+| Pair 5 | Operations (DevOps + TW) | ___ |
 
-### H2 — fim do Estágio 2
+### H2 — end of Stage 2
 
-| Dupla | Registro |
+| Pair | Record |
 |---|---|
-| Dupla 1 | ___ |
-| Dupla 2 | ___ |
-| Dupla 3 | ___ |
-| Dupla 4 | ___ |
-| Dupla 5 | ___ |
+| Pair 1 | ___ |
+| Pair 2 | ___ |
+| Pair 3 | ___ |
+| Pair 4 | ___ |
+| Pair 5 | ___ |
 
-### H3 — fim do Estágio 3
+### H3 — end of Stage 3
 
-| Dupla | Registro |
+| Pair | Record |
 |---|---|
-| Dupla 1 | ___ |
-| Dupla 2 | ___ |
-| Dupla 3 | ___ |
-| Dupla 4 | ___ |
-| Dupla 5 | ___ |
+| Pair 1 | ___ |
+| Pair 2 | ___ |
+| Pair 3 | ___ |
+| Pair 4 | ___ |
+| Pair 5 | ___ |
 
 ---
 
-### Continue lendo
+### Continue reading
 
-| Anterior | Próximo |
+| Previous | Next |
 |---|---|
-| [Roteiro da demonstração](demo-script.md)<br/><sub>Roteiro para a demonstração final de três minutos.</sub> | [Checklist do líder](CHECKLIST-LIDER.md)<br/><sub>Guia hora a hora para o Technical Lead.</sub> |
+| [Demo Script](demo-script.md)<br/><sub>Script for the final three-minute demonstration.</sub> | [Leader Checklist](CHECKLIST-LIDER.md)<br/><sub>Hour-by-hour guide for the Technical Lead.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

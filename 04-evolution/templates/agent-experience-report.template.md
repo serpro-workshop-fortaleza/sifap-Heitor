@@ -1,71 +1,71 @@
 ---
 
-title: "Template: Relatório de experiência com o Agent"
-description: "Estrutura de retrospectiva com cinco perguntas para /final-experience-report"
-author: "Paula Silva, Engenheira de Software AI-Native, Americas Global Black Belt na Microsoft"
+title: "Template: Agent Experience Report"
+description: "Retrospective skeleton with 5 questions for /final-experience-report"
+author: "Paula Silva, AI-Native Software Engineer, Americas Global Black Belt at Microsoft"
 date: "2026-04-29"
 version: "1.0.0"
 status: "approved"
 tags: ["template", "retrospective", "evolution", "stage-4"]
 ---
 
-<!-- Como usar: execute /final-experience-report. O time responde; o agent formata. -->
+<!-- How to use: run /final-experience-report. The team answers; the agent formats. -->
 
-# Relatório de experiência com o Agent — <!-- preencher: Nome do time -->
+# Agent Experience Report — <!-- placeholder: Team Name -->
 
-![Template de relatório de experiência com o Agent](https://img.shields.io/badge/Modelo-Relat%C3%B3rio%20de%20experi%C3%AAncia%20com%20Agent-737373?style=flat-square) ![Copie sem editar o original](https://img.shields.io/badge/Copie-N%C3%A3o%20edite%20o%20original-A3A3A3?style=flat-square)
+![Agent-experience-report template](https://img.shields.io/badge/Template-agent--experience--report-737373?style=flat-square) ![Copy — do not edit the original](https://img.shields.io/badge/Copy-do%20not%20edit%20the%20original-A3A3A3?style=flat-square)
 
-> **Trilha:** [Kit do Time](../../README.md) › [Estágio 4](../README.md) › Templates › **agent-experience-report**
+> **Path:** [Team Kit](../../README.md) › [Stage 4](../README.md) › Templates › **agent-experience-report**
 
 > [!NOTE]
-> Este arquivo é um TEMPLATE. Copie-o para o repositório do seu time e preencha a cópia com dados reais. Não edite o original.
+> This file is a TEMPLATE. Copy it to your team's repository and fill it with actual data. Do not edit the original.
 
 ---
 
-## Metadados
+## Metadata
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Time** | `<!-- preencher -->` |
-| **Data** | `<!-- preencher -->` |
-| **Estágios concluídos** | `<!-- preencher -->` |
-| **Agents usados** | `<!-- preencher -->` |
+| **Team** | `<!-- placeholder -->` |
+| **Date** | `<!-- placeholder -->` |
+| **Completed stages** | `<!-- placeholder -->` |
+| **Agents used** | `<!-- placeholder -->` |
 
 ---
 
-## Reflexões
+## Reflections
 
-### 1. Agent mais útil
+### 1. Most useful agent
 
-`<!-- preencher: resposta do time -->`
+`<!-- placeholder: team response -->`
 
-### 2. Modo de falha mais surpreendente
+### 2. Most surprising failure mode
 
-`<!-- preencher: resposta do time -->`
+`<!-- placeholder: team response -->`
 
-### 3. O que você mudaria
+### 3. What you would change
 
-`<!-- preencher: resposta do time -->`
+`<!-- placeholder: team response -->`
 
-### 4. Nível de confiança para produção
+### 4. Production confidence level
 
-`<!-- preencher: resposta do time — nota de 1 a 10 e explicação -->`
+`<!-- placeholder: team response — score from 1 to 10 and explanation -->`
 
-### 5. Um aprendizado para levar adiante
+### 5. One thing to take back
 
-`<!-- preencher: resposta do time -->`
+`<!-- placeholder: team response -->`
 
 ---
 
 > [!IMPORTANT]
-> Definição de pronto: as cinco perguntas respondidas com as próprias palavras do time; metadados completos.
+> Definition of Done: all 5 questions answered in the team's own words; metadata complete.
 
 ---
 
-### Continue lendo
+### Continue reading
 
-| Anterior | Próximo |
+| Previous | Next |
 |---|---|
-| [GUIDE do Estágio 4](../GUIDE.md)<br/><sub>Instruções passo a passo.</sub> | [Relatório do time](../agent-experience-report.md)<br/><sub>Local em que o time preenche o relatório.</sub> |
+| [Stage 4 GUIDE](../GUIDE.md)<br/><sub>Step-by-step instructions.</sub> | [Team report](../agent-experience-report.md)<br/><sub>Where you fill it in.</sub> |
 
-<sub>[Voltar ao índice do kit](../../README.md)</sub>
+<sub>[Back to the kit index](../../README.md)</sub>

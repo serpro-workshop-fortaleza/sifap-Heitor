@@ -1,41 +1,41 @@
 ---
 name: "copilot-sdk"
-description: "Crie aplicações agênticas com o GitHub Copilot SDK. Use ao incorporar agentes de IA em aplicações, criar ferramentas personalizadas, implementar respostas em transmissão contínua, gerenciar sessões, conectar-se a servidores MCP ou criar agentes personalizados. Os gatilhos incluem Copilot SDK, GitHub SDK, aplicação agêntica, incorporar Copilot, agente programável, servidor MCP e agente personalizado."
+description: "Build agentic applications with GitHub Copilot SDK. Use when embedding AI agents in apps, creating custom tools, implementing streaming responses, managing sessions, connecting to MCP servers, or creating custom agents. Triggers on Copilot SDK, GitHub SDK, agentic app, embed Copilot, programmable agent, MCP server, custom agent."
 ---
 # GitHub Copilot SDK
 
-Incorpore os fluxos de trabalho agênticos do Copilot a qualquer aplicação com Python, TypeScript, Go ou .NET.
+Embed Copilot's agentic workflows in any application using Python, TypeScript, Go, or .NET.
 
-| Área | Seções |
+| Area | Sections |
 |---|---|
-| Configuração | Pré-requisitos, instalação, início rápido |
-| Interação | Respostas em transmissão contínua, assistente interativo de CLI, padrões comuns |
-| Extensão do agente | Ferramentas personalizadas, integração com servidor MCP, agentes personalizados, mensagem do sistema |
-| Configuração avançada | Configuração do cliente, configuração da sessão, persistência da sessão |
-| Referência | Tipos de evento, modelos disponíveis, práticas recomendadas, arquitetura |
+| Setup | Prerequisites, Installation, Quick Start |
+| Interaction | Streaming Responses, Interactive CLI Assistant, Common Patterns |
+| Extending the agent | Custom Tools, MCP Server Integration, Custom Agents, System Message |
+| Configuration | Client Configuration, Session Configuration, Session Persistence |
+| Reference | Event Types, Available Models, Best Practices, Architecture |
 
-## Visão geral
+## Overview
 
-O GitHub Copilot SDK expõe o mesmo mecanismo da CLI do Copilot: um ambiente de execução de agentes testado em produção que você pode invocar por código. Não é necessário criar sua própria orquestração. Você define o comportamento do agente, e o Copilot cuida do planejamento, da invocação de ferramentas, da edição de arquivos e de outras tarefas.
+The GitHub Copilot SDK exposes the same engine behind Copilot CLI: a production-tested agent runtime you can invoke programmatically. No need to build your own orchestration - you define agent behavior, Copilot handles planning, tool invocation, file edits, and more.
 
-## Quando usar
+## When to invoke
 
-- "Incorpore um agente do Copilot à nossa aplicação com o Copilot SDK."
-- "Adicione uma ferramenta personalizada que o agente possa chamar durante uma sessão."
-- "Transmita continuamente a resposta do modelo, token por token, em nossa CLI."
-- "Conecte o SDK a um servidor MCP e a um agente personalizado."
+- "Embed a Copilot agent in our app with the Copilot SDK."
+- "Add a custom tool the agent can call during a session."
+- "Stream the model's response token by token in our CLI."
+- "Connect the SDK to an MCP server and a custom agent."
 
 > [!NOTE]
-> O SDK controla a GitHub Copilot CLI, que deve estar instalada e autenticada (consulte os pré-requisitos). Ele está em versão prévia técnica (Technical Preview) e pode introduzir alterações incompatíveis. Fixe as versões e teste novamente ao atualizar.
+> The SDK drives the GitHub Copilot CLI, which must be installed and authenticated first (see Prerequisites). It is in Technical Preview and may introduce breaking changes — pin versions and re-test on upgrade.
 
-## Pré-requisitos
+## Prerequisites
 
-1. **GitHub Copilot CLI** instalada e autenticada ([guia de instalação](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli))
-2. **Ambiente de execução da linguagem**: Node.js 18+, Python 3.8+, Go 1.21+ ou .NET 8.0+
+1. **GitHub Copilot CLI** installed and authenticated ([Installation guide](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli))
+2. **Language runtime**: Node.js 18+, Python 3.8+, Go 1.21+, or .NET 8.0+
 
-Verifique a CLI: `copilot --version`
+Verify CLI: `copilot --version`
 
-## Instalação
+## Installation
 
 ### Node.js/TypeScript
 
@@ -45,13 +45,13 @@ npm init -y --init-type module
 npm install @github/copilot-sdk tsx
 ```
 
-### Instalação para Python
+### Python — Installation
 
 ```bash
 pip install github-copilot-sdk
 ```
 
-### Instalação para Go
+### Go — Installation
 
 ```bash
 mkdir copilot-demo && cd copilot-demo
@@ -59,16 +59,16 @@ go mod init copilot-demo
 go get github.com/github/copilot-sdk/go
 ```
 
-### Instalação para .NET
+### .NET — Installation
 
 ```bash
 dotnet new console -n CopilotDemo && cd CopilotDemo
 dotnet add package GitHub.Copilot.SDK
 ```
 
-## Início rápido
+## Quick Start
 
-### Início rápido com TypeScript
+### TypeScript — Quick Start
 
 ```typescript
 import { CopilotClient, approveAll } from "@github/copilot-sdk";
@@ -79,16 +79,16 @@ const session = await client.createSession({
     model: "gpt-4.1",
 });
 
-const response = await session.sendAndWait({ prompt: "Quanto é 2 + 2?" });
+const response = await session.sendAndWait({ prompt: "What is 2 + 2?" });
 console.log(response?.data.content);
 
 await client.stop();
 process.exit(0);
 ```
 
-Execute: `npx tsx index.ts`
+Run: `npx tsx index.ts`
 
-### Início rápido com Python
+### Python — Quick Start
 
 ```python
 import asyncio
@@ -102,7 +102,7 @@ async def main():
         "on_permission_request": PermissionHandler.approve_all,
         "model": "gpt-4.1",
     })
-    response = await session.send_and_wait({"prompt": "Quanto é 2 + 2?"})
+    response = await session.send_and_wait({"prompt": "What is 2 + 2?"})
 
     print(response.data.content)
     await client.stop()
@@ -110,7 +110,7 @@ async def main():
 asyncio.run(main())
 ```
 
-### Início rápido com Go
+### Go — Quick Start
 
 ```go
 package main
@@ -137,7 +137,7 @@ func main() {
         log.Fatal(err)
     }
 
-    response, err := session.SendAndWait(copilot.MessageOptions{Prompt: "Quanto é 2 + 2?"}, 0)
+    response, err := session.SendAndWait(copilot.MessageOptions{Prompt: "What is 2 + 2?"}, 0)
     if err != nil {
         log.Fatal(err)
     }
@@ -159,17 +159,17 @@ await using var session = await client.CreateSessionAsync(new SessionConfig
     Model = "gpt-4.1",
 });
 
-var response = await session.SendAndWaitAsync(new MessageOptions { Prompt = "Quanto é 2 + 2?" });
+var response = await session.SendAndWaitAsync(new MessageOptions { Prompt = "What is 2 + 2?" });
 Console.WriteLine(response?.Data.Content);
 ```
 
-Execute: `dotnet run`
+Run: `dotnet run`
 
-## Respostas em transmissão contínua
+## Streaming Responses
 
-Ative a saída em tempo real para melhorar a experiência de uso:
+Enable real-time output for better UX:
 
-### Respostas em transmissão contínua com TypeScript
+### TypeScript — Streaming Responses
 
 ```typescript
 import { CopilotClient, approveAll, SessionEvent } from "@github/copilot-sdk";
@@ -186,17 +186,17 @@ session.on((event: SessionEvent) => {
         process.stdout.write(event.data.deltaContent);
     }
     if (event.type === "session.idle") {
-        console.log(); // Nova linha ao concluir
+        console.log(); // New line when done
     }
 });
 
-await session.sendAndWait({ prompt: "Conte uma piada curta" });
+await session.sendAndWait({ prompt: "Tell me a short joke" });
 
 await client.stop();
 process.exit(0);
 ```
 
-### Respostas em transmissão contínua com Python
+### Python — Streaming Responses
 
 ```python
 import asyncio
@@ -222,13 +222,13 @@ async def main():
             print()
 
     session.on(handle_event)
-    await session.send_and_wait({"prompt": "Conte uma piada curta"})
+    await session.send_and_wait({"prompt": "Tell me a short joke"})
     await client.stop()
 
 asyncio.run(main())
 ```
 
-### Respostas em transmissão contínua com Go
+### Go — Streaming Responses
 
 ```go
 session, err := client.CreateSession(&copilot.SessionConfig{
@@ -246,10 +246,10 @@ session.On(func(event copilot.SessionEvent) {
     }
 })
 
-_, err = session.SendAndWait(copilot.MessageOptions{Prompt: "Conte uma piada curta"}, 0)
+_, err = session.SendAndWait(copilot.MessageOptions{Prompt: "Tell me a short joke"}, 0)
 ```
 
-### Respostas em transmissão contínua com .NET
+### .NET — Streaming Responses
 
 ```csharp
 await using var session = await client.CreateSessionAsync(new SessionConfig
@@ -267,35 +267,35 @@ session.On(ev =>
         Console.WriteLine();
 });
 
-await session.SendAndWaitAsync(new MessageOptions { Prompt = "Conte uma piada curta" });
+await session.SendAndWaitAsync(new MessageOptions { Prompt = "Tell me a short joke" });
 ```
 
-## Ferramentas personalizadas
+## Custom Tools
 
-Defina ferramentas que o Copilot pode invocar durante o raciocínio. Ao definir uma ferramenta, você informa ao Copilot:
+Define tools that Copilot can invoke during reasoning. When you define a tool, you tell Copilot:
 
-1. **O que a ferramenta faz** (descrição)
-2. **Quais parâmetros ela requer** (esquema)
-3. **Qual código executar** (manipulador)
+1. **What the tool does** (description)
+2. **What parameters it needs** (schema)
+3. **What code to run** (handler)
 
-### TypeScript (JSON Schema, esquema JSON)
+### TypeScript (JSON Schema)
 
 ```typescript
 import { CopilotClient, approveAll, defineTool, SessionEvent } from "@github/copilot-sdk";
 
 const getWeather = defineTool("get_weather", {
-    description: "Obtenha o clima atual de uma cidade",
+    description: "Get the current weather for a city",
     parameters: {
         type: "object",
         properties: {
-            city: { type: "string", description: "O nome da cidade" },
+            city: { type: "string", description: "The city name" },
         },
         required: ["city"],
     },
     handler: async (args: { city: string }) => {
         const { city } = args;
-        // Em uma aplicação real, chame uma API de clima aqui
-        const conditions = ["ensolarado", "nublado", "chuvoso", "parcialmente nublado"];
+        // In a real app, call a weather API here
+        const conditions = ["sunny", "cloudy", "rainy", "partly cloudy"];
         const temp = Math.floor(Math.random() * 30) + 50;
         const condition = conditions[Math.floor(Math.random() * conditions.length)];
         return { city, temperature: `${temp}°F`, condition };
@@ -317,7 +317,7 @@ session.on((event: SessionEvent) => {
 });
 
 await session.sendAndWait({
-    prompt: "Como está o clima em Seattle e Tóquio?",
+    prompt: "What's the weather like in Seattle and Tokyo?",
 });
 
 await client.stop();
@@ -336,12 +336,12 @@ from copilot.generated.session_events import SessionEventType
 from pydantic import BaseModel, Field
 
 class GetWeatherParams(BaseModel):
-    city: str = Field(description="O nome da cidade cuja previsão será consultada")
+    city: str = Field(description="The name of the city to get weather for")
 
-@define_tool(description="Obtenha o clima atual de uma cidade")
+@define_tool(description="Get the current weather for a city")
 async def get_weather(params: GetWeatherParams) -> dict:
     city = params.city
-    conditions = ["ensolarado", "nublado", "chuvoso", "parcialmente nublado"]
+    conditions = ["sunny", "cloudy", "rainy", "partly cloudy"]
     temp = random.randint(50, 80)
     condition = random.choice(conditions)
     return {"city": city, "temperature": f"{temp}°F", "condition": condition}
@@ -365,7 +365,7 @@ async def main():
     session.on(handle_event)
 
     await session.send_and_wait({
-        "prompt": "Como está o clima em Seattle e Tóquio?"
+        "prompt": "What's the weather like in Seattle and Tokyo?"
     })
 
     await client.stop()
@@ -373,11 +373,11 @@ async def main():
 asyncio.run(main())
 ```
 
-### Ferramentas personalizadas com Go
+### Go — Custom Tools
 
 ```go
 type WeatherParams struct {
-    City string `json:"city" jsonschema:"O nome da cidade"`
+    City string `json:"city" jsonschema:"The city name"`
 }
 
 type WeatherResult struct {
@@ -388,9 +388,9 @@ type WeatherResult struct {
 
 getWeather := copilot.DefineTool(
     "get_weather",
-    "Obtenha o clima atual de uma cidade",
+    "Get the current weather for a city",
     func(params WeatherParams, inv copilot.ToolInvocation) (WeatherResult, error) {
-        conditions := []string{"ensolarado", "nublado", "chuvoso", "parcialmente nublado"}
+        conditions := []string{"sunny", "cloudy", "rainy", "partly cloudy"}
         temp := rand.Intn(30) + 50
         condition := conditions[rand.Intn(len(conditions))]
         return WeatherResult{
@@ -417,15 +417,15 @@ using Microsoft.Extensions.AI;
 using System.ComponentModel;
 
 var getWeather = AIFunctionFactory.Create(
-    ([Description("O nome da cidade")] string city) =>
+    ([Description("The city name")] string city) =>
     {
-        var conditions = new[] { "ensolarado", "nublado", "chuvoso", "parcialmente nublado" };
+        var conditions = new[] { "sunny", "cloudy", "rainy", "partly cloudy" };
         var temp = Random.Shared.Next(50, 80);
         var condition = conditions[Random.Shared.Next(conditions.Length)];
         return new { city, temperature = $"{temp}°F", condition };
     },
     "get_weather",
-    "Obtenha o clima atual de uma cidade"
+    "Get the current weather for a city"
 );
 
 await using var session = await client.CreateSessionAsync(new SessionConfig
@@ -437,38 +437,38 @@ await using var session = await client.CreateSessionAsync(new SessionConfig
 });
 ```
 
-## Como as ferramentas funcionam
+## How Tools Work
 
-Quando o Copilot decide chamar sua ferramenta:
+When Copilot decides to call your tool:
 
-1. O Copilot envia uma solicitação de chamada de ferramenta com os parâmetros.
-2. O SDK executa sua função manipuladora.
-3. O resultado é enviado de volta ao Copilot.
-4. O Copilot incorpora o resultado à resposta.
+1. Copilot sends a tool call request with the parameters
+2. The SDK runs your handler function
+3. The result is sent back to Copilot
+4. Copilot incorporates the result into its response
 
-O Copilot decide quando chamar a ferramenta com base na pergunta da pessoa e na descrição da ferramenta.
+Copilot decides when to call your tool based on the user's question and your tool's description.
 
-## Assistente interativo de CLI
+## Interactive CLI Assistant
 
-Crie um assistente interativo completo:
+Build a complete interactive assistant:
 
-### Assistente interativo de CLI com TypeScript
+### TypeScript — Interactive CLI Assistant
 
 ```typescript
 import { CopilotClient, approveAll, defineTool, SessionEvent } from "@github/copilot-sdk";
 import * as readline from "readline";
 
 const getWeather = defineTool("get_weather", {
-    description: "Obtenha o clima atual de uma cidade",
+    description: "Get the current weather for a city",
     parameters: {
         type: "object",
         properties: {
-            city: { type: "string", description: "O nome da cidade" },
+            city: { type: "string", description: "The city name" },
         },
         required: ["city"],
     },
     handler: async ({ city }) => {
-        const conditions = ["ensolarado", "nublado", "chuvoso", "parcialmente nublado"];
+        const conditions = ["sunny", "cloudy", "rainy", "partly cloudy"];
         const temp = Math.floor(Math.random() * 30) + 50;
         const condition = conditions[Math.floor(Math.random() * conditions.length)];
         return { city, temperature: `${temp}°F`, condition };
@@ -494,18 +494,18 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-console.log("Assistente de clima (digite 'sair' para encerrar)");
-console.log("Experimente: 'Como está o clima em Paris?'\n");
+console.log("Weather Assistant (type 'exit' to quit)");
+console.log("Try: 'What's the weather in Paris?'\n");
 
 const prompt = () => {
-    rl.question("Você: ", async (input) => {
-        if (input.toLowerCase() === "sair") {
+    rl.question("You: ", async (input) => {
+        if (input.toLowerCase() === "exit") {
             await client.stop();
             rl.close();
             return;
         }
 
-        process.stdout.write("Assistente: ");
+        process.stdout.write("Assistant: ");
         await session.sendAndWait({ prompt: input });
         console.log("\n");
         prompt();
@@ -515,7 +515,7 @@ const prompt = () => {
 prompt();
 ```
 
-### Assistente interativo de CLI com Python
+### Python — Interactive CLI Assistant
 
 ```python
 import asyncio
@@ -527,11 +527,11 @@ from copilot.generated.session_events import SessionEventType
 from pydantic import BaseModel, Field
 
 class GetWeatherParams(BaseModel):
-    city: str = Field(description="O nome da cidade cuja previsão será consultada")
+    city: str = Field(description="The name of the city to get weather for")
 
-@define_tool(description="Obtenha o clima atual de uma cidade")
+@define_tool(description="Get the current weather for a city")
 async def get_weather(params: GetWeatherParams) -> dict:
-    conditions = ["ensolarado", "nublado", "chuvoso", "parcialmente nublado"]
+    conditions = ["sunny", "cloudy", "rainy", "partly cloudy"]
     temp = random.randint(50, 80)
     condition = random.choice(conditions)
     return {"city": params.city, "temperature": f"{temp}°F", "condition": condition}
@@ -554,19 +554,19 @@ async def main():
 
     session.on(handle_event)
 
-    print("Assistente de clima (digite 'sair' para encerrar)")
-    print("Experimente: 'Como está o clima em Paris?'\n")
+    print("Weather Assistant (type 'exit' to quit)")
+    print("Try: 'What's the weather in Paris?'\n")
 
     while True:
         try:
-            user_input = input("Você: ")
+            user_input = input("You: ")
         except EOFError:
             break
 
-        if user_input.lower() == "sair":
+        if user_input.lower() == "exit":
             break
 
-        sys.stdout.write("Assistente: ")
+        sys.stdout.write("Assistant: ")
         await session.send_and_wait({"prompt": user_input})
         print("\n")
 
@@ -575,11 +575,11 @@ async def main():
 asyncio.run(main())
 ```
 
-## Integração com servidor MCP
+## MCP Server Integration
 
-Conecte-se a servidores MCP (Model Context Protocol) para usar ferramentas prontas. Conecte-se ao servidor MCP do GitHub para acessar repositórios, issues e PRs:
+Connect to MCP (Model Context Protocol) servers for pre-built tools. Connect to GitHub's MCP server for repository, issue, and PR access:
 
-### Integração com servidor MCP em TypeScript
+### TypeScript — MCP Server Integration
 
 ```typescript
 const session = await client.createSession({
@@ -594,7 +594,7 @@ const session = await client.createSession({
 });
 ```
 
-### Integração com servidor MCP em Python
+### Python — MCP Server Integration
 
 ```python
 session = await client.create_session({
@@ -609,7 +609,7 @@ session = await client.create_session({
 })
 ```
 
-### Integração com servidor MCP em Go
+### Go — MCP Server Integration
 
 ```go
 session, _ := client.CreateSession(&copilot.SessionConfig{
@@ -624,7 +624,7 @@ session, _ := client.CreateSession(&copilot.SessionConfig{
 })
 ```
 
-### Integração com servidor MCP em .NET
+### .NET — MCP Server Integration
 
 ```csharp
 await using var session = await client.CreateSessionAsync(new SessionConfig
@@ -642,11 +642,11 @@ await using var session = await client.CreateSessionAsync(new SessionConfig
 });
 ```
 
-## Agentes personalizados
+## Custom Agents
 
-Defina personas especializadas de IA para tarefas específicas:
+Define specialized AI personas for specific tasks:
 
-### Agentes personalizados em TypeScript
+### TypeScript — Custom Agents
 
 ```typescript
 const session = await client.createSession({
@@ -654,14 +654,14 @@ const session = await client.createSession({
     model: "gpt-4.1",
     customAgents: [{
         name: "pr-reviewer",
-        displayName: "Revisor de PR",
-        description: "Revisa pull requests conforme as práticas recomendadas",
-        prompt: "Você é especialista em revisão de código. Concentre-se em segurança, desempenho e manutenibilidade.",
+        displayName: "PR Reviewer",
+        description: "Reviews pull requests for best practices",
+        prompt: "You are an expert code reviewer. Focus on security, performance, and maintainability.",
     }],
 });
 ```
 
-### Agentes personalizados em Python
+### Python — Custom Agents
 
 ```python
 session = await client.create_session({
@@ -669,54 +669,54 @@ session = await client.create_session({
     "model": "gpt-4.1",
     "custom_agents": [{
         "name": "pr-reviewer",
-        "display_name": "Revisor de PR",
-        "description": "Revisa pull requests conforme as práticas recomendadas",
-        "prompt": "Você é especialista em revisão de código. Concentre-se em segurança, desempenho e manutenibilidade.",
+        "display_name": "PR Reviewer",
+        "description": "Reviews pull requests for best practices",
+        "prompt": "You are an expert code reviewer. Focus on security, performance, and maintainability.",
     }],
 })
 ```
 
-## Mensagem do sistema
+## System Message
 
-Personalize o comportamento e a personalidade da IA:
+Customize the AI's behavior and personality:
 
-### Mensagem do sistema em TypeScript
+### TypeScript — System Message
 
 ```typescript
 const session = await client.createSession({
     onPermissionRequest: approveAll,
     model: "gpt-4.1",
     systemMessage: {
-        content: "Você é um assistente prestativo para nossa equipe de engenharia. Seja sempre conciso.",
+        content: "You are a helpful assistant for our engineering team. Always be concise.",
     },
 });
 ```
 
-### Mensagem do sistema em Python
+### Python — System Message
 
 ```python
 session = await client.create_session({
     "on_permission_request": PermissionHandler.approve_all,
     "model": "gpt-4.1",
     "system_message": {
-        "content": "Você é um assistente prestativo para nossa equipe de engenharia. Seja sempre conciso.",
+        "content": "You are a helpful assistant for our engineering team. Always be concise.",
     },
 })
 ```
 
-## Servidor externo da CLI
+## External CLI Server
 
-Execute a CLI separadamente no modo de servidor e conecte o SDK a ela. Isso é útil para depuração, compartilhamento de recursos ou ambientes personalizados.
+Run the CLI in server mode separately and connect the SDK to it. Useful for debugging, resource sharing, or custom environments.
 
-### Iniciar a CLI no modo de servidor
+### Start CLI in Server Mode
 
 ```bash
 copilot --server --port 4321
 ```
 
-### Conectar o SDK a um servidor externo
+### Connect SDK to External Server
 
-#### Conectar o SDK a um servidor externo com TypeScript
+#### TypeScript — Connect SDK to External Server
 
 ```typescript
 const client = new CopilotClient({
@@ -729,7 +729,7 @@ const session = await client.createSession({
 });
 ```
 
-#### Conectar o SDK a um servidor externo com Python
+#### Python — Connect SDK to External Server
 
 ```python
 client = CopilotClient({
@@ -743,7 +743,7 @@ session = await client.create_session({
 })
 ```
 
-#### Conectar o SDK a um servidor externo com Go
+#### Go — Connect SDK to External Server
 
 ```go
 client := copilot.NewClient(&copilot.ClientOptions{
@@ -760,7 +760,7 @@ session, _ := client.CreateSession(&copilot.SessionConfig{
 })
 ```
 
-#### Conectar o SDK a um servidor externo com .NET
+#### .NET — Connect SDK to External Server
 
 ```csharp
 using var client = new CopilotClient(new CopilotClientOptions
@@ -775,54 +775,54 @@ await using var session = await client.CreateSessionAsync(new SessionConfig
 });
 ```
 
-**Observação:** quando `cliUrl` é fornecida, o SDK não inicia nem gerencia um processo da CLI. Ele apenas se conecta ao servidor existente.
+**Note:** When `cliUrl` is provided, the SDK will not spawn or manage a CLI process - it only connects to the existing server.
 
-## Tipos de evento
+## Event Types
 
-| Evento | Descrição |
+| Event | Description |
 |-------|-------------|
-| `user.message` | Entrada da pessoa adicionada |
-| `assistant.message` | Resposta completa do modelo |
-| `assistant.message_delta` | Trecho da resposta em transmissão contínua |
-| `assistant.reasoning` | Raciocínio do modelo (depende do modelo) |
-| `assistant.reasoning_delta` | Trecho do raciocínio em transmissão contínua |
-| `tool.execution_start` | Invocação da ferramenta iniciada |
-| `tool.execution_complete` | Execução da ferramenta concluída |
-| `session.idle` | Nenhum processamento ativo |
-| `session.error` | Ocorreu um erro |
+| `user.message` | User input added |
+| `assistant.message` | Complete model response |
+| `assistant.message_delta` | Streaming response chunk |
+| `assistant.reasoning` | Model reasoning (model-dependent) |
+| `assistant.reasoning_delta` | Streaming reasoning chunk |
+| `tool.execution_start` | Tool invocation started |
+| `tool.execution_complete` | Tool execution finished |
+| `session.idle` | No active processing |
+| `session.error` | Error occurred |
 
-## Configuração do cliente
+## Client Configuration
 
-| Opção | Descrição | Padrão |
+| Option | Description | Default |
 |--------|-------------|---------|
-| `cliPath` | Caminho do executável da Copilot CLI | PATH do sistema |
-| `cliUrl` | Conexão com servidor existente (por exemplo, "localhost:4321") | Nenhum |
-| `port` | Porta de comunicação do servidor | Aleatória |
-| `useStdio` | Uso do transporte stdio em vez de TCP | true |
-| `logLevel` | Detalhamento dos registros | "info" |
-| `autoStart` | Inicialização automática do servidor | true |
-| `autoRestart` | Reinicialização após falhas | true |
-| `cwd` | Diretório de trabalho do processo da CLI | Herdado |
+| `cliPath` | Path to Copilot CLI executable | System PATH |
+| `cliUrl` | Connect to existing server (e.g., "localhost:4321") | None |
+| `port` | Server communication port | Random |
+| `useStdio` | Use stdio transport instead of TCP | true |
+| `logLevel` | Logging verbosity | "info" |
+| `autoStart` | Launch server automatically | true |
+| `autoRestart` | Restart on crashes | true |
+| `cwd` | Working directory for CLI process | Inherited |
 
-## Configuração da sessão
+## Session Configuration
 
-| Opção | Descrição |
+| Option | Description |
 |--------|-------------|
-| `model` | LLM a usar ("gpt-4.1", "claude-sonnet-4.5" etc.) |
-| `sessionId` | Identificador personalizado da sessão |
-| `tools` | Definições de ferramentas personalizadas |
-| `mcpServers` | Conexões com servidores MCP |
-| `customAgents` | Personas de agentes personalizados |
-| `systemMessage` | Substituição da instrução padrão do sistema |
-| `streaming` | Ativação de trechos incrementais da resposta |
-| `availableTools` | Lista de ferramentas permitidas |
-| `excludedTools` | Lista de ferramentas desativadas |
+| `model` | LLM to use ("gpt-4.1", "claude-sonnet-4.5", etc.) |
+| `sessionId` | Custom session identifier |
+| `tools` | Custom tool definitions |
+| `mcpServers` | MCP server connections |
+| `customAgents` | Custom agent personas |
+| `systemMessage` | Override default system prompt |
+| `streaming` | Enable incremental response chunks |
+| `availableTools` | Whitelist of permitted tools |
+| `excludedTools` | Blacklist of disabled tools |
 
-## Persistência da sessão
+## Session Persistence
 
-Salve e retome conversas após reinicializações:
+Save and resume conversations across restarts:
 
-### Criar com ID personalizado
+### Create with Custom ID
 
 ```typescript
 const session = await client.createSession({
@@ -832,21 +832,21 @@ const session = await client.createSession({
 });
 ```
 
-### Retomar sessão
+### Resume Session
 
 ```typescript
 const session = await client.resumeSession("user-123-conversation", { onPermissionRequest: approveAll });
-await session.send({ prompt: "O que discutimos anteriormente?" });
+await session.send({ prompt: "What did we discuss earlier?" });
 ```
 
-### Listar e excluir sessões
+### List and Delete Sessions
 
 ```typescript
 const sessions = await client.listSessions();
 await client.deleteSession("old-session-id");
 ```
 
-## Tratamento de erros
+## Error Handling
 
 ```typescript
 try {
@@ -856,35 +856,35 @@ try {
         model: "gpt-4.1",
     });
     const response = await session.sendAndWait(
-        { prompt: "Olá!" },
-        30000 // tempo limite em ms
+        { prompt: "Hello!" },
+        30000 // timeout in ms
     );
 } catch (error) {
     if (error.code === "ENOENT") {
-        console.error("A Copilot CLI não está instalada");
+        console.error("Copilot CLI not installed");
     } else if (error.code === "ECONNREFUSED") {
-        console.error("Não foi possível conectar ao servidor do Copilot");
+        console.error("Cannot connect to Copilot server");
     } else {
-        console.error("Erro:", error.message);
+        console.error("Error:", error.message);
     }
 } finally {
     await client.stop();
 }
 ```
 
-## Encerramento controlado
+## Graceful Shutdown
 
 ```typescript
 process.on("SIGINT", async () => {
-    console.log("Encerrando...");
+    console.log("Shutting down...");
     await client.stop();
     process.exit(0);
 });
 ```
 
-## Padrões comuns
+## Common Patterns
 
-### Conversa em vários turnos
+### Multi-turn Conversation
 
 ```typescript
 const session = await client.createSession({
@@ -892,25 +892,25 @@ const session = await client.createSession({
     model: "gpt-4.1",
 });
 
-await session.sendAndWait({ prompt: "Meu nome é Alice" });
-await session.sendAndWait({ prompt: "Qual é o meu nome?" });
-// Resposta: "Seu nome é Alice"
+await session.sendAndWait({ prompt: "My name is Alice" });
+await session.sendAndWait({ prompt: "What's my name?" });
+// Response: "Your name is Alice"
 ```
 
-### Anexos de arquivo
+### File Attachments
 
 ```typescript
 await session.send({
-    prompt: "Analise este arquivo",
+    prompt: "Analyze this file",
     attachments: [{
         type: "file",
         path: "./data.csv",
-        displayName: "Dados de vendas"
+        displayName: "Sales Data"
     }]
 });
 ```
 
-### Interromper operações longas
+### Abort Long Operations
 
 ```typescript
 const timeoutId = setTimeout(() => {
@@ -924,46 +924,46 @@ session.on((event) => {
 });
 ```
 
-## Modelos disponíveis
+## Available Models
 
-Consulte os modelos disponíveis durante a execução:
+Query available models at runtime:
 
 ```typescript
 const models = await client.getModels();
-// Retorna: ["gpt-4.1", "gpt-4o", "claude-sonnet-4.5", ...]
+// Returns: ["gpt-4.1", "gpt-4o", "claude-sonnet-4.5", ...]
 ```
 
-## Práticas recomendadas
+## Best Practices
 
-1. **Sempre faça a limpeza**: use `try-finally` ou `defer` para garantir a chamada de `client.stop()`.
-2. **Defina tempos limite**: use `sendAndWait` com tempo limite para operações longas.
-3. **Trate eventos**: assine eventos de erro para ter um tratamento de erros robusto.
-4. **Use transmissão contínua**: ative a transmissão contínua para melhorar a experiência em respostas longas.
-5. **Persista as sessões**: use IDs personalizados para conversas em vários turnos.
-6. **Defina ferramentas claras**: escreva nomes e descrições elucidativos para as ferramentas.
+1. **Always cleanup**: Use `try-finally` or `defer` to ensure `client.stop()` is called
+2. **Set timeouts**: Use `sendAndWait` with timeout for long operations
+3. **Handle events**: Subscribe to error events for robust error handling
+4. **Use streaming**: Enable streaming for better UX on long responses
+5. **Persist sessions**: Use custom session IDs for multi-turn conversations
+6. **Define clear tools**: Write descriptive tool names and descriptions
 
-## Arquitetura
+## Architecture
 
 ```text
-Sua aplicação
+Your Application
        |
-  Cliente SDK
+  SDK Client
        | JSON-RPC
-  Copilot CLI (modo de servidor)
+  Copilot CLI (server mode)
        |
-  GitHub (modelos, autenticação)
+  GitHub (models, auth)
 ```
 
-O SDK gerencia automaticamente o ciclo de vida do processo da CLI. Toda comunicação ocorre por JSON-RPC sobre stdio ou TCP.
+The SDK manages the CLI process lifecycle automatically. All communication happens via JSON-RPC over stdio or TCP.
 
-## Modelo de saída
+## Output template
 
-Uma integração entregue segue esta estrutura: cliente, sessão, ferramentas opcionais, loop de execução e limpeza garantida:
+A delivered integration follows this shape — client, session, optional tools, a run loop, and guaranteed cleanup:
 
 ```typescript
 import { CopilotClient, approveAll } from "@github/copilot-sdk";
 
-// 1. Crie o cliente e uma sessão (adicione ferramentas personalizadas por `tools: [...]`).
+// 1. Create the client and a session (add custom tools via `tools: [...]`).
 const client = new CopilotClient();
 const session = await client.createSession({
     onPermissionRequest: approveAll,
@@ -971,36 +971,36 @@ const session = await client.createSession({
     streaming: true,
 });
 
-// 2. Controle o agente.
+// 2. Drive the agent.
 try {
     const response = await session.sendAndWait({ prompt: "..." }, 30000);
     console.log(response?.data.content);
 } finally {
-    // 3. Sempre faça a limpeza.
+    // 3. Always clean up.
     await client.stop();
 }
 ```
 
-Informe a linguagem e o ambiente de execução, os modelos usados, as ferramentas ou os servidores MCP conectados e como o processo é limpo.
+Report the language and runtime, the models used, any tools or MCP servers wired in, and how the process is cleaned up.
 
-## Critérios de qualidade
+## Quality gate
 
-- [ ] A Copilot CLI está instalada e autenticada, e o ambiente de execução escolhido corresponde ao SDK (Node.js 18+, Python 3.8+, Go 1.21+ ou .NET 8.0+).
-- [ ] `client.stop()` está garantido em todos os caminhos (`try/finally`, `defer` ou `await using`).
-- [ ] Chamadas longas usam `sendAndWait` com tempo limite, e os erros e eventos `session.error` são tratados.
-- [ ] As ferramentas personalizadas declaram nome, descrição e esquema de parâmetros claros.
-- [ ] Segredos e tokens nunca são fixados no código. Pontos de extremidade MCP e modelos permanecem na configuração.
-- [ ] A integração é executada de ponta a ponta no modelo de destino antes de ser considerada concluída.
+- [ ] The Copilot CLI is installed and authenticated, and the chosen runtime matches the SDK (Node.js 18+, Python 3.8+, Go 1.21+, or .NET 8.0+).
+- [ ] `client.stop()` is guaranteed on every path (`try/finally`, `defer`, or `await using`).
+- [ ] Long-running calls use `sendAndWait` with a timeout, and errors and `session.error` events are handled.
+- [ ] Custom tools declare a clear name, description, and parameter schema.
+- [ ] Secrets and tokens are never hardcoded; MCP endpoints and models stay configuration.
+- [ ] The integration runs end to end against the target model before it is considered done.
 
-## Recursos
+## Resources
 
-- **Repositório do GitHub**: https://github.com/github/copilot-sdk
-- **Tutorial de introdução**: https://github.com/github/copilot-sdk/blob/main/docs/tutorials/first-app.md
-- **Servidor MCP do GitHub**: https://github.com/github/github-mcp-server
-- **Diretório de servidores MCP**: https://github.com/modelcontextprotocol/servers
-- **Livro de receitas**: https://github.com/github/copilot-sdk/tree/main/cookbook
-- **Exemplos**: https://github.com/github/copilot-sdk/tree/main/samples
+- **GitHub Repository**: https://github.com/github/copilot-sdk
+- **Getting Started Tutorial**: https://github.com/github/copilot-sdk/blob/main/docs/tutorials/first-app.md
+- **GitHub MCP Server**: https://github.com/github/github-mcp-server
+- **MCP Servers Directory**: https://github.com/modelcontextprotocol/servers
+- **Cookbook**: https://github.com/github/copilot-sdk/tree/main/cookbook
+- **Samples**: https://github.com/github/copilot-sdk/tree/main/samples
 
 ## Status
 
-Este SDK está em **versão prévia técnica (Technical Preview)** e pode receber alterações incompatíveis. Ainda não é recomendado para uso em produção.
+This SDK is in **Technical Preview** and may have breaking changes. Not recommended for production use yet.

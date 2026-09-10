@@ -1,87 +1,87 @@
 ---
 name: "draw-io-diagram-generator"
-description: "Use ao criar, editar ou gerar arquivos de diagrama draw.io (.drawio, .drawio.svg, .drawio.png). Abrange criação de XML mxGraph, bibliotecas de formas, strings de estilo, fluxogramas, arquitetura de sistemas, diagramas de sequência, diagramas ER, diagramas de classes UML, topologia de rede, estratégia de disposição, extensão hediet.vscode-drawio do VS Code e o fluxo completo do agente, da solicitação ao arquivo pronto para abrir."
+description: "Use when creating, editing, or generating draw.io diagram files (.drawio, .drawio.svg, .drawio.png). Covers mxGraph XML authoring, shape libraries, style strings, flowcharts, system architecture, sequence diagrams, ER diagrams, UML class diagrams, network topology, layout strategy, the hediet.vscode-drawio VS Code extension, and the full agent workflow from request to a ready-to-open file."
 ---
-# Gerador de diagramas draw.io
+# Draw.io diagram generator
 
-Esta habilidade permite gerar, editar e validar arquivos de diagrama draw.io (`.drawio`) com a estrutura XML mxGraph correta. Todos os arquivos gerados abrem imediatamente na [extensão draw.io para VS Code](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio) (`hediet.vscode-drawio`), sem exigir correções manuais. Você também pode abrir os arquivos no aplicativo web ou desktop do draw.io.
+This skill enables you to generate, edit, and validate draw.io (`.drawio`) diagram files with correct mxGraph XML structure. All generated files open immediately in the [draw.io VS Code extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio) (`hediet.vscode-drawio`) without any manual fixes required. You can also open the files in the draw.io web app or desktop app if you prefer.
 
-| Seção | Finalidade |
+| Section | Purpose |
 |---|---|
-| Quando usar | Frases de gatilho e tipos de diagrama compatíveis |
-| Pré-requisitos | Extensão e ferramentas Python opcionais |
-| Fluxo passo a passo do agente | Da solicitação à disposição, ao XML e ao arquivo validado |
-| Receitas por tipo de diagrama | Trechos de fluxograma, arquitetura, sequência, ER e UML |
-| Várias páginas e edição | Arquivos com várias páginas e edições seguras em diagramas existentes |
-| Modelo de saída | Artefato `.drawio` exato a entregar |
-| Critérios de qualidade | Verificações estruturais antes da entrega |
-| Referências | Modelos, referências e scripts incluídos |
+| When to invoke | Trigger phrases and supported diagram types |
+| Prerequisites | Extension and optional Python tooling |
+| Step-by-step agent workflow | Request to layout to XML to a validated file |
+| Diagram-type recipes | Flowchart, architecture, sequence, ER, and UML snippets |
+| Multi-page and editing | Multi-page files and safe edits to existing diagrams |
+| Output template | The exact `.drawio` artifact to deliver |
+| Quality gate | Structural checks before delivery |
+| References | Bundled templates, references, and scripts |
 
 ---
 
-## Quando usar
+## When to invoke
 
-- "Crie um diagrama de arquitetura de sistema para estes serviços."
-- "Desenhe um fluxograma deste processo de aprovação."
-- "Gere um diagrama ER a partir destas tabelas."
-- "Transforme esta sequência de chamadas de API em um diagrama de sequência."
+- "Create a system architecture diagram for these services."
+- "Draw a flowchart of this approval process."
+- "Generate an ER diagram from these tables."
+- "Turn this sequence of API calls into a sequence diagram."
 
-Qualquer solicitação para produzir ou modificar um arquivo `.drawio`, `.drawio.svg` ou `.drawio.png` carrega esta habilidade. Frases de gatilho relacionadas incluem "projetar um diagrama de sequência", "fazer um diagrama de classes UML", "criar um diagrama ER", "documentar a arquitetura", "mostrar o modelo de dados" e "visualizar o fluxo".
+Any request to produce or modify a `.drawio`, `.drawio.svg`, or `.drawio.png` file loads this skill. Related trigger phrases include "design a sequence diagram", "make a UML class diagram", "build an ER diagram", "document the architecture", "show the data model", and "visualise the flow".
 
 > [!NOTE]
-> Os arquivos gerados são renderizados na **extensão draw.io para VS Code** (`hediet.vscode-drawio`), o editor usado pela imersão para diagramas. Se ela não estiver instalada, o arquivo `.drawio` continuará válido. Nesse caso, abra-o no aplicativo web ou desktop do draw.io. Os programas auxiliares em Python armazenados em `scripts/` são opcionais e exigem Python 3.8+.
+> Generated files render in the **draw.io VS Code extension** (`hediet.vscode-drawio`), the editor the workshop uses for diagrams. If it is not installed, the `.drawio` file is still valid — open it in the draw.io web or desktop app instead. The Python scripts under `scripts/` are optional helpers and require Python 3.8+.
 
-**Tipos de diagrama compatíveis**
+**Supported diagram types**
 
-| Tipo de diagrama | Modelo disponível | Descrição |
+| Diagram type | Template available | Description |
 |---|---|---|
-| Fluxograma | `assets/templates/flowchart.drawio` | Fluxos de processo com decisões e ramificações |
-| Arquitetura de sistema | `assets/templates/architecture.drawio` | Arquitetura de serviços em várias camadas |
-| Diagrama de sequência | `assets/templates/sequence.drawio` | Linhas de vida de atores e fluxos de mensagens temporizados |
-| Diagrama ER | `assets/templates/er-diagram.drawio` | Tabelas de banco de dados com relacionamentos |
-| Diagrama de classes UML | `assets/templates/uml-class.drawio` | Classes, interfaces, enums e relacionamentos |
-| Topologia de rede | (usar biblioteca de formas) | Roteadores, servidores, firewalls e sub-redes |
-| Fluxo de trabalho BPMN | (usar biblioteca de formas) | Eventos, tarefas e elementos de decisão (`gateways`) de processos de negócio |
-| Mapa mental | (manual) | Tópico central com ramificações radiais |
+| Flowchart | `assets/templates/flowchart.drawio` | Process flows with decisions and branches |
+| System architecture | `assets/templates/architecture.drawio` | Multi-tier / layered service architecture |
+| Sequence diagram | `assets/templates/sequence.drawio` | Actor lifelines and timed message flows |
+| ER diagram | `assets/templates/er-diagram.drawio` | Database tables with relationships |
+| UML class diagram | `assets/templates/uml-class.drawio` | Classes, interfaces, enums, relationships |
+| Network topology | (use shape library) | Routers, servers, firewalls, subnets |
+| BPMN workflow | (use shape library) | Business process events, tasks, gateways |
+| Mind map | (manual) | Central topic with radiating branches |
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-- Se estiver usando a integração com o VS Code, instale a **extensão draw.io para VS Code**, cujo ID é `hediet.vscode-drawio`. Instale-a com:
+- If running with VS Code integration enabled, install the **draw.io VS Code extension** — `hediet.vscode-drawio` (extension id). Install it with:
 
   ```text
   ext install hediet.vscode-drawio
   ```
 
-- **Extensões de arquivo compatíveis**: `.drawio`, `.drawio.svg`, `.drawio.png`
-- **Python 3.8+** (opcional): para os programas de validação e inserção de formas em `scripts/`
+- **Supported file extensions**: `.drawio`, `.drawio.svg`, `.drawio.png`
+- **Python 3.8+** (optional) — for the validation and shape-insertion scripts in `scripts/`
 
 ---
 
-## Fluxo passo a passo do agente
+## Step-by-step agent workflow
 
-Siga estas etapas na ordem em todas as tarefas de geração de diagramas.
+Follow these steps in order for every diagram generation task.
 
-### Etapa 1: entender a solicitação
+### Step 1 — Understand the Request
 
-Pergunte ou deduza:
+Ask or infer:
 
-1. **Tipo de diagrama**: que tipo de diagrama? (fluxograma, arquitetura, UML, ER, sequência, rede...)
-2. **Entidades / atores**: quais são os principais componentes, atores, classes ou tabelas?
-3. **Relacionamentos**: como se conectam? Em qual direção? Com qual cardinalidade?
-4. **Caminho de saída**: onde o arquivo `.drawio` deve ser salvo?
-5. **Arquivo existente**: criaremos um arquivo ou editaremos um existente?
+1. **Diagram type** — What kind of diagram? (flowchart, architecture, UML, ER, sequence, network...)
+2. **Entities / actors** — What are the main components, actors, classes, or tables?
+3. **Relationships** — How are they connected? What direction? What cardinality?
+4. **Output path** — Where should the `.drawio` file be saved?
+5. **Existing file** — Are we creating new or editing an existing file?
 
-Se a solicitação for ambígua, deduza pelo contexto o tipo de diagrama mais adequado (por exemplo, "mostrar as tabelas" → diagrama ER; "mostrar o fluxo da chamada de API" → diagrama de sequência).
+If the request is ambiguous, infer the most sensible diagram type from context (e.g. "show the tables" → ER diagram, "show how the API call flows" → sequence diagram).
 
-### Etapa 2: selecionar um modelo ou começar do zero
+### Step 2 — Select a Template or Start Fresh
 
-- **Use um modelo** quando o tipo de diagrama corresponder a um modelo em `assets/templates/`. Copie a estrutura e substitua os valores dos placeholders.
-- **Comece do zero** para disposições novas. Inicie com a estrutura mínima válida:
+- **Use a template** when the diagram type matches one in `assets/templates/`. Copy the template structure and replace placeholder values.
+- **Start fresh** for novel layouts. Begin with the minimal valid skeleton:
 
 ```xml
-<!-- Defina modified="" com o timestamp ISO 8601 atual ao gerar um novo arquivo -->
+<!-- Set modified="" to the current ISO 8601 timestamp when generating a new file -->
 <mxfile host="Electron" modified="" version="26.0.0">
   <diagram id="page-1" name="Page-1">
     <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1"
@@ -91,130 +91,130 @@ Se a solicitação for ambígua, deduza pelo contexto o tipo de diagrama mais ad
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <!-- Suas células entram aqui -->
+        <!-- Your cells go here -->
       </root>
     </mxGraphModel>
   </diagram>
 </mxfile>
 ```
 
-> **Regra**: os IDs `0` e `1` são SEMPRE obrigatórios e devem ser as duas primeiras células. Nunca os reutilize.
+> **Rule**: ids `0` and `1` are ALWAYS required and must be the first two cells. Never reuse them.
 
-### Etapa 3: planejar a disposição
+### Step 3 — Plan the Layout
 
-Antes de gerar o XML, esboce o posicionamento lógico:
+Before generating XML, sketch the logical placement:
 
-- Organize em **linhas** ou **camadas** (use raias, chamadas `swimlane` no draw.io, para representar as camadas)
-- **Espaçamento horizontal**: 40–60 px entre formas na mesma linha
-- **Espaçamento vertical**: 80–120 px entre linhas de camadas
-- Tamanho-padrão das formas: `120x60` px para caixas de processo, `160x80` px para swimlanes
-- Tela-padrão: A4 em paisagem = `1169 x 827` px
+- Organise into **rows** or **tiers** (use swimlanes for layers)
+- **Horizontal spacing**: 40–60px between same-row shapes
+- **Vertical spacing**: 80–120px between tier rows
+- Standard shape size: `120x60` px for process boxes, `160x80` px for swimlanes
+- Default canvas: A4 landscape = `1169 x 827` px
 
-### Etapa 4: gerar o XML mxGraph
+### Step 4 — Generate the mxGraph XML
 
-**Célula de vértice** (todas as formas):
+**Vertex cell** (every shape):
 
 ```xml
-<mxCell id="unique-id" value="Rótulo"
+<mxCell id="unique-id" value="Label"
         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
         vertex="1" parent="1">
   <mxGeometry x="100" y="100" width="120" height="60" as="geometry" />
 </mxCell>
 ```
 
-**Célula de aresta** (todos os conectores):
+**Edge cell** (every connector):
 
 ```xml
-<mxCell id="edge-id" value="Rótulo (opcional)"
+<mxCell id="edge-id" value="Label (optional)"
         style="edgeStyle=orthogonalEdgeStyle;html=1;"
         edge="1" source="source-id" target="target-id" parent="1">
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
 ```
 
-**Regras críticas**:
+**Critical rules**:
 
-- Cada ID de célula deve ser **globalmente exclusivo** no arquivo
-- Cada vértice deve ter um filho `mxGeometry` com `x`, `y`, `width`, `height`, `as="geometry"`
-- Cada aresta deve ter `source` e `target` correspondentes a IDs de vértices existentes. **Exceção**: arestas flutuantes (por exemplo, linhas de vida de diagramas de sequência) usam `sourcePoint`/`targetPoint` dentro de `<mxGeometry>`; consulte a receita de diagrama de sequência
-- O `parent` de cada célula deve referenciar um ID de célula existente
-- Use `html=1` no estilo quando o rótulo contiver HTML (`<b>`, `<i>`, `<br>`)
-- Use escape nos caracteres XML especiais dos rótulos: `&` => `&amp;`, `<` => `&lt;`, `>` => `&gt;`
+- Every cell id must be **globally unique** within the file
+- Every vertex must have an `mxGeometry` child with `x`, `y`, `width`, `height`, `as="geometry"`
+- Every edge must have `source` and `target` matching existing vertex ids — **exception**: floating edges (e.g. sequence diagram lifelines) use `sourcePoint`/`targetPoint` inside `<mxGeometry>` instead; see the Sequence diagram recipe
+- Every cell's `parent` must reference an existing cell id
+- Use `html=1` in style when the label contains HTML (`<b>`, `<i>`, `<br>`)
+- Escape XML special characters in labels: `&` => `&amp;`, `<` => `&lt;`, `>` => `&gt;`
 
-### Etapa 5: aplicar os estilos corretos
+### Step 5 — Apply Correct Styles
 
-Use a paleta de cores semântica padrão para manter a consistência:
+Use the standard semantic color palette for consistency:
 
-| Finalidade | fillColor | strokeColor |
+| Purpose | fillColor | strokeColor |
 |---|---|---|
-| Principal / Informação | `#dae8fc` | `#6c8ebf` |
-| Sucesso / Início | `#d5e8d4` | `#82b366` |
-| Aviso / Decisão | `#fff2cc` | `#d6b656` |
-| Erro / Fim | `#f8cecc` | `#b85450` |
-| Neutro | `#f5f5f5` | `#666666` |
-| Externo / Parceiro | `#e1d5e7` | `#9673a6` |
+| Primary / Info | `#dae8fc` | `#6c8ebf` |
+| Success / Start | `#d5e8d4` | `#82b366` |
+| Warning / Decision | `#fff2cc` | `#d6b656` |
+| Error / End | `#f8cecc` | `#b85450` |
+| Neutral | `#f5f5f5` | `#666666` |
+| External / Partner | `#e1d5e7` | `#9673a6` |
 
-Strings de estilo comuns por tipo de diagrama:
+Common style strings by diagram type:
 
-| Finalidade | String de estilo |
+| Purpose | Style string |
 |---|---|
-| Caixa de processo arredondada (fluxograma) | `rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;` |
-| Losango de decisão | `rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;` |
-| Terminal de início/fim | `ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;` |
-| Cilindro de banco de dados | `shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;` |
-| Contêiner swimlane (camada) | `swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;` |
-| Caixa de classe UML | `swimlane;fontStyle=1;align=center;startSize=40;fillColor=#dae8fc;strokeColor=#6c8ebf;` |
-| Caixa de interface / estereótipo | `swimlane;fontStyle=3;align=center;startSize=40;fillColor=#f5f5f5;strokeColor=#666666;` |
-| Contêiner de tabela ER | `shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;` |
-| Conector ortogonal | `edgeStyle=orthogonalEdgeStyle;html=1;` |
-| Relacionamento ER (pé de galinha) | `edgeStyle=entityRelationEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;` |
+| Rounded process box (flowchart) | `rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;` |
+| Decision diamond | `rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;` |
+| Start/End terminal | `ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;` |
+| Database cylinder | `shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;` |
+| Swimlane container (tier) | `swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;` |
+| UML class box | `swimlane;fontStyle=1;align=center;startSize=40;fillColor=#dae8fc;strokeColor=#6c8ebf;` |
+| Interface / stereotype box | `swimlane;fontStyle=3;align=center;startSize=40;fillColor=#f5f5f5;strokeColor=#666666;` |
+| ER table container | `shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;` |
+| Orthogonal connector | `edgeStyle=orthogonalEdgeStyle;html=1;` |
+| ER relationship (crow's foot) | `edgeStyle=entityRelationEdgeStyle;html=1;endArrow=ERmany;startArrow=ERone;` |
 
-> Consulte `references/style-reference.md` para ver o catálogo completo de chaves de estilo e `references/shape-libraries.md` para ver todos os nomes de bibliotecas de formas.
+> See `references/style-reference.md` for the complete style key catalog and `references/shape-libraries.md` for all shape library names.
 
-### Etapa 6: salvar e validar
+### Step 6 — Save and Validate
 
-1. **Grave o arquivo** no caminho solicitado com a extensão `.drawio`
-2. **Execute o validador** (opcional, mas recomendado):
+1. **Write the file** to the requested path with `.drawio` extension
+2. **Run the validator** (optional but recommended):
 
    ```bash
    python .github/skills/draw-io-diagram-generator/scripts/validate-drawio.py <path-to-file.drawio>
    ```
 
-3. **Informe à pessoa** como abrir o arquivo:
-   > "Abra `<filename>` no VS Code. A extensão draw.io o renderizará automaticamente. Se preferir, você também pode usar o aplicativo web ou desktop do draw.io."
-4. **Forneça uma breve descrição** do conteúdo do diagrama para que a pessoa saiba o que esperar.
+3. **Tell the user** how to open the file:
+   > "Open `<filename>` in VS Code — it will render automatically with the draw.io extension. You can use draw.io's web app or desktop app as well if you prefer."
+4. **Provide a brief description** of what is in the diagram so the user knows what to expect.
 
 ---
 
-## Receitas por tipo de diagrama
+## Diagram-type recipes
 
-### Fluxograma
+### Flowchart
 
-Elementos principais: Início (elipse) => Processo (retângulo arredondado) => Decisão (losango) => Fim (elipse)
+Key elements: Start (ellipse) => Process (rounded rectangle) => Decision (diamond) => End (ellipse)
 
 ```xml
-<!-- Nó inicial -->
-<mxCell id="start" value="Início"
+<!-- Start node -->
+<mxCell id="start" value="Start"
         style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
         vertex="1" parent="1">
   <mxGeometry x="500" y="80" width="120" height="60" as="geometry" />
 </mxCell>
 
-<!-- Processo -->
-<mxCell id="p1" value="Etapa do processo"
+<!-- Process -->
+<mxCell id="p1" value="Process Step"
         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
         vertex="1" parent="1">
   <mxGeometry x="500" y="200" width="120" height="60" as="geometry" />
 </mxCell>
 
-<!-- Decisão -->
-<mxCell id="d1" value="Condição?"
+<!-- Decision -->
+<mxCell id="d1" value="Condition?"
         style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
         vertex="1" parent="1">
   <mxGeometry x="460" y="320" width="200" height="100" as="geometry" />
 </mxCell>
 
-<!-- Seta: start para p1 -->
+<!-- Arrow: start to p1 -->
 <mxCell id="e1" value=""
         style="edgeStyle=orthogonalEdgeStyle;html=1;"
         edge="1" source="start" target="p1" parent="1">
@@ -222,55 +222,55 @@ Elementos principais: Início (elipse) => Processo (retângulo arredondado) => D
 </mxCell>
 ```
 
-### Diagrama de arquitetura (três camadas)
+### Architecture Diagram (3-tier)
 
-Use **contêineres de raias (`swimlane`)** para cada camada. Todas as caixas de serviço são filhas da respectiva raia.
+Use **swimlane containers** for each tier. All service boxes are children of their swimlane.
 
 ```xml
-<!-- Swimlane da camada -->
-<mxCell id="tier1" value="Camada de cliente"
+<!-- Tier swimlane -->
+<mxCell id="tier1" value="Client Layer"
         style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;"
         vertex="1" parent="1">
   <mxGeometry x="60" y="100" width="1050" height="130" as="geometry" />
 </mxCell>
 
-<!-- Serviço dentro da camada (parent="tier1", coordenadas relativas à camada) -->
-<mxCell id="webapp" value="Aplicativo web"
+<!-- Service inside tier (parent="tier1", coords are relative to tier) -->
+<mxCell id="webapp" value="Web App"
         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
         vertex="1" parent="tier1">
   <mxGeometry x="80" y="40" width="120" height="60" as="geometry" />
 </mxCell>
 ```
 
-> Os conectores entre camadas usam coordenadas absolutas com `parent="1"`.
+> Connectors between tiers use absolute coordinates with `parent="1"`.
 
-### Diagrama de sequência
+### Sequence Diagram
 
-Elementos principais: atores (parte superior), linhas de vida (linhas verticais tracejadas), caixas de ativação e setas de mensagem.
+Key elements: Actors (top), Lifelines (dashed vertical lines), Activation boxes, Message arrows.
 
-- Linhas de vida: `edge="1"` com `endArrow=none` e `dashed=1`, sem source/target. Use `sourcePoint`/`targetPoint` na geometria
-- Mensagem síncrona: `endArrow=block;endFill=1`
-- Mensagem de retorno: `endArrow=open;endFill=0;dashed=1`
-- Autochamada: faça a aresta dar uma volta por dois pontos de Array à direita e retornar
+- Lifelines: `edge="1"` with `endArrow=none` and `dashed=1`, no source/target — use `sourcePoint`/`targetPoint` in geometry
+- Synchronous message: `endArrow=block;endFill=1`
+- Return message: `endArrow=open;endFill=0;dashed=1`
+- Self-call: loop the edge via two Array points to the right and back
 
-**Trecho XML mínimo:**
+**Minimal XML snippet:**
 
 ```xml
-<!-- Ator (figura humana) -->
-<mxCell id="actorA" value="Cliente"
+<!-- Actor (stick figure) -->
+<mxCell id="actorA" value="Client"
         style="shape=mxgraph.uml.actor;pointerEvents=1;dashed=0;whiteSpace=wrap;html=1;aspect=fixed;"
         vertex="1" parent="1">
   <mxGeometry x="110" y="80" width="60" height="80" as="geometry" />
 </mxCell>
 
-<!-- Caixa de serviço -->
-<mxCell id="actorB" value="Servidor de API"
+<!-- Service box -->
+<mxCell id="actorB" value="API Server"
         style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
         vertex="1" parent="1">
   <mxGeometry x="480" y="100" width="160" height="60" as="geometry" />
 </mxCell>
 
-<!-- Linha de vida, aresta flutuante: usa sourcePoint/targetPoint, NÃO os atributos source/target -->
+<!-- Lifeline — floating edge: uses sourcePoint/targetPoint, NOT source/target attributes -->
 <mxCell id="lifA" value=""
         style="edgeStyle=none;dashed=1;endArrow=none;"
         edge="1" parent="1">
@@ -280,21 +280,21 @@ Elementos principais: atores (parte superior), linhas de vida (linhas verticais 
   </mxGeometry>
 </mxCell>
 
-<!-- Caixa de ativação (retângulo estreito na linha de vida) -->
+<!-- Activation box (thin rectangle on lifeline) -->
 <mxCell id="actA1" value=""
         style="fillColor=#dae8fc;strokeColor=#6c8ebf;"
         vertex="1" parent="1">
   <mxGeometry x="130" y="220" width="20" height="180" as="geometry" />
 </mxCell>
 
-<!-- Mensagem síncrona -->
+<!-- Synchronous message -->
 <mxCell id="msg1" value="POST /orders"
         style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;endArrow=block;endFill=1;"
         edge="1" source="actA1" target="actorB" parent="1">
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
 
-<!-- Mensagem de retorno (tracejada) -->
+<!-- Return message (dashed) -->
 <mxCell id="msg2" value="201 Created"
         style="edgeStyle=elbowEdgeStyle;elbow=vertical;dashed=1;html=1;endArrow=open;endFill=0;"
         edge="1" source="actorB" target="actA1" parent="1">
@@ -302,122 +302,122 @@ Elementos principais: atores (parte superior), linhas de vida (linhas verticais 
 </mxCell>
 ```
 
-> **Observação:** as linhas de vida são arestas flutuantes que usam `sourcePoint`/`targetPoint` em `<mxGeometry>`, em vez dos atributos `source`/`target`. Esse é o padrão do draw.io para diagramas de sequência.
+> **Note:** Lifelines are floating edges that use `sourcePoint`/`targetPoint` in `<mxGeometry>` instead of `source`/`target` attributes. This is the standard draw.io pattern for sequence diagrams.
 
-### Diagrama ER
+### ER Diagram
 
-Use contêineres `shape=table` com `childLayout=tableLayout`. As linhas são células `shape=tableRow` com `portConstraint=eastwest`. As colunas dentro de cada linha são `shape=partialRectangle`.
+Use `shape=table` containers with `childLayout=tableLayout`. Rows are `shape=tableRow` cells with `portConstraint=eastwest`. Columns inside each row are `shape=partialRectangle`.
 
-As setas de relacionamento usam `edgeStyle=entityRelationEdgeStyle`:
+Relationship arrows use `edgeStyle=entityRelationEdgeStyle`:
 
-- Um para um: `startArrow=ERone;endArrow=ERone`
-- Um para muitos: `startArrow=ERone;endArrow=ERmany`
-- Muitos para muitos: `startArrow=ERmany;endArrow=ERmany`
-- Obrigatório: `ERmandOne`; opcional: `ERzeroToOne`
+- One-to-One: `startArrow=ERone;endArrow=ERone`
+- One-to-Many: `startArrow=ERone;endArrow=ERmany`
+- Many-to-Many: `startArrow=ERmany;endArrow=ERmany`
+- Mandatory: `ERmandOne`, Optional: `ERzeroToOne`
 
-### Diagrama de classes UML
+### UML Class Diagram
 
-As caixas de classe são contêineres swimlane. Atributos e métodos são células de texto simples. Os divisores são filhos de swimlane com altura zero.
+Class boxes are swimlane containers. Attributes and methods are plain text cells. Dividers are zero-height swimlane children.
 
-Estilos de seta por tipo de relacionamento:
+Arrow styles by relationship type:
 
-| Relacionamento | String de estilo |
+| Relationship | Style String |
 |---|---|
-| Herança (extends) | `edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;` |
-| Realização (implements) | `edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=block;endFill=0;` |
-| Composição | `edgeStyle=orthogonalEdgeStyle;html=1;startArrow=diamond;startFill=1;endArrow=none;` |
-| Agregação | `edgeStyle=orthogonalEdgeStyle;html=1;startArrow=diamond;startFill=0;endArrow=none;` |
-| Dependência | `edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=open;endFill=0;` |
-| Associação | `edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;` |
+| Inheritance (extends) | `edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;` |
+| Realization (implements) | `edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=block;endFill=0;` |
+| Composition | `edgeStyle=orthogonalEdgeStyle;html=1;startArrow=diamond;startFill=1;endArrow=none;` |
+| Aggregation | `edgeStyle=orthogonalEdgeStyle;html=1;startArrow=diamond;startFill=0;endArrow=none;` |
+| Dependency | `edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;endArrow=open;endFill=0;` |
+| Association | `edgeStyle=orthogonalEdgeStyle;html=1;endArrow=open;endFill=0;` |
 
 ---
 
-## Diagramas com várias páginas
+## Multi-page diagrams
 
-Adicione vários elementos `<diagram>` para sistemas complexos:
+Add multiple `<diagram>` elements for complex systems:
 
 ```xml
 <mxfile host="Electron" version="26.0.0">
-  <diagram id="overview" name="Visão geral">
-    <!-- mxGraphModel da visão geral -->
+  <diagram id="overview" name="Overview">
+    <!-- overview mxGraphModel -->
   </diagram>
-  <diagram id="detail" name="Visão detalhada">
-    <!-- mxGraphModel da visão detalhada -->
+  <diagram id="detail" name="Detail View">
+    <!-- detail mxGraphModel -->
   </diagram>
 </mxfile>
 ```
 
-Cada página tem seu próprio espaço de nomes independente para os IDs das células. O mesmo valor de ID pode aparecer em páginas diferentes sem conflito.
+Each page has its own independent cell id namespace. The same id value can appear in different pages without conflict.
 
 ---
 
-## Editar diagramas existentes
+## Editing existing diagrams
 
-Ao modificar um arquivo `.drawio` existente:
+When modifying an existing `.drawio` file:
 
-1. **Leia** primeiro o arquivo para entender os IDs, as posições e a hierarquia de pais das células existentes
-2. **Identifique a página de destino do diagrama** pelo índice ou pelo atributo `name`
-3. **Atribua novos IDs exclusivos** que não colidam com os IDs existentes
-4. **Respeite a hierarquia de contêineres**: filhos de uma raia (`swimlane`) usam coordenadas relativas ao pai
-5. **Verifique as arestas**: após reposicionar os nós, confirme se os IDs source/target das arestas continuam válidos
+1. **Read** the file first to understand existing cell ids, positions, and parent hierarchy
+2. **Identify the target diagram page** — by index or `name` attribute
+3. **Assign new unique ids** that do not collide with existing ids
+4. **Respect the container hierarchy** — children of a swimlane use coordinates relative to their parent
+5. **Verify edges** — after repositioning nodes, confirm edge source/target ids remain valid
 
-Use `scripts/add-shape.py` para adicionar com segurança uma única forma sem editar o XML bruto:
+Use `scripts/add-shape.py` to safely add a single shape without editing raw XML:
 
 ```bash
-python .github/skills/draw-io-diagram-generator/scripts/add-shape.py docs/arch.drawio "Novo serviço" 700 380
+python .github/skills/draw-io-diagram-generator/scripts/add-shape.py docs/arch.drawio "New Service" 700 380
 ```
 
 ---
 
-## Práticas recomendadas
+## Best practices
 
-**Disposição**
+**Layout**
 
-- Alinhe as formas à grade de 10 px (todas as coordenadas divisíveis por 10)
-- Agrupe formas relacionadas dentro de contêineres de raias (`swimlane`)
-- Use um tópico de diagrama por página; use arquivos com várias páginas para sistemas complexos
-- Mantenha 40 células ou menos por página para facilitar a leitura
+- Align shapes to the 10px grid (all coordinates divisible by 10)
+- Group related shapes inside swimlane containers
+- One diagram topic per page; use multi-page files for complex systems
+- Aim for 40 or fewer cells per page for readability
 
-**Rótulos**
+**Labels**
 
-- Adicione uma célula de texto de título (`text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1`) no topo de cada página
-- Sempre defina `whiteSpace=wrap;html=1` nas formas de vértice
-- Mantenha os rótulos concisos, com três palavras ou menos por forma quando possível
+- Add a title text cell (`text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1`) at top of every page
+- Always set `whiteSpace=wrap;html=1` on vertex shapes
+- Keep labels concise — 3 words or fewer per shape where possible
 
-**Consistência de estilo**
+**Style consistency**
 
-- Use de forma consistente em todo o projeto a paleta de cores semântica da etapa Aplicar os estilos corretos (Etapa 5)
-- Prefira `edgeStyle=orthogonalEdgeStyle` para conectores limpos em ângulo reto
-- Não insira HTML arbitrário em rótulos, salvo quando necessário
+- Use the semantic color palette from the Apply Correct Styles step (Step 5) consistently across a project
+- Prefer `edgeStyle=orthogonalEdgeStyle` for clean right-angle connectors
+- Do not inline arbitrary HTML in labels unless necessary
 
-**Nomenclatura de arquivos**
+**File naming**
 
 - Use kebab-case: `order-service-flow.drawio`, `database-schema.drawio`
-- Coloque os diagramas junto ao código que documentam: `docs/` ou `architecture/`
+- Place diagrams alongside the code they document: `docs/` or `architecture/`
 
 ---
 
-## Solução de problemas
+## Troubleshooting
 
-| Problema | Causa provável | Correção |
+| Problem | Likely Cause | Fix |
 |---|---|---|
-| O arquivo abre em branco no VS Code | Célula id=0 ou id=1 ausente | Adicione as duas células-raiz antes das demais |
-| A forma está na posição errada | Filho dentro de um contêiner; as coordenadas são relativas | Verifique `parent`; ajuste x/y em relação ao contêiner |
-| A aresta não está visível | O ID source ou target não corresponde a nenhum vértice | Verifique se os dois IDs existem exatamente como escritos |
-| O diagrama mostra "Compressed" ("Compactado") | mxGraphModel está codificado em base64 | Abra no aplicativo web do draw.io e use File > Export > XML (uncompressed), isto é, sem compactação |
-| O estilo da forma não é renderizado | Erro de digitação no nome shape= | Consulte a string de estilo exata em `references/shape-libraries.md` |
-| O rótulo mostra HTML escapado | html=0 em uma célula com rótulo HTML | Adicione `html=1;` ao estilo da célula |
-| Os filhos do contêiner se sobrepõem à borda | A altura do contêiner é muito pequena | Aumente a altura do contêiner em mxGeometry |
+| File opens blank in VS Code | Missing id=0 or id=1 cell | Add both root cells before any other cells |
+| Shape at wrong position | Child inside container — coords are relative | Check `parent`; adjust x/y relative to container |
+| Edge not visible | source or target id does not match any vertex | Verify both ids exist exactly as written |
+| Diagram shows "Compressed" | mxGraphModel is base64-encoded | Open in draw.io web, File > Export > XML (uncompressed) |
+| Shape style not rendering | Typo in shape= name | Check `references/shape-libraries.md` for exact style string |
+| Label shows escaped HTML | html=0 on a cell with HTML label | Add `html=1;` to the cell style |
+| Container children overlap container edge | Container height too small | Increase container height in mxGeometry |
 
 ---
 
-## Modelo de saída
+## Output template
 
-Entregue um arquivo `.drawio` completo e válido. O artefato mínimo e bem formado produzido por esta habilidade tem esta aparência:
+Deliver a complete, valid `.drawio` file. The minimal well-formed artifact this skill produces looks like:
 
 ```xml
 <mxfile host="Electron" modified="2026-01-01T00:00:00.000Z" version="26.0.0">
-  <diagram id="page-1" name="Visão geral">
+  <diagram id="page-1" name="Overview">
     <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1"
                   tooltips="1" connect="1" arrows="1" fold="1"
                   page="1" pageScale="1" pageWidth="1169" pageHeight="827"
@@ -425,17 +425,17 @@ Entregue um arquivo `.drawio` completo e válido. O artefato mínimo e bem forma
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title" value="Visão geral do sistema"
+        <mxCell id="title" value="System Overview"
                 style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;"
                 vertex="1" parent="1">
           <mxGeometry x="60" y="30" width="300" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="webapp" value="Aplicativo web"
+        <mxCell id="webapp" value="Web App"
                 style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;"
                 vertex="1" parent="1">
           <mxGeometry x="80" y="100" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="api" value="Servidor de API"
+        <mxCell id="api" value="API Server"
                 style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
                 vertex="1" parent="1">
           <mxGeometry x="320" y="100" width="120" height="60" as="geometry" />
@@ -450,34 +450,34 @@ Entregue um arquivo `.drawio` completo e válido. O artefato mínimo e bem forma
 </mxfile>
 ```
 
-Junto ao arquivo, sempre forneça:
+Alongside the file, always provide:
 
-1. **Um resumo em uma frase** do que o diagrama mostra.
-2. **Como abri-lo**:
-   > "Abra `<filename>` no VS Code. A extensão draw.io o renderizará automaticamente. Se preferir, abra-o no aplicativo web ou desktop do draw.io."
-3. **Como editá-lo** (se houver probabilidade de personalização):
-   > "Clique em uma forma para selecioná-la. Clique duas vezes para editar o rótulo. Arraste para reposicionar."
-4. **Status da validação**: informe se o programa validador foi executado e passou.
+1. **A one-sentence summary** of what the diagram shows.
+2. **How to open it**:
+   > "Open `<filename>` in VS Code — the draw.io extension will render it automatically. Or you can open it in the draw.io web app or desktop app if you prefer."
+3. **How to edit it** (if the user is likely to customise):
+   > "Click any shape to select it. Double-click to edit the label. Drag to reposition."
+4. **Validation status** — whether the validator script was run and passed.
 
 ---
 
-## Critérios de qualidade
+## Quality gate
 
-Antes de entregar qualquer arquivo `.drawio` gerado, verifique:
+Before delivering any generated `.drawio` file, verify:
 
-- [ ] O arquivo começa com o elemento-raiz `<mxfile>`
-- [ ] Cada `<diagram>` tem um atributo `id` não vazio
-- [ ] `<mxCell id="0" />` é a primeira célula de cada diagrama
-- [ ] `<mxCell id="1" parent="0" />` é a segunda célula de cada diagrama
-- [ ] Todos os valores de `id` das células são exclusivos em cada diagrama
-- [ ] Cada célula de vértice tem `vertex="1"` e um filho `<mxGeometry as="geometry">`
-- [ ] Cada célula de aresta tem `edge="1"` e uma destas opções: (a) `source`/`target` apontando para IDs de vértices existentes; ou (b) `<mxPoint as="sourcePoint">` e `<mxPoint as="targetPoint">` em seu `<mxGeometry>` (aresta flutuante, usada para linhas de vida de diagramas de sequência)
-- [ ] Cada célula (exceto id=0) tem um `parent` que aponta para um ID existente
-- [ ] O estilo contém `html=1` para qualquer rótulo com tags HTML
-- [ ] O XML está bem formado (sem tags abertas, nem `&`, `<`, `>` sem escape em valores de atributos)
-- [ ] Existe uma célula de rótulo de título no topo de cada página
+- [ ] File starts with `<mxfile>` root element
+- [ ] Every `<diagram>` has a non-empty `id` attribute
+- [ ] `<mxCell id="0" />` is the first cell in every diagram
+- [ ] `<mxCell id="1" parent="0" />` is the second cell in every diagram
+- [ ] All cell `id` values are unique within each diagram
+- [ ] Every vertex cell has `vertex="1"` and a child `<mxGeometry as="geometry">`
+- [ ] Every edge cell has `edge="1"` and either: (a) `source`/`target` pointing to existing vertex ids, or (b) `<mxPoint as="sourcePoint">` and `<mxPoint as="targetPoint">` in its `<mxGeometry>` (floating edge — used for sequence diagram lifelines)
+- [ ] Every cell (except id=0) has a `parent` pointing to an existing id
+- [ ] `html=1` is in the style for any label containing HTML tags
+- [ ] XML is well-formed (no unclosed tags, no unescaped `&`, `<`, `>` in attribute values)
+- [ ] A title label cell exists at the top of each page
 
-Execute o validador automatizado:
+Run the automated validator:
 
 ```bash
 python .github/skills/draw-io-diagram-generator/scripts/validate-drawio.py <file.drawio>
@@ -485,20 +485,20 @@ python .github/skills/draw-io-diagram-generator/scripts/validate-drawio.py <file
 
 ---
 
-## Referências
+## References
 
-Todos os arquivos complementares estão em `.github/skills/draw-io-diagram-generator/`:
+All companion files are in `.github/skills/draw-io-diagram-generator/`:
 
-| Arquivo | Conteúdo |
+| File | Contents |
 |---|---|
-| `references/drawio-xml-schema.md` | Referência completa de atributos mxfile / mxGraphModel / mxCell, sistema de coordenadas, células reservadas e regras de validação |
-| `references/style-reference.md` | Todas as chaves de estilo com valores permitidos, chaves de estilo de vértices e arestas, catálogo de formas e paleta de cores semântica |
-| `references/shape-libraries.md` | Todas as categorias de bibliotecas de formas (General, Flowchart, UML, ER, Network, BPMN, Mockup, K8s) com strings de estilo |
-| `assets/templates/flowchart.drawio` | Modelo de fluxograma pronto para uso |
-| `assets/templates/architecture.drawio` | Modelo de arquitetura de sistema com quatro camadas |
-| `assets/templates/sequence.drawio` | Modelo de diagrama de sequência com três atores |
-| `assets/templates/er-diagram.drawio` | Diagrama ER com três tabelas e relacionamentos em pé de galinha |
-| `assets/templates/uml-class.drawio` | Interface + duas classes + enum com setas de relacionamento |
-| `scripts/validate-drawio.py` | Programa em Python para validar a estrutura XML de qualquer arquivo .drawio |
-| `scripts/add-shape.py` | Interface de linha de comando (CLI) em Python para adicionar uma nova forma a um diagrama existente |
-| `scripts/README.md` | Como usar os programas auxiliares, com exemplos |
+| `references/drawio-xml-schema.md` | Complete mxfile / mxGraphModel / mxCell attribute reference, coordinate system, reserved cells, validation rules |
+| `references/style-reference.md` | All style keys with allowed values, vertex and edge style keys, shape catalog, semantic color palette |
+| `references/shape-libraries.md` | All shape library categories (General, Flowchart, UML, ER, Network, BPMN, Mockup, K8s) with style strings |
+| `assets/templates/flowchart.drawio` | Ready-to-use flowchart template |
+| `assets/templates/architecture.drawio` | 4-tier system architecture template |
+| `assets/templates/sequence.drawio` | 3-actor sequence diagram template |
+| `assets/templates/er-diagram.drawio` | 3-table ER diagram with crow's foot relationships |
+| `assets/templates/uml-class.drawio` | Interface + 2 classes + enum with relationship arrows |
+| `scripts/validate-drawio.py` | Python script to validate XML structure of any .drawio file |
+| `scripts/add-shape.py` | Python CLI to add a new shape to an existing diagram |
+| `scripts/README.md` | How to use the scripts with examples |

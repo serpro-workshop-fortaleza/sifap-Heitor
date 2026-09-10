@@ -1,7 +1,7 @@
 ---
 
-title: "Template: Relatório de Descoberta"
-description: "Esqueleto de relatório para o handoff do Estágio 1 por meio de /discovery-report"
+title: "Template: Discovery Report"
+description: "Report skeleton for the Stage 1 handoff through /discovery-report"
 author: "Paula Silva, AI-Native Software Engineer, Americas Global Black Belt at Microsoft"
 date: "2026-04-29"
 version: "1.0.0"
@@ -9,96 +9,96 @@ status: "approved"
 tags: ["template", "discovery-report", "archaeology", "stage-1"]
 ---
 
-# Template: Relatório de Descoberta — Estágio 1
+# Template: Discovery Report — Stage 1
 
-> **Trilha:** [Kit do Time](../../README.md) › [Estágio 1](../README.md) › **Templates** › **discovery-report**
+> **Track:** [Team Kit](../../README.md) › [Stage 1](../README.md) › **Templates** › **discovery-report**
 
-**Template de relatório de descoberta para o handoff do Estágio 1.**
+**Discovery report template for the Stage 1 handoff.**
 
 > [!NOTE]
-> **Este arquivo é um template.** Copie-o para o repositório do seu time e preencha com dados reais. Não edite o original.
+> **This file is a template.** Copy it to your team repository and complete it with real data. Do not edit the original.
 
-**Time:** <!-- preencher -->
-
----
-
-## Resumo executivo
-
-<!-- preencher: no máximo 5 frases -->
+**Team:** <!-- placeholder -->
 
 ---
 
-## O que sabemos (confirmado)
+## Executive summary
 
-### Regras de negócio
-
-<!-- preencher: regras confirmadas com candidatos EARS -->
-
-### Dependências
-
-<!-- preencher: contagem de arestas do mapa de dependências -->
-
-### Estruturas de dados
-
-<!-- preencher: resumo dos DDMs -->
+<!-- placeholder: maximum 5 sentences -->
 
 ---
 
-## O que é arriscado
+## What we know (confirmed)
 
-### Questões em aberto aguardando validação humana
+### Business rules
 
-| Questão em aberto | Evidência (`path:line`) | Impacto | Hipótese (não confirmada) | Pessoa/área responsável | Status |
+<!-- placeholder: confirmed rules with EARS candidates -->
+
+### Dependencies
+
+<!-- placeholder: edge counts from the dependency map -->
+
+### Data structures
+
+<!-- placeholder: DDM summaries -->
+
+---
+
+## What is risky
+
+### Open questions awaiting human validation
+
+| Open question | Evidence (`path:line`) | Impact | Hypothesis (unconfirmed) | Responsible person/area | Status |
 |---|---|---|---|---|---|
-| <!-- preencher --> | <!-- preencher: path:line --> | <!-- preencher --> | <!-- preencher: não confirmada --> | <!-- preencher --> | <!-- preencher --> |
+| <!-- placeholder --> | <!-- placeholder: path:line --> | <!-- placeholder --> | <!-- placeholder: unconfirmed --> | <!-- placeholder --> | <!-- placeholder --> |
 
-### Regras com evidência fraca
+### Rules with weak evidence
 
-<!-- preencher: regras inferidas -->
-
----
-
-## Hipóteses de fatiamento recomendadas
-
-### Hipótese 1: <!-- preencher: nome de negócio -->
-
-- Programas: <!-- preencher -->
-- DDMs: <!-- preencher -->
-- Justificativa: <!-- preencher -->
+<!-- placeholder: inferred rules -->
 
 ---
 
-## Artefatos de origem
+## Recommended carving hypotheses
 
-| Artefato | Caminho | Status |
+### Hypothesis 1: <!-- placeholder: business name -->
+
+- Programs: <!-- placeholder -->
+- DDMs: <!-- placeholder -->
+- Rationale: <!-- placeholder -->
+
+---
+
+## Source artifacts
+
+| Artifact | Path | Status |
 |---|---|---|
-| Inventário | [inventory.md](../inventory.md) | <!-- preencher --> |
-| Regras de Negócio | [business-rules-catalog.md](../business-rules-catalog.md) | <!-- preencher --> |
-| Dependências | [dependency-map.md](../dependency-map.md) | <!-- preencher --> |
-| Questões em aberto | [mysteries-found.md](../mysteries-found.md) | <!-- preencher --> |
+| Inventory | [inventory.md](../inventory.md) | <!-- placeholder --> |
+| Business Rules | [business-rules-catalog.md](../business-rules-catalog.md) | <!-- placeholder --> |
+| Dependencies | [dependency-map.md](../dependency-map.md) | <!-- placeholder --> |
+| Open questions | [mysteries-found.md](../mysteries-found.md) | <!-- placeholder --> |
 
 ---
 
-## Aprovação do time
+## Team approval
 
-- Revisado por: <!-- preencher -->
-- Confiança: <!-- preencher: Alta/Média/Baixa -->
-
----
-
-## Definição de pronto
-
-- [ ] Resumo com no máximo 5 frases.
-- [ ] De 3 a 5 hipóteses de fatiamento documentadas.
-- [ ] Todos os artefatos de origem têm status preenchido.
-- [ ] O documento não passa de 3 páginas.
+- Reviewed by: <!-- placeholder -->
+- Confidence: <!-- placeholder: High/Medium/Low -->
 
 ---
 
-### Continue lendo
+## Definition of done
 
-| Anterior | Próximo |
+- [ ] Summary with no more than 5 sentences.
+- [ ] 3 to 5 carving hypotheses documented.
+- [ ] All source artifacts have a completed status.
+- [ ] Document is no longer than 3 pages.
+
+---
+
+### Continue reading
+
+| Previous | Next |
 |---|---|
-| [GUIDE do Estágio 1](../GUIDE.md)<br/><sub>Cronograma passo a passo.</sub> | [Arquivo do time](../discovery-report.md)<br/><sub>Onde você preenche.</sub> |
+| [Stage 1 GUIDE](../GUIDE.md)<br/><sub>Step-by-step schedule.</sub> | [Team file](../discovery-report.md)<br/><sub>Where you complete it.</sub> |
 
-<sub>[Voltar ao índice do kit](../../README.md)</sub>
+<sub>[Back to the kit index](../../README.md)</sub>

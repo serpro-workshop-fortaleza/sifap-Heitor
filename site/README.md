@@ -1,18 +1,18 @@
-# Portal de documentação SIFAP
+# SIFAP documentation portal
 
-Esta aplicação Astro + React publica o repositório completo em inglês, espanhol e português do Brasil. Ela é separada do frontend Next.js da aplicação SIFAP.
+This Astro + React application publishes the complete repository in English, Spanish and Brazilian Portuguese. It is separate from the SIFAP application's Next.js frontend.
 
-## Leia no site ou no GitHub
+## Read online or in GitHub
 
-As edições de idioma são `main` (EN), `espanol` (ES) e `portugues-br` (PT-BR).
-O seletor de idiomas persistente do site abre o mesmo documento-fonte em outra edição.
-Cada documento Markdown é renderizado na íntegra, incluindo instruções do Copilot, prompts, skills, personas e guias dos estágios.
-Cada documento também oferece seu Markdown original completo, download com os bytes preservados e link para o commit imutável de origem.
-Os demais arquivos versionados têm visualização de código, prévia de imagem ou download original.
+The language editions are `main` (EN), `espanol` (ES) and `portugues-br` (PT-BR).
+The website's persistent language selector opens the same source document in another edition.
+Every Markdown document is rendered in full, including Copilot instructions, prompts, skills, personas and stage guides.
+Each document also exposes its entire original Markdown, a byte-preserving download and a link to the immutable source commit.
+Other versioned files have source views, image previews or original downloads.
 
-## Execute localmente
+## Run locally
 
-Requisitos: Node.js 24, npm, Git e referências remotas locais das três edições.
+Requirements: Node.js 24, npm, Git and local remote-tracking references for all three editions.
 
 ```bash
 git fetch origin
@@ -24,10 +24,10 @@ npm run build
 npm run preview
 ```
 
-A URL padrão vem de [`repository.json`](repository.json). Para compilar e visualizar na raiz de um endereço local, defina `SITE_URL=http://127.0.0.1:4321/` nos dois comandos.
-Nunca copie dados fictícios de prévia para uma publicação de produção.
+The default URL comes from [`repository.json`](repository.json). For a local root-path build, set `SITE_URL=http://127.0.0.1:4321/` when building and previewing.
+Never copy preview fixtures into a production release.
 
-## Valide
+## Validate
 
 ```bash
 npm run check
@@ -37,32 +37,32 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-A compilação de produção resolve todas as branches de idioma para commits imutáveis. Ela falha se houver edição ou arquivo ausente, Markdown ou prosa sem tradução, código do portal desatualizado, link não resolvido, âncora inválida ou download original alterado.
-Mantenha os arquivos que não são Markdown em `site/` idênticos nas três branches ao atualizar o motor compartilhado do portal.
-Os relatórios são gerados em `.generated/coverage.json` e `.generated/site-audit.json`.
-`npm run content:status` informa cada arquivo ausente ou não traduzido sem gerar um catálogo substituto. O relatório distingue prontidão de uma compilação ou implantação concluída.
-Os testes de navegador verificam troca de idioma, acesso ao Markdown integral, busca, layout responsivo, contraste, estado de leitura e movimento reduzido.
-Os testes de navegador usam um servidor local novo por padrão. Defina `PLAYWRIGHT_PORT` para outra porta livre quando necessário; `PLAYWRIGHT_REUSE_SERVER=1` exige consentimento explícito e somente local. Use `PORTAL_TEST_URL` para validar um site já publicado.
+The production build resolves all language branches to immutable commits. It fails for a missing edition, missing file, unchanged untranslated Markdown or prose, stale portal code, unresolved link, invalid anchor or altered original download.
+Keep the non-Markdown files under `site/` identical across the three branches when updating the shared portal engine.
+Reports are generated in `.generated/coverage.json` and `.generated/site-audit.json`.
+`npm run content:status` reports every missing or untranslated file without generating a substitute catalog. Its report distinguishes readiness from a completed build or deployment.
+The browser tests exercise language switching, full Markdown access, search, responsive layout, contrast, reading state and reduced motion.
+Browser tests use a fresh local server by default. Set `PLAYWRIGHT_PORT` to another free port when necessary; `PLAYWRIGHT_REUSE_SERVER=1` is an explicit local-only opt-in. Use `PORTAL_TEST_URL` to validate an already published site.
 
-## Conteúdo e design
+## Content and design
 
-- Os documentos-fonte ficam nas branches de idioma; o portal não mantém resumos separados.
-- [`src/lib/i18n.ts`](src/lib/i18n.ts) contém traduções da interface, não a documentação do repositório.
-- [`src/styles/hub-editorial.css`](src/styles/hub-editorial.css) reutiliza a folha de componentes Hub Editorial fornecida.
-- [`src/styles/tokens.css`](src/styles/tokens.css) define tipografia, cores e espaçamento; os estilos do portal preservam o contraste legível nos dois temas.
-- Ilhas React fornecem busca, filtros, navegação de estágios e preferências de leitura. O texto dos documentos continua disponível sem JavaScript.
-- Fontes e busca são hospedadas localmente. As fontes técnicas originais e as licenças permanecem inalteradas.
-- Os avisos originais de distribuição estão em [`public/licenses/`](public/licenses/) e no catálogo de licenças do site.
+- Source documents stay in the language branches; the portal does not maintain separate summaries.
+- [`src/lib/i18n.ts`](src/lib/i18n.ts) contains interface translations, not repository documentation.
+- [`src/styles/hub-editorial.css`](src/styles/hub-editorial.css) reuses the supplied Hub Editorial component stylesheet.
+- [`src/styles/tokens.css`](src/styles/tokens.css) defines its typography, color and spacing tokens; portal-specific styles preserve readable contrast in both themes.
+- React islands provide search, filters, stage navigation and reading preferences. The document text remains available without JavaScript.
+- Fonts and search are self-hosted. Original technical sources and licenses remain unchanged.
+- Original distribution notices are available in [`public/licenses/`](public/licenses/) and through the website's license catalog.
 
-## GitHub Pages e privacidade
+## GitHub Pages and privacy
 
-O [workflow do Pages](../.github/workflows/pages.yml) compila as três edições e valida o site antes da implantação.
-[`scripts/pages-guard.mjs`](scripts/pages-guard.mjs) consulta a visibilidade real do repositório e do Pages pela API do GitHub.
-Um repositório privado é impedido de publicar em Pages público ou com visibilidade não verificada.
-A proteção executa antes da compilação, antes da publicação do artefato e imediatamente antes da implantação.
-O kit público do time e o kit privado do instrutor nunca devem compartilhar conteúdo gerado.
+The [Pages workflow](../.github/workflows/pages.yml) builds all three editions and validates the site before deployment.
+[`scripts/pages-guard.mjs`](scripts/pages-guard.mjs) reads the actual repository and Pages visibility through the GitHub API.
+A private repository is blocked from publishing to public or unverified Pages.
+The guard runs before the build, before artifact publication and immediately before deployment.
+The public team kit and private instructor kit must never share generated content.
 
-## Arquitetura e requisitos
+## Architecture and requirements
 
 - [ADR-0002](../docs/adr/0002-trilingual-documentation-portal.md)
-- [REQ-PORTAL-001 a REQ-PORTAL-010](../specs/trilingual-portal.md)
+- [REQ-PORTAL-001 through REQ-PORTAL-010](../specs/trilingual-portal.md)

@@ -1,94 +1,94 @@
-# Kits de persona
+# Persona Kits
 
-> **Trilha:** [Kit do time](../README.md) › **Personas**
+> **Track:** [Team Kit](../README.md) › **Personas**
 
-**Guia de integração para as 10 personas da imersão.** Cada persona é um kit do Copilot especializado em um papel do SDLC; cada integrante escolhe e estuda duas personas da mesma dupla.
+**Onboarding guide for the workshop's 10 personas.** Each persona is a Copilot toolkit specialized for an SDLC role; each team member chooses and studies 2 personas from the same pair.
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Todos os participantes da imersão |
-| **Pré-requisitos** | [00-SETUP.md](../00-SETUP.md) concluído |
-| **Tempo estimado** | 15 min |
-| **Resultado esperado** | Duas personas identificadas, `.github/` validado e Copilot recarregado |
+| **Target audience** | All workshop participants |
+| **Prerequisites** | [00-SETUP.md](../00-SETUP.md) completed |
+| **Estimated time** | 15 min |
+| **Expected outcome** | Two personas identified, `.github/` validated, Copilot reloaded |
 
-![Visão geral das duplas de persona na imersão do SIFAP](../assets/personas-team.svg)
-
----
-
-## Conceito
-
-Uma persona é um kit do Copilot especializado em um papel específico do ciclo de desenvolvimento. Cada kit inclui um agente configurado, prompts para tarefas recorrentes, instruções e skills. A persona orienta como o Copilot responde e quais atalhos de produtividade estão disponíveis.
-
-No contexto do SIFAP (Sistema de Fiscalização e Administração de Pagamentos), cada papel tem responsabilidades diretas por artefatos concretos, desde o catálogo de regras Natural/Adabas até os testes de aceitação e o pipeline de CI. Ao estudar a persona, você sabe o que produzir, quem fornece suas entradas e quem recebe suas saídas.
+![Overview of persona pairs in the SIFAP workshop](../assets/personas-team.svg)
 
 ---
 
-## As cinco duplas
+## Concept
 
-O time da imersão tem cinco pessoas, cada uma usando duas personas da mesma dupla. Essa distribuição cobre todo o SDLC.
+A persona is a Copilot toolkit specialized for a specific role in the development lifecycle. Each kit includes a configured agent, prompts for recurring tasks, instructions, and skills. The persona guides how Copilot responds and which productivity shortcuts are available.
 
-| **Dupla** | Personas | Kits |
+In the SIFAP (Payment Inspection and Administration System) context, each role has direct responsibilities for concrete artifacts—from the Natural/Adabas rule catalog to acceptance tests and the CI pipeline. By studying the persona, you know what to produce, who provides your inputs, and who receives your outputs.
+
+---
+
+## The 5 pairs
+
+The workshop team has 5 people, each using 2 personas from the same pair. This covers the entire SDLC.
+
+| **Pair** | Personas | Kits |
 |---|---|---|
-| **1 · Visão** | Product Owner + Requirements Engineer | `01-product-owner/` + `02-requirements-engineer/` |
-| **2 · Arquitetura** | Enterprise Architect + Software Architect | `03-enterprise-architect/` + `04-software-architect/` |
-| **3 · Implementação** | Technical Lead + Developer | `05-technical-lead/` + `06-developer/` |
-| **4 · Qualidade** | DBA + QA Engineer | `07-dba/` + `08-qa-engineer/` |
-| **5 · Operações** | DevOps Engineer + Tech Writer | `09-devops-engineer/` + `10-tech-writer/` |
+| **1 · Vision** | Product Owner + Requirements Engineer | `01-product-owner/` + `02-requirements-engineer/` |
+| **2 · Architecture** | Enterprise Architect + Software Architect | `03-enterprise-architect/` + `04-software-architect/` |
+| **3 · Implementation** | Technical Lead + Developer | `05-technical-lead/` + `06-developer/` |
+| **4 · Quality** | DBA + QA Engineer | `07-dba/` + `08-qa-engineer/` |
+| **5 · Operations** | DevOps Engineer + Tech Writer | `09-devops-engineer/` + `10-tech-writer/` |
 
 ---
 
-## O que cada kit contém
+## What each kit contains
 
-| **Artefato** | Finalidade |
+| **Artifact** | Purpose |
 |---|---|
-| `PERSONA.md` | Perfil completo: responsabilidades, handoffs, prompts e critérios de avaliação |
-| `README.md` | Inventário dos artefatos do Copilot (caminhos em `.github/`) |
-| `mcp.json` | Servidores MCP recomendados para o papel, quando disponíveis |
+| `PERSONA.md` | Complete profile: responsibilities, handoffs, prompts, and evaluation criteria |
+| `README.md` | Inventory of Copilot artifacts (paths under `.github/`) |
+| `mcp.json` | Recommended MCP servers for the role (when available) |
 
-Os artefatos ativos estão consolidados no diretório `.github/` da raiz:
+Active artifacts are consolidated in the root `.github/` directory:
 
-| **Artefato** | Caminho |
+| **Artifact** | Path |
 |---|---|
-| Agente do Copilot adaptado ao papel | `.github/agents/*.agent.md` |
-| Prompts para tarefas recorrentes | `.github/prompts/persona-*.prompt.md` |
-| Skills reutilizáveis | `.github/skills/*/SKILL.md` |
-| Regras específicas por tipo de arquivo | `.github/instructions/*.instructions.md` |
+| Copilot agent tailored to the role | `.github/agents/*.agent.md` |
+| Prompts for recurring tasks | `.github/prompts/persona-*.prompt.md` |
+| Reusable skills | `.github/skills/*/SKILL.md` |
+| File-type-specific rules | `.github/instructions/*.instructions.md` |
 
 ---
 
-## Kits disponíveis
+## Available kits
 
-| **#** | Kit | Papel na imersão |
+| **#** | Kit | Workshop role |
 |---|---|---|
-| 01 | [Product Owner](./01-product-owner/PERSONA.md) | Prioridade, escopo, valor e narrativa da demo |
-| 02 | [Requirements Engineer](./02-requirements-engineer/PERSONA.md) | Requisitos EARS, critérios de aceitação e rastreabilidade |
-| 03 | [Enterprise Architect](./03-enterprise-architect/PERSONA.md) | Dependências externas e decisões de escopo |
-| 04 | [Software Architect](./04-software-architect/PERSONA.md) | Plano técnico, fronteiras de módulos e ADRs quando necessários |
-| 05 | [Technical Lead](./05-technical-lead/PERSONA.md) | Padrões, coordenação técnica e revisões de PR |
-| 06 | [Developer](./06-developer/PERSONA.md) | Código Java/TypeScript, testes e integração |
-| 07 | [DBA](./07-dba/PERSONA.md) | Modelo PostgreSQL, migrações e mapeamento de DDMs |
-| 08 | [QA Engineer](./08-qa-engineer/PERSONA.md) | Estratégia de testes, cobertura e gates |
-| 09 | [DevOps Engineer](./09-devops-engineer/PERSONA.md) | CI/CD, Terraform, secrets e implantação |
-| 10 | [Tech Writer](./10-tech-writer/PERSONA.md) | Glossário, clareza de ADRs, README e runbook |
+| 01 | [Product Owner](./01-product-owner/PERSONA.md) | Priority, scope, value, and demo narrative |
+| 02 | [Requirements Engineer](./02-requirements-engineer/PERSONA.md) | EARS requirements, acceptance criteria, and traceability |
+| 03 | [Enterprise Architect](./03-enterprise-architect/PERSONA.md) | External dependencies and scope decisions |
+| 04 | [Software Architect](./04-software-architect/PERSONA.md) | Technical plan, module boundaries, and ADRs when needed |
+| 05 | [Technical Lead](./05-technical-lead/PERSONA.md) | Standards, technical coordination, and PR reviews |
+| 06 | [Developer](./06-developer/PERSONA.md) | Java/TypeScript code, tests, and integration |
+| 07 | [DBA](./07-dba/PERSONA.md) | PostgreSQL model, migrations, and DDM mapping |
+| 08 | [QA Engineer](./08-qa-engineer/PERSONA.md) | Test strategy, coverage, and gates |
+| 09 | [DevOps Engineer](./09-devops-engineer/PERSONA.md) | CI/CD, Terraform, secrets, and deployment |
+| 10 | [Tech Writer](./10-tech-writer/PERSONA.md) | Glossary, ADR clarity, README, and runbook |
 
 ---
 
-## Como ativar sua persona
+## How to activate your persona
 
-![Cinco passos para usar sua persona: ler PERSONA.md, revisar README, validar .github, copiar mcp.json quando necessário e recarregar o Copilot](../assets/persona-onboarding.svg)
+![Five steps for using your persona: read PERSONA.md, review README, validate .github, copy mcp.json if needed, reload Copilot](../assets/persona-onboarding.svg)
 
 > [!IMPORTANT]
-> Conclua [00-SETUP.md](../00-SETUP.md) antes de prosseguir.
+> Complete [00-SETUP.md](../00-SETUP.md) before proceeding.
 
-- [ ] **Identifique suas duas personas.** Encontre sua dupla em [00-TEAM-FLOW.md](../00-TEAM-FLOW.md).
-- [ ] **Leia os dois perfis.** Abra `05-personas/<role>/PERSONA.md` para cada papel da sua dupla.
-- [ ] **Valide o `.github/` consolidado.** Confirme que agentes, prompts, instruções e skills estão presentes:
+- [ ] **Identify your two personas.** Find your pair in [00-TEAM-FLOW.md](../00-TEAM-FLOW.md).
+- [ ] **Read both profiles.** Open `05-personas/<role>/PERSONA.md` for each role in your pair.
+- [ ] **Validate the consolidated `.github/`.** Confirm that agents, prompts, instructions, and skills are present:
 
   ```bash
   ls .github/agents .github/prompts .github/instructions .github/skills
   ```
 
-- [ ] **Copie a configuração MCP somente quando necessário.** O facilitador indicará quando:
+- [ ] **Copy the MCP configuration only if needed.** The facilitator will tell you when:
 
   ```bash
   [ -f 05-personas/06-developer/mcp.json ] && \
@@ -96,36 +96,36 @@ Os artefatos ativos estão consolidados no diretório `.github/` da raiz:
     cp 05-personas/06-developer/mcp.json .vscode/mcp.json
   ```
 
-- [ ] **Recarregue o GitHub Copilot.** Abra a Paleta de Comandos e execute **Developer: Reload Window**.
-- [ ] **Verifique agentes e prompts.** Digite `@` no painel do GitHub Copilot e confirme os agentes. Digite `/` e confirme os slash commands.
+- [ ] **Reload Copilot.** Open the Command Palette and run **Developer: Reload Window**.
+- [ ] **Verify agents and prompts.** Type `@` in the Copilot panel and confirm the agents. Type `/` and confirm the slash commands.
 
 ---
 
-## Como estudar um kit em 10 minutos
+## How to study a kit in 10 minutes
 
-- [ ] **Leia primeiro o `PERSONA.md`.** Missão, responsabilidades, handoffs e rubricas de avaliação.
-- [ ] **Abra o `README.md` do kit.** Inventário de agentes, prompts, skills e MCPs.
-- [ ] **Revise os prompts disponíveis.** Eles são atalhos para tarefas recorrentes, não substitutos do seu julgamento.
-- [ ] **Confira as skills e instruções.** As skills contêm fluxos de trabalho; as instruções aplicam regras por tipo de arquivo.
-- [ ] **Observe os handoffs.** Cada persona deve saber quem fornece suas entradas e quem recebe suas saídas.
-
----
-
-## Critérios de conclusão da instalação
-
-- [ ] Os dois perfis `PERSONA.md` da dupla foram lidos.
-- [ ] O `.github/` consolidado contém agentes, prompts, instruções e skills.
-- [ ] O `mcp.json` foi copiado para `.vscode/` quando disponível.
-- [ ] O VS Code foi recarregado.
-- [ ] Os agentes aparecem ao digitar `@` no GitHub Copilot.
-- [ ] Os prompts aparecem ao digitar `/` no GitHub Copilot.
+- [ ] **Read `PERSONA.md` first.** Mission, responsibilities, handoffs, and evaluation rubrics.
+- [ ] **Open the kit's `README.md`.** Inventory of agents, prompts, skills, and MCPs.
+- [ ] **Review the available prompts.** They are shortcuts for recurring tasks, not substitutes for judgment.
+- [ ] **Check skills and instructions.** Skills contain workflows; instructions apply rules by file type.
+- [ ] **Note the handoffs.** Every persona must know who provides their inputs and who receives their outputs.
 
 ---
 
-### Continue lendo
+## Installation Definition of Done
 
-| Anterior | Próximo |
+- [ ] Both `PERSONA.md` profiles for the pair have been read.
+- [ ] The consolidated `.github/` contains agents, prompts, instructions, and skills.
+- [ ] `mcp.json` copied to `.vscode/` when available.
+- [ ] VS Code reloaded.
+- [ ] Agents appear when typing `@` in Copilot Chat.
+- [ ] Prompts appear when typing `/` in Copilot Chat.
+
+---
+
+### Continue reading
+
+| Previous | Next |
 |---|---|
-| [Setup](../00-SETUP.md)<br/><sub>Configuração do laptop: Git, VS Code, Copilot, Spec-Kit e proteção de branch.</sub> | [Visão geral das 10 personas](OVERVIEW.md)<br/><sub>Tabela comparativa: dupla, liderança por estágio e padrões de emergência.</sub> |
+| [SETUP](../00-SETUP.md)<br/><sub>Laptop setup: Git, VS Code, Copilot, Spec-Kit, branch protection.</sub> | [OVERVIEW of the 10 personas](OVERVIEW.md)<br/><sub>Comparison table: pair, stage lead, emergency defaults.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

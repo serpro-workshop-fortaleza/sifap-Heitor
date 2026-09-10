@@ -1,16 +1,16 @@
 ---
-name: Relatório de defeito
-about: Relate um comportamento incorreto
+name: Bug Report
+about: Report incorrect behavior
 title: '[BUG] '
 labels: bug
 ---
 
-## Descrição do defeito
+## Bug Description
 
-## Como reproduzir
+## How to Reproduce
 
-## Comportamento esperado
+## Expected Behavior
 
-## Comportamento atual
+## Current Behavior
 
-## Persona que encontrou o problema
+## Persona That Found It

@@ -1,83 +1,83 @@
-# Inventário do Legado — Time `<preencher>`
+# Legacy Inventory — Team `<fill in>`
 
-> **Trilha:** [Kit do Time](../README.md) › [Estágio 1](README.md) › **Inventário**
+> **Track:** [Team Kit](../README.md) › [Stage 1](README.md) › **Inventory**
 
-**Primeiro artefato do Estágio 1.** Varra a estrutura e conte os arquivos sem abrir nenhum programa — use apenas os nomes de arquivo e a estrutura de pastas.
+**First Stage 1 artifact.** Scan the structure and count files without opening any program—use only file names and folder structure.
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Dupla responsável pela varredura inicial |
-| **Pré-requisitos** | Acesso ao diretório `legacy-sifap/` |
-| **Estágio** | Estágio 1 — Arqueologia, Passo 1 |
-| **Resultado esperado** | Contagens corretas, padrões de nomenclatura identificados e 3 itens estranhos sinalizados |
+| **Target audience** | Pair responsible for the initial scan |
+| **Prerequisites** | Access to the `legacy-sifap/` directory |
+| **Stage** | Stage 1 — Archaeology, Step 1 |
+| **Expected outcome** | Accurate counts, identified naming patterns, and 3 unusual items flagged |
 
 > [!NOTE]
-> Monte este inventário sem abrir nenhum programa. Trabalhe apenas com nomes de arquivo e estrutura de pastas. Ele será revisado à medida que o time extrai regras, mapeia dependências e registra mistérios.
+> Build this inventory without opening any program. Work only from file names and folder structure. It will be revised as the team extracts rules, maps dependencies, and records mysteries.
 
-**Data:** <!-- preencher: AAAA-MM-DD -->
-**Dupla responsável:** <!-- preencher -->
-**Caminho varrido:** `01-archaeology/legacy-sifap/`
+**Date:** <!-- fill in: YYYY-MM-DD -->
+**Responsible pair:** <!-- fill in -->
+**Scanned path:** `01-archaeology/legacy-sifap/`
 
 ---
 
-## Estrutura de pastas
+## Folder structure
 
 ```text
-<!-- preencher: árvore de diretórios de legacy-sifap/ -->
+<!-- fill in: directory tree for legacy-sifap/ -->
 ```
 
 ---
 
-## Contagem de arquivos por tipo
+## File count by type
 
-| Extensão | Contagem | Finalidade provável |
+| Extension | Count | Likely purpose |
 |---|---|---|
-| `.NSN` | <!-- preencher --> | Programas-fonte Natural |
-| `.ddm` | <!-- preencher --> | Data Definition Modules (Adabas) |
-| `.md` / `.docx` | <!-- preencher --> | Documentação histórica |
+| `.NSN` | <!-- fill in --> | Natural source programs |
+| `.ddm` | <!-- fill in --> | Data Definition Modules (Adabas) |
+| `.md` / `.docx` | <!-- fill in --> | Historical documentation |
 
 ---
 
-## Padrões da convenção de nomes
+## Naming convention patterns
 
-| Prefixo | Contagem | Hipótese de domínio |
+| Prefix | Count | Domain hypothesis |
 |---|---|---|
-| <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
-| <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
-| <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
+| <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
+| <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
+| <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
 
 ---
 
-## Itens estranhos (top 3)
+## Unusual items (top 3)
 
-| # | Caminho do arquivo | O que o torna estranho | Investigação sugerida |
+| # | File path | What makes it unusual | Suggested investigation |
 |---|---|---|---|
-| 1 | <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
-| 2 | <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
-| 3 | <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
+| 1 | <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
+| 2 | <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
+| 3 | <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
 
 ---
 
-## Ordem de leitura proposta
+## Proposed reading order
 
-1. Arquivos DDM primeiro — eles revelam o modelo de dados antes de qualquer lógica.
-2. <!-- preencher: pontos de entrada do batch -->
-3. <!-- preencher: programas mais conectados -->
-
----
-
-## Definição de pronto
-
-- [ ] O inventário existe com contagens corretas.
-- [ ] 3 padrões de nomenclatura ou mais identificados.
-- [ ] 3 itens estranhos sinalizados.
+1. DDM files first—they reveal the data model before any logic.
+2. <!-- fill in: batch entry points -->
+3. <!-- fill in: most connected programs -->
 
 ---
 
-### Continue lendo
+## Definition of done
 
-| Anterior | Próximo |
+- [ ] The inventory exists with accurate counts.
+- [ ] 3 or more naming patterns identified.
+- [ ] 3 unusual items flagged.
+
+---
+
+### Continue reading
+
+| Previous | Next |
 |---|---|
-| [GUIDE do Estágio 1](GUIDE.md)<br/><sub>Cronograma passo a passo.</sub> | [Catálogo de Regras](business-rules-catalog.md)<br/><sub>Passo 2 — extração de regras.</sub> |
+| [Stage 1 GUIDE](GUIDE.md)<br/><sub>Step-by-step schedule.</sub> | [Rules Catalog](business-rules-catalog.md)<br/><sub>Step 2 — rule extraction.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

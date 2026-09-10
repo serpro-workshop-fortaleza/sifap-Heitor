@@ -1,28 +1,28 @@
 # arch
 
-Kit de ferramentas de arquitetura e modernização.
+Architecture and modernization toolkit.
 
-## O que esta extensão reúne
+## What this plugin bundles
 
-Esta é uma entrada **somente de catálogo**. A extensão `arch` original referenciava
-uma habilidade `doc-and-modernize` que não faz parte deste kit, portanto nenhum
-componente foi incorporado aqui. O manifesto (`plugin.json`) contém apenas metadados.
+This is a **catalog-only** entry. The upstream `arch` plugin referenced a
+`doc-and-modernize` skill that is not part of this kit, so no components are
+vendored here. The manifest (`plugin.json`) carries metadata only.
 
-## Conteúdo relacionado do kit
+## Related kit content
 
-A imersão mantém sua própria habilidade de modernização,
-[`.github/skills/code-modernization/`](../../skills/code-modernization/), que é
-descoberta nativamente pelo Copilot neste repositório.
+The workshop maintains its own modernization skill,
+[`.github/skills/code-modernization/`](../../skills/code-modernization/), which
+is discovered natively by Copilot in this repository.
 
-## Referências originais não incluídas
+## Upstream references not included
 
-- `doc-and-modernize` (habilidade) — não está presente neste kit.
+- `doc-and-modernize` (skill) — not present in this kit.
 
-## Como é habilitado
+## How it is enabled
 
-As extensões são declaradas em
-[`.github/copilot/settings.json`](../../copilot/settings.json) por meio do
-catálogo local `datacorp-mm-team-kit`
-([`marketplace.json`](../marketplace.json)). Esta entrada não tem componentes,
-portanto está listada no catálogo, mas não está habilitada. Consulte
-o [índice de extensões](../README.md) para conhecer o mecanismo e suas limitações.
+Plugins are declared in
+[`.github/copilot/settings.json`](../../copilot/settings.json) through the local
+`datacorp-mm-team-kit` marketplace
+([`marketplace.json`](../marketplace.json)). This entry has no components, so it
+is listed in the marketplace catalog but is not enabled. See the
+[plugins index](../README.md) for the mechanism and its limitations.

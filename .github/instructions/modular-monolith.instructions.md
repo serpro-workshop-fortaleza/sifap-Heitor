@@ -1,61 +1,61 @@
 ---
-description: "Use ao projetar ou revisar arquitetura de Monólito Modular, limites de pacotes por funcionalidade, mapeamento JPA e migração Strangler Fig."
+description: "Use when designing or reviewing Modular Monolith architecture, package-by-feature boundaries, JPA mapping, and Strangler Fig migration."
 applyTo: "backend/src/main/java/**,backend/pom.xml,backend/build.gradle*"
 ---
 
-# Guia de arquitetura de Monólito Modular
+# Modular Monolith Architecture Guide
 
-Este arquivo é ativado quando você trabalha em código-fonte Java ou configurações de build do backend. Ele ensina a arquitetura-alvo: um **Monólito Modular**, não microsserviços, com limites de pacotes por funcionalidade, contextos delimitados, mapeamento de FDT Adabas para JPA, convenções arquiteturais do Spring Boot 3.3 e formato de migração Strangler Fig. Ele **não** define detalhes de controller, DTO, validação ou resposta de erro, que pertencem a [`backend.instructions.md`](backend.instructions.md); segurança pertence a [`security.instructions.md`](security.instructions.md); migrações de schema pertencem a [`database.instructions.md`](database.instructions.md); e leitura de código legado pertence a [`natural-adabas.instructions.md`](natural-adabas.instructions.md).
+This file activates when you work on Java source files or backend build configurations. It teaches the target architecture: a **Modular Monolith** — not microservices — with package-by-feature boundaries, bounded contexts, Adabas FDT to JPA mapping, Spring Boot 3.3 architectural conventions, and the Strangler Fig migration shape. It does **not** define controller, DTO, validation, or error-response details, which belong to [`backend.instructions.md`](backend.instructions.md); security belongs to [`security.instructions.md`](security.instructions.md); schema migrations belong to [`database.instructions.md`](database.instructions.md); and legacy-source reading belongs to [`natural-adabas.instructions.md`](natural-adabas.instructions.md).
 
-## Princípio fundamental: um implantável, vários módulos
+## Core Principle: One Deployable, Many Modules
 
-O sistema-alvo é uma única aplicação Spring Boot com limites internos claros entre módulos. Cada contexto delimitado é um módulo Maven (ou pacote de nível superior) responsável por suas camadas de domínio, repositório e serviço.
+The target system is a single Spring Boot application with clear internal module boundaries. Each bounded context is a Maven module (or top-level package) that owns its domain, repository, and service layers.
 
-Por que usar um Monólito Modular em vez de microsserviços:
+Why a Modular Monolith rather than microservices:
 
-- **Restrição da imersão**: 8 horas não bastam para gerenciar sistemas distribuídos, descoberta de serviços e comunicação entre serviços.
-- **Orçamento de complexidade**: um monólito com limites fortes entre módulos oferece 80% dos benefícios dos microsserviços (autonomia da equipe e responsabilidade clara) com 20% do custo operacional.
-- **Caminho de migração**: um Monólito Modular bem estruturado pode ser decomposto em microsserviços depois, se necessário. O caminho inverso é muito mais difícil.
+- **Workshop constraint**: 8 hours is not enough time to manage distributed systems, service discovery, and inter-service communication.
+- **Complexity budget**: A monolith with strong module boundaries provides 80% of the benefits of microservices (team autonomy, clear ownership) at 20% of the operational cost.
+- **Migration path**: A well-structured Modular Monolith can be decomposed into microservices later if necessary. The reverse is much harder.
 
-## Estrutura de pacotes por funcionalidade
+## Package-by-Feature Structure
 
-Organize o código por capacidade de negócio, não por camada técnica:
+Organize code by business capability, not by technical layer:
 
 ```
 src/main/java/com/example/app/
-├── <feature>/                  # Contexto delimitado definido pela equipe
+├── <feature>/                  # Bounded context defined by the team
 │   ├── <Feature>Controller.java
 │   ├── <Feature>Service.java
 │   ├── <Feature>Repository.java
 │   ├── <Feature>.java
 │   └── <Feature>Dto.java
-├── shared/                     # Kernel compartilhado
-│   ├── audit/                  # Transversal: trilha de auditoria
-│   └── exception/              # Transversal: tratamento de erros
-└── Application.java            # Ponto de entrada do Spring Boot
+├── shared/                     # Shared kernel
+│   ├── audit/                  # Cross-cutting: audit trail
+│   └── exception/              # Cross-cutting: error handling
+└── Application.java            # Spring Boot entry point
 ```
 
-Regras:
+Rules:
 
-- Um módulo **NUNCA** DEVE importar diretamente classes internas de outro módulo. Use interfaces ou eventos.
-- O pacote `shared/` contém somente responsabilidades transversais (auditoria, exceções e entidades base).
-- Cada módulo possui seus próprios `*Repository`, `*Service` e `*Controller`.
+- A module MUST **NEVER** directly import internal classes from another module. Use interfaces or events.
+- The `shared/` package contains only cross-cutting concerns (audit, exceptions, base entities).
+- Each module has its own `*Repository`, `*Service`, and `*Controller`.
 
-## Limites dos contextos delimitados
+## Bounded Context Boundaries
 
-Ao decidir onde traçar limites entre módulos, pergunte:
+When deciding where to draw module boundaries, ask:
 
-1. **Quem é responsável por estes dados?** Se duas funcionalidades compartilham a mesma tabela, podem pertencer ao mesmo contexto.
-2. **O que muda em conjunto?** Funcionalidades modificadas no mesmo sprint pertencem juntas.
-3. **O que pode falhar de forma independente?** Se a falha da Funcionalidade A NÃO DEVE quebrar a Funcionalidade B, elas pertencem a contextos distintos.
+1. **Who owns this data?** If two features share the same table, they may belong to the same context.
+2. **What changes together?** Features modified in the same sprint belong together.
+3. **What can fail independently?** If Feature A failing MUST NOT break Feature B, they belong to separate contexts.
 
-Um padrão comum na modernização de legado Natural/Adabas é cada arquivo Adabas (FNR) corresponder a um contexto delimitado, embora alguns arquivos contenham dados de referência compartilhados pertencentes a um kernel compartilhado.
+A common pattern in Natural/Adabas legacy modernization is that each Adabas file (FNR) often maps to a bounded context, although some files contain shared reference data that belongs in a shared kernel.
 
-## Mapeamento JPA a partir de FDT Adabas
+## JPA Mapping from Adabas FDT
 
-### Campos simples
+### Simple Fields
 
-| Formato Adabas | Tipo Java | Anotação JPA |
+| Adabas Format | Java Type | JPA Annotation |
 |---|---|---|
 | `A` (alphanumeric) | `String` | `@Column(length = N)` |
 | `N` (numeric, no decimal) | `Long` or `Integer` | `@Column` |
@@ -65,15 +65,15 @@ Um padrão comum na modernização de legado Natural/Adabas é cada arquivo Adab
 | `T` (time/datetime) | `LocalDateTime` | `@Column` |
 | `B` (binary) | `byte[]` | `@Column` / `@Lob` |
 
-### Campos MU (múltiplos valores) → JSONB
+### MU (Multiple-Value) Fields → JSONB
 
 ```java
 @Column(columnDefinition = "jsonb")
 @JdbcTypeCode(SqlTypes.JSON)
-private List<String> alternateNames;  // Era um campo MU no Adabas
+private List<String> alternateNames;  // Was MU field in Adabas
 ```
 
-Ou use `@ElementCollection` quando houver necessidade de consulta:
+Or use `@ElementCollection` if query capability is required:
 
 ```java
 @ElementCollection
@@ -81,26 +81,26 @@ Ou use `@ElementCollection` quando houver necessidade de consulta:
 private List<String> alternateNames;
 ```
 
-### PE (grupos periódicos) → @OneToMany
+### PE (Periodic Groups) → @OneToMany
 
 ```java
 @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 @JoinColumn(name = "person_id")
-private List<AddressHistory> addressHistory;  // Era um grupo PE
+private List<AddressHistory> addressHistory;  // Was PE group
 ```
 
-Nesse caso, `AddressHistory` é uma `@Entity` com tabela própria.
+Where `AddressHistory` is an `@Entity` with its own table.
 
-## Convenções do Spring Boot 3.3
+## Spring Boot 3.3 Conventions
 
-- **Injeção por construtor**: sem `@Autowired` em campo. Use `@RequiredArgsConstructor` (Lombok) ou construtores explícitos.
-- **Records para DTOs**: `public record ResourceDto(Long id, String label) {}`
-- **Validação na camada de controller**: `@Valid @RequestBody ResourceDto dto` com anotações Bean Validation no DTO.
-- **@Transactional somente na camada de serviço**: NUNCA em repositórios, NUNCA em controllers.
-- **Optional para retornos anuláveis**: `Optional<Resource> findById(Long id)`; NUNCA retorne `null` de métodos públicos.
-- **Interfaces sealed para uniões de tipos**: `sealed interface ResourceState permits StateA, StateB {}`
+- **Constructor injection**: No field-level `@Autowired`. Use `@RequiredArgsConstructor` (Lombok) or explicit constructors.
+- **Records for DTOs**: `public record ResourceDto(Long id, String label) {}`
+- **Validation in the controller layer**: `@Valid @RequestBody ResourceDto dto` with Bean Validation annotations on the DTO.
+- **@Transactional only in the service layer**: NEVER in repositories, NEVER in controllers.
+- **Optional for nullable returns**: `Optional<Resource> findById(Long id)` — NEVER return `null` from public methods.
+- **Sealed interfaces for type unions**: `sealed interface ResourceState permits StateA, StateB {}`
 
-## Padrão de tratamento de erros
+## Error Handling Pattern
 
 ```java
 @RestControllerAdvice
@@ -114,46 +114,46 @@ public class GlobalExceptionHandler {
 }
 ```
 
-Use `ProblemDetail` (RFC 7807) em todas as respostas de erro.
+Use `ProblemDetail` (RFC 7807) for all error responses.
 
-## Padrão Strangler Fig
+## Strangler Fig Pattern
 
-Quando o sistema moderno precisar coexistir com o sistema legado:
+When the modern system must coexist with the legacy system:
 
-1. **Fachada**: todas as solicitações passam por uma camada de roteamento
-2. **Caminho novo**: funcionalidades novas ou migradas são tratadas pelos módulos Spring Boot
-3. **Caminho legado**: funcionalidades não migradas são encaminhadas ao sistema legado
-4. **Migração gradual**: conforme cada funcionalidade é migrada, sua rota muda do legado para o moderno
+1. **Facade**: All requests pass through a routing layer
+2. **New path**: New or migrated features are handled by the Spring Boot modules
+3. **Legacy path**: Unmigrated features are proxied to the legacy system
+4. **Gradual migration**: As each feature is migrated, its route switches from legacy to modern
 
-Esse padrão se aplica até dentro do escopo da imersão: as equipes podem não migrar tudo, e isso é aceitável. A arquitetura DEVE oferecer suporte adequado à migração parcial.
+This pattern applies even within the workshop scope: teams may not migrate everything, and that is acceptable. The architecture MUST support partial migration gracefully.
 
-## Convenções
+## Conventions
 
-| Regra | Justificativa |
+| Rule | Rationale |
 |---|---|
-| Um implantável Spring Boot com vários módulos internos | Preserva a velocidade de entrega da imersão e mantém limites explícitos |
-| Pacotes por capacidade de negócio | Módulos correspondem a contextos delimitados, não a camadas técnicas |
-| Internos privados; acesso entre módulos por interfaces ou eventos | Impede acoplamento oculto entre contextos |
-| Tipos FDT Adabas mapeados deliberadamente para Java/JPA | Evita truncamento silencioso, perda de precisão e relacionamentos incorretos |
-| `@Transactional` somente em serviços e injeção por construtor | Mantém explícitos os limites de persistência e as dependências |
-| `ProblemDetail` para erros | Oferece a todos os módulos um formato de erro legível por máquina |
+| One Spring Boot deployable with many internal modules | Preserves workshop delivery speed while keeping boundaries explicit |
+| Package by business capability | Modules map to bounded contexts instead of technical layers |
+| Module internals stay private; cross-module access uses interfaces or events | Prevents hidden coupling between contexts |
+| Adabas FDT types map deliberately to Java/JPA types | Avoids silent truncation, precision loss, and incorrect relationships |
+| `@Transactional` only in services and constructor injection everywhere | Keeps persistence boundaries and dependencies explicit |
+| `ProblemDetail` for errors | Gives every module one machine-readable error shape |
 
-## Faça / Não faça
+## Do / Do Not
 
-| Faça | Não faça |
+| Do | Do not |
 |---|---|
-| Mantenha uma aplicação Spring Boot com módulos internos claros | Crie aplicações Spring Boot ou microsserviços separados para cada contexto |
-| Coloque a lógica de negócio em serviços Java | Mova a lógica para stored procedures ou funções PostgreSQL |
-| Use JPA/JPQL ou consultas derivadas do Spring Data | Concatene strings para criar SQL |
-| Use injeção por construtor | Use injeção em campo com `@Autowired` |
-| Retorne `Optional` quando o resultado puder estar ausente | Retorne `null` de métodos públicos |
-| Ofereça suporte à migração parcial com uma fachada Strangler Fig | Presuma que todo o sistema legado será migrado de uma vez |
+| Keep one Spring Boot application with clear internal modules | Create separate Spring Boot applications or microservices for each context |
+| Put business logic in Java services | Move business logic into PostgreSQL stored procedures or functions |
+| Use JPA/JPQL or Spring Data derived queries | Concatenate strings to build SQL |
+| Use constructor injection | Use field injection with `@Autowired` |
+| Return `Optional` when a result may be absent | Return `null` from public methods |
+| Support partial migration with a Strangler Fig facade | Assume the whole legacy system is migrated at once |
 
-## Lista de verificação antes de abrir uma PR
+## Checklist Before Opening a PR
 
-- [ ] O código novo fica em um implantável Spring Boot e é organizado por capacidade de negócio
-- [ ] Nenhum módulo importa diretamente classes internas de outro; interfaces ou eventos definem o limite
-- [ ] Repositórios, serviços, controllers, entidades e DTOs ficam no módulo responsável ou no kernel compartilhado
-- [ ] Os campos FDT Adabas foram mapeados para tipos Java/JPA preservando precisão e semântica de MU, PE e descritores
-- [ ] `@Transactional` aparece somente em serviços, as dependências usam injeção por construtor e métodos públicos não retornam `null`
-- [ ] O projeto pode coexistir com caminhos legados não migrados pelo roteamento Strangler Fig
+- [ ] New code is inside one Spring Boot deployable and organized by business capability
+- [ ] No module imports another module's internal classes directly; interfaces or events define the boundary
+- [ ] Repositories, services, controllers, entities, and DTOs stay inside the owning module or shared kernel
+- [ ] Adabas FDT fields were mapped to Java/JPA types with precision, MU, PE, and descriptor semantics preserved
+- [ ] `@Transactional` appears only in services, dependencies use constructor injection, and public methods do not return `null`
+- [ ] The design can coexist with unmigrated legacy paths through the Strangler Fig routing shape

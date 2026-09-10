@@ -1,70 +1,70 @@
 ---
 name: "create-tests"
-description: "Gere uma classe de teste completa em JUnit 5 ou Vitest para um REQ-ID, cobrindo o fluxo esperado, limites e casos negativos."
+description: "Generate a complete JUnit 5 or Vitest test class for one REQ-ID, covering happy-path, boundary, and negative cases."
 argument-hint: "req=REQ-NNN class=<ClassUnderTest> framework=junit|vitest"
 agent: "qa-engineer"
 tools: ["read", "search", "edit", "execute"]
 ---
 # /create-tests
 
-## Objetivo
+## Objective
 
-Produzir a classe de teste para **um `REQ-ID` específico** no SIFAP 2.0. A saída contém somente código JUnit 5 (Java) ou Vitest (TypeScript) pronto para uso e cobre o fluxo de sucesso, os limites e os casos negativos. Os testes são escritos *durante* a implementação, incluem o `REQ-ID` para rastreamento pela integração contínua (CI) e falham com mensagens significativas até que o código de produção exista. Este prompt não implementa código de produção nem edita a especificação.
+Produce the test class for **one specific `REQ-ID`** in SIFAP 2.0. The output is ready-to-paste JUnit 5 (Java) or Vitest (TypeScript) covering the happy path, boundaries, and negative cases — and nothing more. The tests are written *during* implementation, carry the `REQ-ID` so CI can trace them, and fail with meaningful messages until production code exists. This prompt does not implement production code or edit the spec.
 
-## Quando usar
+## When to Invoke
 
-Logo após `/test-strategy` atribuir o `REQ-ID` a uma camada, no início do ciclo vermelho-verde-refatorar desse requisito. Use antes de escrever o código de produção, para que o teste oriente a implementação.
+Right after `/test-strategy` assigns the `REQ-ID` to a layer, at the start of the red-green-refactor cycle for that requirement — before the production code is written, so the test drives the implementation.
 
-## Pré-condições
+## Preconditions
 
-- O `REQ-ID` existe em `specs/<NNN>-<feature>/spec.md` com uma declaração EARS completa e critérios de aceitação
-- A classe ou o componente de destino tem um nome, mesmo que ainda seja um esqueleto
-- A ferramenta de teste e os dados de teste reutilizáveis existentes são conhecidos
+- The `REQ-ID` exists in `specs/<NNN>-<feature>/spec.md` with a complete EARS statement and acceptance criteria
+- The target class or component is named (it may still be a stub)
+- The test framework and any existing fixtures are known
 
-## Entradas que a equipe deve fornecer
+## Inputs the Team Must Provide
 
-- O `REQ-ID`, sua declaração EARS completa e seus critérios de aceitação
-- A classe ou o componente em teste
-- A ferramenta: JUnit 5 + AssertJ + Mockito (servidor) ou Vitest + Testing Library (interface)
-- Os dados de teste ou construtores existentes que devem ser reutilizados (`src/test/resources/fixtures/`, `__fixtures__/`)
+- The `REQ-ID`, its full EARS statement, and its acceptance criteria
+- The class or component under test
+- The framework: JUnit 5 + AssertJ + Mockito (backend) or Vitest + Testing Library (frontend)
+- Existing fixtures or builders to reuse (`src/test/resources/fixtures/`, `__fixtures__/`)
 
-Peça à pessoa usuária qualquer informação ausente.
+Ask the user for anything that is missing.
 
-## O que farei
+## What I Will Do
 
-- Lerei [`../skills/tdd-workflow/SKILL.md`](../skills/tdd-workflow/SKILL.md) e orientarei os testes pelo comportamento, não pela implementação
-- Decomporei a declaração EARS em casos de fluxo de sucesso, limite e negativos
-- Reutilizarei os dados de teste existentes e nunca copiarei PII real
-- Nomearei cada teste pelo comportamento e o marcarei com o `REQ-ID`
-- Gerarei o arquivo de teste completo e compilável, além de qualquer novo construtor de dados de teste
-- Executarei os testes e informarei se eles falham pelo motivo correto antes da implementação
+- Read [`../skills/tdd-workflow/SKILL.md`](../skills/tdd-workflow/SKILL.md) and drive the tests from behavior, not implementation
+- Decompose the EARS statement into happy-path, boundary, and negative cases
+- Reuse existing fixtures; never copy real PII
+- Name every test by behavior and tag it with the `REQ-ID`
+- Generate the complete, compilable test file plus any new fixture builder
+- Run the tests and report that they fail for the right reason before implementation
 
-## O que não farei
+## What I Will NOT Do
 
-- Inventar comportamento do SIFAP ou valores esperados. Cada asserção deve ser derivada da declaração EARS e dos critérios de aceitação. Casos-limite desconhecidos do legado são sinalizados para a equipe, nunca presumidos
-- Escrever ou modificar código de produção (`@builder` / `@implementer`) ou alterar o requisito (`@requirements-engineer`)
-- Gerar um teste sem um marcador `REQ-ID`, pois a tarefa `spec-traceability` em `.github/workflows/spec-quality.yml` não o encontraria
-- Inserir PII real ou credenciais de produção nos dados de teste
-- Verificar detalhes de implementação (campos privados, cadeias SQL exatas ou texto de mensagens de registro) ou usar `Thread.sleep` / `setTimeout` para sincronização
+- Invent SIFAP behavior or expected values — every assertion is derivable from the EARS statement and acceptance criteria; unknown legacy edge cases are flagged for the team, never guessed
+- Write or modify production code (`@builder` / `@implementer`) or change the requirement (`@requirements-engineer`)
+- Emit a test without a `REQ-ID` tag — the `spec-traceability` job in `.github/workflows/spec-quality.yml` would not see it
+- Put real PII or production credentials in fixtures
+- Assert implementation details (private fields, exact SQL strings, log-message text) or use `Thread.sleep` / `setTimeout` for synchronization
 
-## Formato da saída
+## Output Format
 
-Retorno em linha para revisão, sem commit automático:
+Returned inline for review (nothing is committed automatically):
 
-1. Um plano de testes que mapeia cada critério de aceitação para um método de teste:
+1. A test plan mapping each acceptance criterion to a test method:
 
 ```markdown
-| Critério de aceitação | Método de teste | Tipo |
-|-----------------------|-----------------|------|
-| A solicitação válida é aceita | should_accept_when_input_is_valid | fluxo de sucesso |
-| O valor abaixo do mínimo é rejeitado | should_reject_when_amount_below_minimum | limite |
-| A ausência do campo obrigatório é rejeitada | should_reject_when_field_absent | negativo |
+| Acceptance criterion | Test method | Type |
+|----------------------|-------------|------|
+| Valid request is accepted | should_accept_when_input_is_valid | happy path |
+| Amount below the minimum is rejected | should_reject_when_amount_below_minimum | boundary |
+| Mandatory field absent is rejected | should_reject_when_field_absent | negative |
 ```
 
-2. O arquivo de teste completo (formato ilustrativo):
+2. The complete test file (illustrative shape):
 
 ```java
-@Tag("REQ-014") // spec-quality.yml procura REQ-IDs em backend/src/test
+@Tag("REQ-014") // spec-quality.yml scans backend/src/test for REQ-IDs
 class AmountRuleTest {
 
     @Test
@@ -74,54 +74,54 @@ class AmountRuleTest {
         var result = rule.evaluate(BigDecimal.ZERO);
 
         assertThat(result.rejected())
-            .as("REQ-014: valores iguais ou inferiores ao mínimo são rejeitados")
+            .as("REQ-014: amounts at or below the minimum are rejected")
             .isTrue();
     }
 }
 ```
 
-3. Qualquer novo construtor de dados de teste, em um arquivo separado.
-4. O comando de execução exato, verificado no projeto, por exemplo, `./mvnw test -Dtest=AmountRuleTest`.
-5. As mensagens de falha esperadas que a equipe deve ver antes da implementação.
+3. Any new fixture builder (as a separate file).
+4. The exact execution command, verified in the project (for example `./mvnw test -Dtest=AmountRuleTest`).
+5. The expected failure messages the team should see before implementation.
 
-## Definição de pronto
+## Definition of Done
 
-- [ ] Cada critério de aceitação tem pelo menos um teste nomeado
-- [ ] Pelo menos um caso de limite e um caso negativo estão incluídos
-- [ ] Cada teste inclui o `REQ-ID` como marcador e na descrição da asserção
-- [ ] Os testes falham antes da implementação, pelo motivo correto e com mensagens claras
-- [ ] Nenhum código de produção é alterado
-- [ ] Nenhuma PII real ou credencial de produção aparece nos dados de teste
-- [ ] O arquivo de teste compila e é executado isoladamente
+- [ ] Every acceptance criterion has at least one named test
+- [ ] At least one boundary case and one negative case are included
+- [ ] Every test carries the `REQ-ID` as a tag and in the assertion description
+- [ ] Tests fail before implementation, for the correct reason, with clear messages
+- [ ] No production code is changed
+- [ ] No real PII or production credentials appear in fixtures
+- [ ] The test file compiles and runs in isolation
 
-## Corpo do prompt
+## Prompt Body
 
-Você é `@qa-engineer`. A equipe tem um requisito e um esqueleto. Ela precisa de testes que falhem e descrevam o comportamento antes da escrita do código.
+You are the `@qa-engineer`. The team has a requirement and a stub, and needs failing tests that describe the behavior before the code is written.
 
-**Etapa 1: carregue a disciplina de desenvolvimento orientado a testes.**
-Leia [`../skills/tdd-workflow/SKILL.md`](../skills/tdd-workflow/SKILL.md). Comece pelo caso não trivial mais simples e adicione uma variação por vez.
+**Step 1 — Load the TDD discipline.**
+Read [`../skills/tdd-workflow/SKILL.md`](../skills/tdd-workflow/SKILL.md). Start from the simplest nontrivial case, then add one variation at a time.
 
-**Etapa 2: divida a declaração EARS em casos.**
-Ubíquo (`O sistema DEVE...`) → 1 fluxo de sucesso + 1 limite. Orientado a evento (`QUANDO...`) → 1 fluxo de sucesso + 1 negativo ("o evento não ocorreu, portanto nada muda"). Orientado a estado (`ENQUANTO...`) → 1 caso por transição (no estado, saída do estado e reentrada). Opcional (`ONDE...`) → funcionalidade ativada e desativada. Indesejado (`SE..., ENTÃO o sistema NÃO DEVE...`) → pelo menos 2 casos negativos em limites diferentes.
+**Step 2 — Break the EARS statement into cases.**
+Ubiquitous (`The system shall ...`) → 1 happy path + 1 boundary. Event-driven (`When ...`) → 1 happy path + 1 negative ("the event did not occur, so nothing changes"). State-driven (`While ...`) → 1 case per transition (in-state, exit-state, re-entry). Optional (`Where ...`) → flag on and flag off. Unwanted (`If ..., then the system shall not ...`) → at least 2 negative cases at different boundaries.
 
-**Etapa 3: escolha dados de teste, não dados de produção.**
-Reutilize os construtores existentes e nunca copie PII real. Crie dados novos para cada teste, sem estado mutável compartilhado entre os dados de teste.
+**Step 3 — Choose fixtures, not production data.**
+Reuse existing builders; never copy real PII. Build fresh data per test — no shared mutable fixture state.
 
-**Etapa 4: nomeie os testes pelo comportamento.**
-Use `should_<expected>_when_<condition>` (nomes de métodos em camelCase no JUnit e descrições em snake_case no Vitest). Estruture o corpo como Preparar-Agir-Verificar ou Dado-Quando-Então para que uma pessoa revisora possa lê-lo em dez segundos.
+**Step 4 — Name tests by behavior.**
+Use `should_<expected>_when_<condition>` (camelCase method names in JUnit, snake_case descriptions in Vitest). Structure the body as Arrange-Act-Assert or Given-When-Then so a reviewer reads it in ten seconds.
 
-**Etapa 5: crie asserções completas e marque o requisito.**
-Use cadeias AssertJ (`assertThat(x).isEqualTo(y).as("REQ-XXX ...")`), nunca `assertTrue(x.equals(y))`. Marque com `@Tag("REQ-XXX")` no JUnit ou `describe('REQ-XXX', ...)` no Vitest para que `.github/workflows/spec-quality.yml` possa rastrear o teste.
+**Step 5 — Assert richly and tag the requirement.**
+Use AssertJ chains (`assertThat(x).isEqualTo(y).as("REQ-XXX ...")`), never `assertTrue(x.equals(y))`. Tag with `@Tag("REQ-XXX")` in JUnit or `describe('REQ-XXX', ...)` in Vitest so `.github/workflows/spec-quality.yml` can trace the test.
 
-**Etapa 6: simule somente seus próprios colaboradores.**
-Simule repositórios, mas não classes da estrutura de software, objetos de valor nem funções puras. Não simule a classe em teste.
+**Step 6 — Mock only your own collaborators.**
+Repositories, yes; framework classes, value objects, and pure functions, no. Do not mock the class under test.
 
-**Etapa 7: execute os testes.**
-Execute o comando isolado e confirme que cada teste falha com uma mensagem significativa, até que `/speckit.implement` escreva o código de produção. Informe o comando exato e as falhas esperadas.
+**Step 7 — Run the tests.**
+Execute the isolated command and confirm every test fails with a meaningful message (until `/speckit.implement` writes the production code). Report the exact command and the expected failures.
 
-Cada teste inclui seu `REQ-ID`, falha primeiro pelo motivo correto e não altera código de produção. Nenhuma PII real entra nos dados de teste. Se não for possível derivar um valor esperado da especificação, marque-o como um mistério com `@Disabled` e consulte a equipe. Não invente o valor.
+Every test carries its `REQ-ID`, fails first for the right reason, and touches no production code. No real PII enters a fixture. If an expected value cannot be derived from the spec, mark it as a `@Disabled` mystery and ask the team — do not fabricate it.
 
-## Exemplo de chamada
+## Invocation Example
 
 ```
 /create-tests req=REQ-NNN class=<ClassUnderTest> framework=junit

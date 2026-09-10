@@ -1,118 +1,118 @@
-# Fontes de orientação de arquitetura (para decisões de direcionamento do projeto)
+# Architecture Guidance Sources (For Design Direction Decisions)
 
-Registro de fontes para usar a orientação oficial de arquitetura do Azure **somente em decisões de direcionamento do projeto**.
+A source registry for using Azure official architecture guidance **only for design direction decisions**.
 
-> **As URLs deste documento indicam onde pesquisar.**
-> Não trate o conteúdo dessas URLs como fatos fixos.
-> Não as use para decidir SKU, versão da API, região, disponibilidade de modelos ou mapeamento de PE. Essas decisões usam exclusivamente `azure-dynamic-sources.md`.
+> **The URLs in this document are a list of sources for "where to look".**
+> Do not hardcode the contents of these URLs as fixed facts.
+> Do not use for SKU, API version, region, model availability, or PE mapping decisions — those are handled exclusively via `azure-dynamic-sources.md`.
 
 ---
 
-## Separação por finalidade
+## Purpose Separation
 
-| Finalidade | Documento | Itens que podem ser decididos |
+| Purpose | Document to Use | Decidable Items |
 |---------|----------------|-----------------|
-| **Decisões de direcionamento do projeto** | Este documento (architecture-guidance-sources) | Padrões de arquitetura, práticas recomendadas, direcionamento da combinação de serviços e projeto dos limites de segurança |
-| **Verificação das especificações de implantação** | `azure-dynamic-sources.md` | Versão da API, SKU, região, disponibilidade de modelos, `groupId` de PE e valores reais das propriedades |
+| **Design direction decisions** | This document (architecture-guidance-sources) | Architecture patterns, best practices, service combination direction, security boundary design |
+| **Deployment spec verification** | `azure-dynamic-sources.md` | API version, SKU, region, model availability, PE groupId, actual property values |
 
-**O que NÃO pode ser decidido com este documento:**
+**What must NOT be decided using this document:**
 
-- Versão da API
-- Nomes/preços de SKUs
-- Disponibilidade regional
-- Nomes/versões/tipos de implantação de modelos
-- Mapeamento de `groupId` de PE / DNS Zone
-- Valores específicos das propriedades dos recursos
+- API version
+- SKU names/pricing
+- Region availability
+- Model names/versions/deployment types
+- PE groupId / DNS Zone mapping
+- Specific values for resource properties
 
 ---
 
-## Fontes principais
+## Primary Sources
 
-Destinos de consulta específica para decisões de direcionamento do projeto.
+Targeted fetch targets for design direction decisions.
 
-| ID | Documento | URL | Finalidade |
+| ID | Document | URL | Purpose |
 |----|----------|-----|---------|
-| A1 | Azure Architecture Center | https://learn.microsoft.com/en-us/azure/architecture/ | Central de entrada para encontrar documentos específicos de cada domínio |
-| A2 | Well-Architected Framework | https://learn.microsoft.com/en-us/azure/architecture/framework/ | Princípios de segurança, confiabilidade, desempenho, custo e operações |
-| A3 | Cloud Adoption Framework / Landing Zone | https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/ | Governança empresarial, topologia de rede e estrutura de assinaturas |
-| A4 | Arquitetura de IA/ML do Azure | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/ | Central de arquiteturas de referência para cargas de trabalho de IA/ML |
-| A5 | Arquitetura de referência básica de chat do Foundry | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/basic-azure-ai-foundry-chat | Estrutura básica de assistente de conversa baseada no Foundry |
-| A6 | Arquitetura de referência de linha de base para chat do AI Foundry | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-openai-e2e-chat | Linha de base empresarial para assistente de conversa do Foundry (inclui isolamento de rede) |
-| A7 | Guia de projeto de soluções RAG | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide | Guia de projeto do padrão RAG |
-| A8 | Visão geral do Microsoft Fabric | https://learn.microsoft.com/en-us/fabric/get-started/microsoft-fabric-overview | Visão geral da plataforma Fabric e compreensão das cargas de trabalho |
-| A9 | Governança/adoção do Fabric | https://learn.microsoft.com/en-us/power-bi/guidance/fabric-adoption-roadmap-governance | Governança e roteiro de adoção do Fabric |
+| A1 | Azure Architecture Center | https://learn.microsoft.com/en-us/azure/architecture/ | Hub — Entry point for finding domain-specific documents |
+| A2 | Well-Architected Framework | https://learn.microsoft.com/en-us/azure/architecture/framework/ | Security/reliability/performance/cost/operations principles |
+| A3 | Cloud Adoption Framework / Landing Zone | https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/ | Enterprise governance, network topology, subscription structure |
+| A4 | Azure AI/ML Architecture | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/ | AI/ML workload reference architecture hub |
+| A5 | Basic Foundry Chat Reference Architecture | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/basic-azure-ai-foundry-chat | Basic Foundry-based chatbot structure |
+| A6 | Baseline AI Foundry Chat Reference Architecture | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-openai-e2e-chat | Foundry chatbot enterprise baseline (including network isolation) |
+| A7 | RAG Solution Design Guide | https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/rag/rag-solution-design-and-evaluation-guide | RAG pattern design guide |
+| A8 | Microsoft Fabric Overview | https://learn.microsoft.com/en-us/fabric/get-started/microsoft-fabric-overview | Fabric platform overview and workload understanding |
+| A9 | Fabric Governance / Adoption | https://learn.microsoft.com/en-us/power-bi/guidance/fabric-adoption-roadmap-governance | Fabric governance, adoption roadmap |
 
-## Fontes secundárias (somente para acompanhamento)
+## Secondary Sources (awareness only)
 
-Não são destinos de consulta direta. Use-as somente para acompanhar alterações.
+Not direct fetch targets; referenced only for change awareness.
 
-| Documento | URL | Observações |
+| Document | URL | Notes |
 |----------|-----|-------|
-| Azure Updates | https://azure.microsoft.com/en-us/updates/ | Alterações de serviços e anúncios de novas funcionalidades. Não é destino de consulta específica |
+| Azure Updates | https://azure.microsoft.com/en-us/updates/ | Service changes/new feature announcements. Not a targeted fetch target |
 
 ---
 
-## Gatilho de consulta: quando pesquisar
+## Fetch Trigger — When to Query
 
-Os documentos de orientação de arquitetura **não são consultados em toda solicitação**. Faça consultas específicas somente quando os gatilhos abaixo se aplicarem.
+Architecture guidance documents are **not queried on every request.** Only perform targeted fetch when the following triggers apply.
 
-### Condições de gatilho
+### Trigger Conditions
 
-0. **Quando o tipo de carga de trabalho é identificado na Fase 1 (automático)**
-   - Consulte previamente a arquitetura de referência relevante para ajustar a profundidade das perguntas.
-   - O gatilho é automático, mesmo sem menção a "prática recomendada" etc.
-   - Finalidade: incluir nas perguntas os pontos de decisão baseados na arquitetura oficial, além de especificações de SKU/região.
-1. **Quando a pessoa pede uma justificativa para o direcionamento do projeto**
-   - Palavras-chave como "prática recomendada", "arquitetura de referência", "estrutura recomendada", "linha de base", "bem arquitetada", "zona de destino (landing zone)" e "padrão empresarial".
-2. **Quando os limites de arquitetura de uma nova combinação de serviços são ambíguos**
-   - Relações entre serviços que não podem ser determinadas pelos arquivos de referência ou por service-gotchas.
-3. **Quando é necessário projetar segurança/governança empresarial**
-   - Estrutura de assinaturas, topologia de rede e padrões de zona de destino (landing zone).
+0. **When the user's workload type is identified in Phase 1 (automatic)**
+   - Pre-query the relevant workload's reference architecture to adjust question depth
+   - Triggers automatically even if the user doesn't mention "best practice" etc.
+   - Purpose: Reflect official architecture-based design decision points in questions, beyond SKU/region spec questions
+1. **When the user requests design direction justification**
+   - Keywords such as "best practice", "reference architecture", "recommended structure", "baseline", "well-architected", "landing zone", "enterprise pattern"
+2. **When architecture boundaries for a new service combination are ambiguous**
+   - Inter-service relationships that cannot be determined from existing reference files/service-gotchas
+3. **When enterprise-level security/governance design is needed**
+   - Subscription structure, network topology, landing zone patterns
 
-### Quando os gatilhos não se aplicam
+### When Triggers Do Not Apply
 
-- Criação simples de recursos (perguntas sobre SKU, versão da API ou região) → use somente `azure-dynamic-sources.md`
-- Combinações de serviços já cobertas nos pacotes de domínio → priorize os arquivos de referência
-- Verificação de valores de propriedades do Bicep → use `service-gotchas.md` ou a referência do Bicep no Microsoft Docs
+- Simple resource creation (SKU/API version/region questions) → Use only `azure-dynamic-sources.md`
+- Service combinations already covered in domain-packs → Prioritize reference files
+- Bicep property value verification → `service-gotchas.md` or MS Docs Bicep reference
 
 ---
 
-## Limite de consultas
+## Fetch Budget
 
-| Cenário | Número máximo de consultas |
+| Scenario | Max Fetch Count |
 |----------|----------------|
-| Padrão (quando o gatilho dispara) | **Até dois** documentos de orientação de arquitetura |
-| Consulta adicional permitida quando | Há conflitos entre documentos, permanece uma incerteza central do projeto ou a pessoa pede justificativa mais profunda |
-| Perguntas simples sobre especificações de implantação | **0** (sem consultar orientação de arquitetura) |
+| Default (when trigger fires) | Architecture guidance documents **up to 2** |
+| Additional fetch allowed when | Conflicts between documents / core design uncertainty remains / user explicitly requests deeper justification |
+| Simple deployment spec questions | **0** (no architecture guidance queries) |
 
 ---
 
-## Regra de decisão por tipo de pergunta
+## Decision Rule by Question Type
 
-| Tipo de pergunta | Documentos a consultar | Pontos de decisão a extrair | Documentos que NÃO devem ser consultados |
+| Question Type | Documents to Query | Design Decision Points to Extract | Documents NOT to Query |
 |--------------|-------------------|----------------------------------|----------------------|
-| RAG / assistente de conversa / aplicativo Foundry | A5 ou A6 + A7 | Nível de isolamento da rede, método de autenticação (identidade gerenciada ou chave), estratégia de indexação (envio, `push`, ou consulta, `pull`) e escopo do monitoramento | Não percorra todo o Architecture Center |
-| Segurança / governança / zona de destino empresarial | A2 + A3 | Estrutura de assinaturas, topologia de rede central e raios (`hub-spoke`), modelo de identidade/governança e limite de segurança | Documentos do domínio de IA/ML são desnecessários |
-| Plataforma de dados do Fabric | A8 + A9 | Modelo de capacidade (critérios de seleção da SKU), nível de governança e limite dos dados (separação de espaços de trabalho, workspaces, etc.) | Documentos de IA são desnecessários |
-| Combinação ambígua de serviços (padrão incerto) | A1 (encontre na central o documento de domínio mais próximo) + esse documento | Principais pontos de decisão identificados no documento | Não percorra todos os subdocumentos |
-| Valores simples para criação de recursos (SKU/API/região) | Nenhuma consulta | — | Toda a orientação de arquitetura |
-| Arquitetura geral de IA/ML | A4 (central) + arquitetura de referência mais próxima | Isolamento da computação, limite dos dados e abordagem de disponibilização do modelo | Não percorra tudo |
+| RAG / chatbot / Foundry app | A5 or A6 + A7 | Network isolation level, authentication method (managed identity vs key), indexing strategy (push vs pull), monitoring scope | Do not traverse entire Architecture Center |
+| Enterprise security / governance / landing zone | A2 + A3 | Subscription structure, network topology (hub-spoke etc.), identity/governance model, security boundary | AI/ML domain documents not needed |
+| Fabric data platform | A8 + A9 | Capacity model (SKU selection criteria), governance level, data boundary (workspace separation etc.) | AI-related documents not needed |
+| Ambiguous service combination (unclear pattern) | A1 (find closest domain document from hub) + that document | Key design decision points identified from the document | Do not traverse all sub-documents |
+| Simple resource creation values (SKU/API/region) | No query | — | All architecture guidance |
+| General AI/ML architecture | A4 (hub) + closest reference architecture | Compute isolation, data boundary, model serving approach | Do not crawl entirely |
 
 ---
 
-## Regra de contingência para URLs
+## URL Fallback Rule
 
-1. Use URLs `en-us` do Learn por padrão.
-2. Se uma URL específica retornar 404, redirecionamento ou estiver obsoleta → use a página da central superior.
-   - Exemplo: se A5 falhar → pesquise "foundry chat" em A4 (central de IA/ML).
-3. Se também não encontrar na central superior → pesquise palavras-chave do título em A1 (página principal do Architecture Center).
-4. **Não trate o conteúdo de uma URL como regra fixa somente porque a URL existe.**
+1. Use `en-us` Learn URLs by default
+2. If a specific URL returns 404 / redirect / deprecated → Fall back to the parent hub page
+   - Example: If A5 fails → Search for "foundry chat" keyword on A4 (AI/ML hub)
+3. If not found on the parent hub either → Search by title keyword on A1 (Architecture Center main)
+4. **Do not use the contents of a URL as fixed rules just because the URL exists**
 
 ---
 
-## Proibição de varredura completa
+## Full Traversal Prohibited
 
-- Não percorra amplamente os subdocumentos do Architecture Center.
-- Consulte especificamente somente um ou dois documentos relacionados, conforme a regra do tipo de pergunta.
-- Mesmo nos documentos consultados, use somente as seções relevantes; não leia o documento inteiro.
-- São proibidos consultas ilimitadas, seguimento recursivo de links e enumeração de subpáginas.
+- Do not broadly traverse (crawl) Architecture Center sub-documents
+- Only targeted fetch 1–2 related documents according to the decision rule by question type
+- Even within fetched documents, only reference relevant sections; do not read the entire document
+- Unlimited fetching, recursive link following, and sub-page enumeration are prohibited

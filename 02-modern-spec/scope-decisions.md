@@ -1,40 +1,40 @@
-# Decisões de escopo — Estágio 2
+# Scope Decisions — Stage 2
 
-> **Trilha:** [Kit do Time](../README.md) › [Estágio 2](README.md) › **Decisões de escopo**
+> **Path:** [Team Kit](../README.md) › [Stage 2](README.md) › **Scope Decisions**
 
-**Registre as decisões de escopo tomadas durante o Estágio 2: o que foi selecionado, o que foi adiado e quais questões permanecem em aberto.**
+**Record the scope decisions made during Stage 2: what was selected, what was deferred, and which questions remain open.**
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Dupla 2 durante o Estágio 2; Duplas 3 e 4 durante o handoff H2 |
-| **Finalidade** | Apoiar a conversa do estágio; não substitui os artefatos formais do Spec-Kit |
-| **Feature relacionada** | `specs/<NNN>-<feature>/` |
+| **Target audience** | Pair 2 during Stage 2; Pairs 3 and 4 during the H2 handoff |
+| **Purpose** | Support the stage conversation; does not replace the formal Spec-Kit artifacts |
+| **Related feature** | `specs/<NNN>-<feature>/` |
 
 > [!NOTE]
-> Os entregáveis formais permanecem em `specs/<NNN>-<feature>/spec.md`, `plan.md` e `tasks.md`. Não registre requisitos EARS completos aqui. Este arquivo registra somente decisões de escopo e questões em aberto.
+> Formal deliverables remain in `specs/<NNN>-<feature>/spec.md`, `plan.md`, and `tasks.md`. Do not record complete EARS requirements here. This file records only scope decisions and open questions.
 
 ---
 
-## Decisões de escopo
+## Scope decisions
 
-| Decisão | Evidência ou justificativa | Impacto nos artefatos formais |
+| Decision | Evidence or rationale | Impact on formal artifacts |
 |---|---|---|
-| <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
+| <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
 
 ---
 
-## Questões em aberto
+## Open questions
 
-| Questão | Fonte consultada | Próxima pessoa responsável |
+| Question | Source consulted | Next owner |
 |---|---|---|
-| <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
+| <!-- fill in --> | <!-- fill in --> | <!-- fill in --> |
 
 ---
 
-### Continue lendo
+### Continue reading
 
-| Anterior | Próximo |
+| Previous | Next |
 |---|---|
-| [Guia do Estágio 2](GUIDE.md)<br/><sub>Especificação moderna passo a passo.</sub> | [Template de ADR](ADR-TEMPLATE.md)<br/><sub>Registre a decisão de escopo como uma ADR.</sub> |
+| [Stage 2 Guide](GUIDE.md)<br/><sub>Step-by-step modern specification.</sub> | [ADR Template](ADR-TEMPLATE.md)<br/><sub>Record the scope decision as an ADR.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

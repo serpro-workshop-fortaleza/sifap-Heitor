@@ -1,23 +1,23 @@
 # chromium-control-canvas
 
-Painel interativo de controle do Chromium.
+Interactive Chromium control canvas.
 
-## O que esta extensão reúne
+## What this plugin bundles
 
-Esta é uma entrada **somente de catálogo**. A extensão original fornecia um pacote
-de *extensão* da CLI (um componente `extensions/`), que não foi incorporado neste
-kit. O manifesto (`plugin.json`) contém apenas metadados.
+This is a **catalog-only** entry. The upstream plugin shipped a CLI *extension*
+payload (an `extensions/` component), which is not vendored in this kit. The
+manifest (`plugin.json`) carries metadata only.
 
-## Referências originais não incluídas
+## Upstream references not included
 
-- `chromium-control-canvas` (extensão da CLI) — nenhum pacote `extensions/` está
-  versionado neste kit.
+- `chromium-control-canvas` (CLI extension) — no `extensions/` payload is
+  committed in this kit.
 
-## Como é habilitado
+## How it is enabled
 
-As extensões são declaradas em
-[`.github/copilot/settings.json`](../../copilot/settings.json) por meio do
-catálogo local `datacorp-mm-team-kit`
-([`marketplace.json`](../marketplace.json)). Esta entrada não tem componentes,
-portanto está listada no catálogo, mas não está habilitada.
-Consulte o [índice de extensões](../README.md) para conhecer o mecanismo e suas limitações.
+Plugins are declared in
+[`.github/copilot/settings.json`](../../copilot/settings.json) through the local
+`datacorp-mm-team-kit` marketplace
+([`marketplace.json`](../marketplace.json)). This entry has no components, so it
+is listed in the marketplace catalog but is not enabled. See the
+[plugins index](../README.md) for the mechanism and its limitations.

@@ -1,49 +1,49 @@
-# Arquitetura
+# Architecture
 
-## Seções principais (obrigatórias)
+## Core Sections (Required)
 
-### 1) Estilo arquitetural
+### 1) Architectural Style
 
-- Estilo principal: [camadas/funcionalidades/orientado a eventos/outro]
-- Motivo da classificação: [justificativa breve baseada em evidências]
-- Restrições principais: [duas ou três restrições que moldam o design]
+- Primary style: [layered/feature/event-driven/other]
+- Why this classification: [short evidence-backed rationale]
+- Primary constraints: [2-3 constraints that shape design]
 
-### 2) Fluxo do sistema
+### 2) System Flow
 
 ```text
-[entrada] -> [processamento] -> [lógica de domínio] -> [dados/integração] -> [resposta/saída]
+[entry] -> [processing] -> [domain logic] -> [data/integration] -> [response/output]
 ```
 
-Descreva o fluxo em quatro a seis etapas usando evidências baseadas em arquivos.
+Describe the flow in 4-6 steps using file-backed evidence.
 
-### 3) Responsabilidades de camadas e módulos
+### 3) Layer/Module Responsibilities
 
-| Camada ou módulo | Responsável por | Não deve conter | Evidência |
+| Layer or module | Owns | Must not own | Evidence |
 |-----------------|------|--------------|----------|
-| [nome] | [responsabilidade] | [não responsabilidade] | [arquivo] |
+| [name] | [responsibility] | [non-responsibility] | [file] |
 
-### 4) Padrões reutilizados
+### 4) Reused Patterns
 
-| Padrão | Onde foi encontrado | Por que existe |
+| Pattern | Where found | Why it exists |
 |---------|-------------|---------------|
-| [instância única/repositório/adaptador/etc.] | [caminho] | [motivo] |
+| [singleton/repository/adapter/etc] | [path] | [reason] |
 
-### 5) Riscos arquiteturais conhecidos
+### 5) Known Architectural Risks
 
-- [Risco 1 + impacto]
-- [Risco 2 + impacto]
+- [Risk 1 + impact]
+- [Risk 2 + impact]
 
-### 6) Evidências
+### 6) Evidence
 
 - [path/to/entrypoint]
 - [path/to/main-layer-files]
 - [path/to/data-or-integration-layer]
 
-## Seções ampliadas (opcionais)
+## Extended Sections (Optional)
 
-Adicione somente quando necessário:
+Add only when needed:
 
-- Detalhes da ordem de inicialização
-- Diagramas de topologia assíncrona ou de eventos
-- Catálogo de antipadrões com caminhos de refatoração
-- Análise de modos de falha e postura de resiliência
+- Startup or initialization order details
+- Async/event topology diagrams
+- Anti-pattern catalog with refactoring paths
+- Failure-mode analysis and resilience posture

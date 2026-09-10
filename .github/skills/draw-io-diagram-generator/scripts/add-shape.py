@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-add-shape.py: adiciona uma nova forma de vértice a um arquivo de diagrama .drawio existente.
+add-shape.py — Add a new vertex shape to an existing .drawio diagram file.
 
-Uso:
+Usage:
     python scripts/add-shape.py <diagram.drawio> <label> <x> <y> [options]
 
-Exemplos:
-    python scripts/add-shape.py docs/flowchart.drawio "Nova etapa" 400 300
-    python scripts/add-shape.py docs/arch.drawio "Decisão" 400 400 \\
+Examples:
+    python scripts/add-shape.py docs/flowchart.drawio "New Step" 400 300
+    python scripts/add-shape.py docs/arch.drawio "Decision" 400 400 \\
         --width 160 --height 80 \\
         --style "rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
-    python scripts/add-shape.py docs/arch.drawio "Visualizar nó" 200 200 --dry-run
+    python scripts/add-shape.py docs/arch.drawio "Preview Node" 200 200 --dry-run
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ DEFAULT_STYLE = "rounded=1;whiteSpace=wrap;html=1;"
 
 
 def _indent_xml(elem: ET.Element, level: int = 0) -> None:
-    """Recua a árvore XML no local. Substitui ET.indent() para compatibilidade com Python 3.8."""
+    """Indent XML tree in-place. Replaces ET.indent() for Python 3.8 compatibility."""
     indent = "\n" + "  " * level
     if len(elem):
         if not elem.text or not elem.text.strip():
@@ -35,7 +35,7 @@ def _indent_xml(elem: ET.Element, level: int = 0) -> None:
             elem.tail = indent
         for child in elem:
             _indent_xml(child, level + 1)
-        # cauda do último filho
+        # last child tail
         if not child.tail or not child.tail.strip():
             child.tail = indent
     else:
@@ -46,7 +46,7 @@ def _indent_xml(elem: ET.Element, level: int = 0) -> None:
 
 
 def _generate_id(label: str, x: int, y: int) -> str:
-    """Gera um ID curto quase determinístico com base em rótulo + posição + tempo."""
+    """Generate a short deterministic-ish id based on label + position + time."""
     seed = f"{label}:{x}:{y}:{time.time_ns()}"
     return "auto_" + hashlib.sha1(seed.encode()).hexdigest()[:8]
 
@@ -63,31 +63,31 @@ def add_shape(
     dry_run: bool = False,
 ) -> int:
     """
-    Analisa o arquivo .drawio, insere uma nova célula de vértice na página
-    especificada do diagrama e grava o arquivo (salvo quando dry_run for True).
+    Parse the .drawio file, insert a new vertex cell into the specified diagram page,
+    and write the file back (unless dry_run is True).
 
-    Retorna:
-        0 em caso de sucesso, 1 em caso de falha.
+    Returns:
+        0 on success, 1 on failure.
     """
-    # Preserva a declaração XML / indentação original ao gravar bytes brutos.
+    # Preserve the original XML declaration / indentation by writing raw bytes.
     ET.register_namespace("", "")
 
     try:
         tree = ET.parse(path)
     except ET.ParseError as exc:
-        print(f"ERRO: erro de análise XML em '{path}': {exc}")
+        print(f"ERROR: XML parse error in '{path}': {exc}")
         return 1
 
     mxfile = tree.getroot()
     if mxfile.tag != "mxfile":
-        print(f"ERRO: o elemento-raiz deve ser <mxfile>, recebido <{mxfile.tag}>")
+        print(f"ERROR: Root element must be <mxfile>, got <{mxfile.tag}>")
         return 1
 
     diagrams = mxfile.findall("diagram")
     if diagram_index >= len(diagrams):
         print(
-            f"ERRO: diagram-index {diagram_index} está fora do intervalo "
-            f"(o arquivo tem {len(diagrams)} diagrama(s))"
+            f"ERROR: diagram-index {diagram_index} is out of range "
+            f"(file has {len(diagrams)} diagram(s))"
         )
         return 1
 
@@ -95,33 +95,33 @@ def add_shape(
     graph_model = diagram.find("mxGraphModel")
     if graph_model is None:
         print(
-            "ERRO: <mxGraphModel> não foi encontrado como filho direto. "
-            "Diagramas compactados não são compatíveis."
+            "ERROR: <mxGraphModel> not found as direct child. "
+            "Compressed diagrams are not supported."
         )
         return 1
 
     root_elem = graph_model.find("root")
     if root_elem is None:
-        print("ERRO: elemento <root> não encontrado dentro de <mxGraphModel>")
+        print("ERROR: <root> element not found inside <mxGraphModel>")
         return 1
 
-    # Determina o ID do pai, com padrão "1" (a camada-padrão)
+    # Determine parent id — default to "1" (the default layer)
     parent_id = "1"
     existing_ids = {c.get("id") for c in root_elem.findall("mxCell") if c.get("id")}
     if parent_id not in existing_ids:
-        # Usa como alternativa o primeiro ID de célula diferente de "0"
+        # Fallback to the first cell id that isn't "0"
         for c in root_elem.findall("mxCell"):
             cid = c.get("id")
             if cid and cid != "0":
                 parent_id = cid
                 break
 
-    # Gera um ID exclusivo
+    # Generate a unique id
     new_id = _generate_id(label, x, y)
     while new_id in existing_ids:
         new_id = _generate_id(label + "_", x, y)
 
-    # Cria o novo elemento mxCell
+    # Build the new mxCell element
     new_cell = ET.Element("mxCell")
     new_cell.set("id", new_id)
     new_cell.set("value", label)
@@ -137,50 +137,50 @@ def add_shape(
     geom.set("as", "geometry")
 
     if dry_run:
-        print("SIMULAÇÃO: XML da nova célula (não gravado):")
+        print("DRY RUN — new cell XML (not written):")
         print(ET.tostring(new_cell, encoding="unicode"))
-        print(f"\nAdicionaria ao diagrama '{diagram.get('name', diagram_index)}' em '{path}'")
+        print(f"\nWould add to diagram '{diagram.get('name', diagram_index)}' in '{path}'")
         return 0
 
     root_elem.append(new_cell)
 
-    # Grava preservando a declaração XML (usa _indent_xml para compatibilidade com Python 3.8)
+    # Write back preserving XML declaration (uses _indent_xml for Python 3.8 compat)
     _indent_xml(tree.getroot())
     tree.write(str(path), encoding="utf-8", xml_declaration=True)
 
     print(
-        f"Forma id=\"{new_id}\" adicionada à página {diagram_index} "
-        f"('{diagram.get('name', '')}') de {path}"
+        f"Added shape id=\"{new_id}\" to page {diagram_index} "
+        f"('{diagram.get('name', '')}') of {path}"
     )
     return 0
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Adiciona uma forma a um arquivo de diagrama .drawio existente.",
+        description="Add a shape to an existing .drawio diagram file.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("diagram", help="Caminho do arquivo .drawio")
-    parser.add_argument("label", help="Rótulo de texto da nova forma")
-    parser.add_argument("x", type=int, help="Coordenada X (pixels)")
-    parser.add_argument("y", type=int, help="Coordenada Y (pixels)")
-    parser.add_argument("--width", type=int, default=120, help="Largura da forma (padrão: 120)")
-    parser.add_argument("--height", type=int, default=60, help="Altura da forma (padrão: 60)")
+    parser.add_argument("diagram", help="Path to the .drawio file")
+    parser.add_argument("label", help="Text label for the new shape")
+    parser.add_argument("x", type=int, help="X coordinate (pixels)")
+    parser.add_argument("y", type=int, help="Y coordinate (pixels)")
+    parser.add_argument("--width", type=int, default=120, help="Shape width (default: 120)")
+    parser.add_argument("--height", type=int, default=60, help="Shape height (default: 60)")
     parser.add_argument(
         "--style",
         default=DEFAULT_STYLE,
-        help=f'string de estilo do draw.io (padrão: "{DEFAULT_STYLE}")',
+        help=f'draw.io style string (default: "{DEFAULT_STYLE}")',
     )
     parser.add_argument(
         "--diagram-index",
         type=int,
         default=0,
-        help="Índice, com base zero, da página do diagrama que receberá a forma (padrão: 0)",
+        help="0-based index of the diagram page to add to (default: 0)",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Imprime o XML da nova célula sem gravar no arquivo",
+        help="Print the new cell XML without writing to file",
     )
     return parser.parse_args(argv)
 
@@ -190,10 +190,10 @@ def main(argv: list[str] | None = None) -> int:
     path = Path(args.diagram)
 
     if not path.exists():
-        print(f"ERRO: arquivo não encontrado: {path}")
+        print(f"ERROR: File not found: {path}")
         return 1
     if not path.is_file():
-        print(f"ERRO: não é um arquivo: {path}")
+        print(f"ERROR: Not a file: {path}")
         return 1
 
     return add_shape(
