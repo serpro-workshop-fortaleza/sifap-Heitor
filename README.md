@@ -14,6 +14,21 @@ Comece por [`00-START-HERE.md`](00-START-HERE.md).
 
 ---
 
+## Idiomas do repositório
+
+Este kit é publicado em três edições completas, cada uma em sua própria branch. Escolha a sua:
+
+| Idioma | Branch | Acesso |
+|---|---|---|
+| English | `main` | <https://github.com/serpro-workshop-fortaleza/sifap-Heitor/tree/main> |
+| Español | `espanol` | <https://github.com/serpro-workshop-fortaleza/sifap-Heitor/tree/espanol> |
+| Português (BR) | `portugues-br` | <https://github.com/serpro-workshop-fortaleza/sifap-Heitor/tree/portugues-br> |
+
+> [!NOTE]
+> Mantenha a `main` e a `develop` do time em inglês; as branches de idioma (`espanol`, `portugues-br`) não são branches de integração. Consulte [`00-SETUP.md`](00-SETUP.md).
+
+---
+
 ## Por onde começar (escolha seu perfil)
 
 | Eu sou... | Comece por |
