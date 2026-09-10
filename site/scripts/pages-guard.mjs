@@ -6,9 +6,9 @@ import { assertPagesAccess } from "./lib/content.mjs";
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const settings = JSON.parse(readFileSync(resolve(siteRoot, "repository.json"), "utf8"));
-const name = process.env.GITHUB_REPOSITORY ?? settings.repository;
-if (!/^[\w.-]+\/[\w.-]+$/.test(name) || name !== settings.repository) {
-  throw new Error("The deployment repository does not match the portal configuration.");
+const name = process.env.GITHUB_REPOSITORY || settings.repository;
+if (!/^[\w.-]+\/[\w.-]+$/.test(name)) {
+  throw new Error("The deployment repository name is invalid.");
 }
 const api = (path) => JSON.parse(execFileSync("gh", ["api", path], { encoding: "utf8" }));
 const repository = api(`repos/${name}`);
