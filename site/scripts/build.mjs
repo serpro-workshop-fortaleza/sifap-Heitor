@@ -5,7 +5,7 @@ function run(command, args) {
   execFileSync(command, args, { stdio: "inherit", env });
 }
 run(process.execPath, ["scripts/build-content.mjs"]);
-run("npm", ["exec", "--no", "--", "astro", "check"]);
-run("npm", ["exec", "--no", "--", "astro", "build"]);
-run("npm", ["exec", "--no", "--", "pagefind", "--site", "dist"]);
+run(process.execPath, ["node_modules/astro/bin/astro.mjs", "check"]);
+run(process.execPath, ["node_modules/astro/bin/astro.mjs", "build"]);
+run(process.execPath, ["node_modules/pagefind/lib/runner/bin.cjs", "--site", "dist"]);
 run(process.execPath, ["scripts/audit-built-site.mjs"]);
