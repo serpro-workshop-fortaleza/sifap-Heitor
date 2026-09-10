@@ -1,187 +1,187 @@
-# Solução de problemas consolidada
+# Consolidated Troubleshooting
 
-> **Trilha:** [Kit do Time](../README.md) › [Documentação](README.md) › **Solução de problemas**
+> **Track:** [Team Kit](../README.md) › [Docs](README.md) › **Troubleshooting**
 
-**Um guia de diagnóstico e resolução dos erros mais comuns da imersão** — use `Ctrl+F` para pesquisar o sintoma.
+**A diagnostic and resolution guide for the workshop's most common errors** — use `Ctrl+F` to search for the symptom.
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | O time inteiro |
-| **Como usar** | Use `Ctrl+F` para pesquisar o sintoma. Se não o encontrar, consulte [FAQ.md](FAQ.md) |
-| **Resultado esperado** | O problema é resolvido ao seguir os passos descritos |
+| **Audience** | The entire team |
+| **How to use** | Use `Ctrl+F` to search for the symptom. If you cannot find it, see [FAQ.md](FAQ.md) |
+| **Expected outcome** | The issue is resolved by following the described steps |
 
 ---
 
-## Sumário
+## Table of contents
 
-- [Setup e ambiente](#setup-e-ambiente)
-- [Copilot, agentes e personas](#copilot-agentes-e-personas)
-- [Spec-Kit e EARS](#spec-kit-e-ears)
-- [Backend — Java e Spring Boot](#backend--java-e-spring-boot)
-- [Frontend — Next.js e Node](#frontend--nextjs-e-node)
+- [Setup and environment](#setup-and-environment)
+- [Copilot, agents, and personas](#copilot-agents-and-personas)
+- [Spec-Kit and EARS](#spec-kit-and-ears)
+- [Backend — Java and Spring Boot](#backend--java-and-spring-boot)
+- [Frontend — Next.js and Node](#frontend--nextjs-and-node)
 - [Docker](#docker)
-- [Git e GitHub](#git-e-github)
-- [Terraform e Azure](#terraform-e-azure)
-- [Plano B — indisponibilidade do Copilot](#plano-b--indisponibilidade-do-copilot)
+- [Git and GitHub](#git-and-github)
+- [Terraform and Azure](#terraform-and-azure)
+- [Plan B — Copilot outage](#plan-b--copilot-outage)
 
 ---
 
-## Setup e ambiente
+## Setup and environment
 
-### Ferramentas locais ausentes (Java, Node, Maven)
+### Missing local tools (Java, Node, Maven)
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Uma mensagem de erro "command not found" para `java`, `node` ou `mvn` |
-| **Causa provável** | As ferramentas locais ainda não foram instaladas |
-| **Correção** | Instale as versões especificadas em [`00-SETUP.md`](../00-SETUP.md) e valide-as com `java -version`, `node --version` e `git --version` |
-| **Como confirmar** | Os três comandos retornam a versão esperada sem erros |
+| **Symptom** | A "command not found" error message for `java`, `node`, or `mvn` |
+| **Likely cause** | The local tools have not been installed yet |
+| **Fix** | Install the versions specified in [`00-SETUP.md`](../00-SETUP.md), then validate them with `java -version`, `node --version`, and `git --version` |
+| **How to confirm** | All three commands return the expected version without errors |
 
-### "git: command not found" no terminal do VS Code (Mac)
+### "git: command not found" in the VS Code terminal (Mac)
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Ocorre um erro ao tentar executar qualquer comando `git` |
-| **Causa provável** | As ferramentas de CLI do Xcode não estão instaladas |
-| **Correção** | Execute `xcode-select --install` e siga o instalador |
-| **Como confirmar** | `git --version` retorna uma versão sem erros |
+| **Symptom** | An error occurs when you try to run any `git` command |
+| **Likely cause** | The Xcode CLI tools are not installed |
+| **Fix** | Run `xcode-select --install` and follow the installer |
+| **How to confirm** | `git --version` returns a version without errors |
 
 ---
 
-## Copilot, agentes e personas
+## Copilot, agents, and personas
 
-### O comando de barra não aparece no GitHub Copilot
+### Slash command does not appear in Chat
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | `/ears-convert`, `/tdd` ou outros comandos não aparecem nas sugestões |
-| **Causa provável** | O VS Code não recarregou o diretório `.github/` consolidado, ou a janela foi aberta fora da raiz do repositório |
-| **Correção** | Confirme que `.github/prompts/` contém arquivos e recarregue a janela: `Cmd+Shift+P` → _Developer: Reload Window_ |
-| **Como confirmar** | Os comandos aparecem quando você digita `/` no GitHub Copilot |
+| **Symptom** | `/ears-convert`, `/tdd`, or other commands do not appear in the suggestions |
+| **Likely cause** | VS Code has not reloaded the consolidated `.github/` directory, or the window was opened outside the repository root |
+| **Fix** | Confirm that `.github/prompts/` contains files, then reload the window: `Cmd+Shift+P` → _Developer: Reload Window_ |
+| **How to confirm** | Commands appear when you type `/` in Chat |
 
 > [!CAUTION]
-> Nunca crie cópias paralelas de agentes, prompts ou skills fora de `.github/`. Essa é a única fonte ativa e não deve ser editada.
+> Never create parallel copies of agents, prompts, or skills outside `.github/`. It is the only active source and must not be edited.
 
-### "Não consigo selecionar `@archaeologist` no GitHub Copilot"
+### "I can't select `@archaeologist` in Chat"
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | O agente `@archaeologist` não aparece no seletor do GitHub Copilot |
-| **Causa 1** | O diretório `06-stage-agents/` não está no workspace |
-| **Causa 2** | A extensão GitHub Copilot Chat está desatualizada |
-| **Correção** | Execute `ls 06-stage-agents/` para confirmar que o diretório está presente. Atualize a extensão na visualização Extensions do VS Code |
-| **Como confirmar** | O agente aparece na lista suspensa do GitHub Copilot |
+| **Symptom** | The `@archaeologist` agent does not appear in the Chat selector |
+| **Cause 1** | The `06-stage-agents/` directory is not in the workspace |
+| **Cause 2** | The GitHub Copilot Chat extension is out of date |
+| **Fix** | Run `ls 06-stage-agents/` to confirm that the directory is present. Update the extension from the VS Code Extensions view |
+| **How to confirm** | The agent appears in the Chat dropdown |
 
-### O Copilot responde sem o contexto relevante
+### Copilot responds without the relevant context
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Respostas genéricas sem relação com o SIFAP (Sistema de Fiscalização e Administração de Pagamentos) ou com o estágio atual |
-| **Causa provável** | Nenhum agente de estágio está selecionado, ou o agente errado está selecionado |
-| **Correção** | Confirme o estágio atual com o time e selecione o agente correspondente na lista suspensa do GitHub Copilot |
-| **Como confirmar** | As respostas passam a mencionar o estágio e o contexto do sistema legado |
+| **Symptom** | Generic responses unrelated to SIFAP (Payment Inspection and Administration System) or the current stage |
+| **Likely cause** | No stage agent is selected, or the wrong agent is selected |
+| **Fix** | Confirm the current stage with the team and select the corresponding agent from the Chat dropdown |
+| **How to confirm** | Responses begin referencing the stage and legacy-system context |
 
-### "Quero usar o modo Plan, mas somente Ask está disponível"
+### "I want to use Plan mode, but only Ask is available"
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | O modo Plan não está disponível |
-| **Causa provável** | A extensão do Copilot está desatualizada |
-| **Correção** | Atualize a extensão GitHub Copilot Chat no VS Code |
-| **Como confirmar** | O modo Plan aparece no seletor de modos |
+| **Symptom** | Plan mode is not available |
+| **Likely cause** | The Copilot extension is outdated |
+| **Fix** | Update the GitHub Copilot Chat extension in VS Code |
+| **How to confirm** | Plan mode appears in the mode selector |
 
 ---
 
-## Spec-Kit e EARS
+## Spec-Kit and EARS
 
-### "`specify version` retorna command not found"
+### "`specify version` returns command not found"
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Ocorre um erro ao executar qualquer comando `specify` |
-| **Causa provável** | O Spec-Kit não está instalado |
-| **Correção** | Execute os comandos abaixo |
-| **Como confirmar** | `specify version` retorna um número de versão |
+| **Symptom** | An error occurs when you run any `specify` command |
+| **Likely cause** | Spec-Kit is not installed |
+| **Fix** | Run the commands below |
+| **How to confirm** | `specify version` returns a version number |
 
 ```bash
 uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 specify version
 ```
 
-### A CI rejeitou o PR: `missing source_legacy`
+### CI rejected the PR: `missing source_legacy`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | A CI bloqueia o pull request com um erro de rastreabilidade |
-| **Causa provável** | Um ou mais requisitos EARS não incluem uma linha `source_legacy:` |
-| **Correção** | Abra `specs/<NNN>-<feature>/spec.md`, localize os REQ-IDs sem `source_legacy:` e adicione o campo apontando para `01-archaeology/legacy-sifap/...#L<linha>` ou marcando-o como `[GREENFIELD] <motivo>` |
-| **Como confirmar** | A CI passa na próxima execução |
+| **Symptom** | CI blocks the pull request with a traceability error |
+| **Likely cause** | One or more EARS requirements do not include a `source_legacy:` line |
+| **Fix** | Open `specs/<NNN>-<feature>/spec.md`, locate REQ-IDs without `source_legacy:`, and add the field, pointing to `01-archaeology/legacy-sifap/...#L<linha>` or marking it as `[GREENFIELD] <motivo>` |
+| **How to confirm** | CI passes on the next run |
 
-Consulte [`07-concepts/05-ears-notation.md`](../07-concepts/05-ears-notation.md) para ver o formato correto.
+See [`07-concepts/05-ears-notation.md`](../07-concepts/05-ears-notation.md) for the correct format.
 
-### `/speckit.clarify` está fazendo perguntas demais
+### `/speckit.clarify` is asking too many questions
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | O comando faz dez ou mais perguntas |
-| **Causa** | Isso não é um problema: é o comportamento esperado |
-| **Ação** | Responda a todas as perguntas. Cada resposta ajuda a evitar um bug futuro |
+| **Symptom** | The command asks 10 or more questions |
+| **Cause** | This is not a problem — it is the expected behavior |
+| **Action** | Answer every question. Each answer helps prevent a future bug |
 
 ---
 
-## Backend — Java e Spring Boot
+## Backend — Java and Spring Boot
 
-### O backend não inicia — erro de conexão com o Postgres
+### Backend does not start — Postgres connection error
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Ocorre um erro `Connection refused` ou semelhante quando o backend inicia |
-| **Causa provável** | O Postgres não está em execução, ou a URL em `application.yml` está incorreta |
-| **Correção** | Verifique `application.yml` e inicie o Postgres pelo método definido pelo time (local, Testcontainers ou Docker Compose) |
-| **Como confirmar** | O backend inicia e responde em `/actuator/health` |
+| **Symptom** | A `Connection refused` or similar error occurs when the backend starts |
+| **Likely cause** | Postgres is not running, or the URL in `application.yml` is incorrect |
+| **Fix** | Check `application.yml` and start Postgres using the method defined by the team (local, Testcontainers, or Docker Compose) |
+| **How to confirm** | The backend starts and responds at `/actuator/health` |
 
 ### Flyway: `Migration checksum mismatch`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Ocorre um erro do Flyway quando o backend inicia |
-| **Causa provável** | Um arquivo de migração existente foi editado depois de ser aplicado |
-| **Correção** | Restaure a versão original usando `git log` e crie um novo arquivo `V<N+1>__descricao.sql` |
-| **Como confirmar** | O backend inicia sem erros do Flyway |
+| **Symptom** | A Flyway error occurs when the backend starts |
+| **Likely cause** | An existing migration file was edited after it was applied |
+| **Fix** | Restore the original version using `git log` and create a new `V<N+1>__descricao.sql` file |
+| **How to confirm** | The backend starts without Flyway errors |
 
 > [!CAUTION]
-> Nunca edite arquivos de migração que já foram aplicados (V1, V2, V3...). Sempre crie um novo arquivo com o próximo número de versão.
+> Never edit migration files that have already been applied (V1, V2, V3...). Always create a new file with the next version number.
 
 ### Testcontainers: `Could not find a valid Docker environment`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Os testes que usam Testcontainers falham com um erro de ambiente do Docker |
-| **Causa provável** | O Docker não está em execução, ou o socket usa um caminho fora do padrão |
-| **Correção (macOS)** | `export DOCKER_HOST=unix:///var/run/docker.sock` ou `export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock` |
-| **Como confirmar** | Os testes passam na próxima execução |
+| **Symptom** | Tests that use Testcontainers fail with a Docker environment error |
+| **Likely cause** | Docker is not running, or the socket uses a nonstandard path |
+| **Fix (macOS)** | `export DOCKER_HOST=unix:///var/run/docker.sock` or `export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock` |
+| **How to confirm** | The tests pass on the next run |
 
 ---
 
-## Frontend — Next.js e Node
+## Frontend — Next.js and Node
 
-### O frontend exibe `ECONNREFUSED localhost:8080`
+### Frontend displays `ECONNREFUSED localhost:8080`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | A página do frontend exibe um erro de conexão recusada |
-| **Causa provável** | O backend não está em execução ou usa outra porta |
-| **Correção** | Confirme que o backend está em execução e que a URL do frontend aponta para a porta correta |
-| **Como confirmar** | A página carrega os dados normalmente |
+| **Symptom** | The frontend page displays a connection refused error |
+| **Likely cause** | The backend is not running or is using a different port |
+| **Fix** | Confirm that the backend is running and that the frontend URL points to the correct port |
+| **How to confirm** | The page loads data normally |
 
 ### `Module not found: shadcn/ui`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Ocorre um erro de módulo não encontrado quando o frontend inicia |
-| **Causa provável** | As dependências não estão instaladas |
-| **Correção** | `cd frontend && npm install` |
-| **Como confirmar** | O frontend inicia sem erros de módulo |
+| **Symptom** | A module-not-found error occurs when the frontend starts |
+| **Likely cause** | Dependencies are not installed |
+| **Fix** | `cd frontend && npm install` |
+| **How to confirm** | The frontend starts without module errors |
 
 ---
 
@@ -189,62 +189,62 @@ Consulte [`07-concepts/05-ears-notation.md`](../07-concepts/05-ears-notation.md)
 
 ### `Cannot connect to the Docker daemon`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Todos os comandos Docker falham com um erro do daemon |
-| **Causa provável** | O Docker Desktop está parado |
-| **Correção** | Abra o Docker Desktop e aguarde o serviço iniciar por completo |
-| **Como confirmar** | `docker ps` retorna a lista de contêineres sem erros |
+| **Symptom** | Every Docker command fails with a daemon error |
+| **Likely cause** | Docker Desktop is stopped |
+| **Fix** | Open Docker Desktop and wait for the service to start completely |
+| **How to confirm** | `docker ps` returns the container list without errors |
 
 ### `port is already allocated`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | O contêiner não inicia por causa de um conflito de porta |
-| **Causa provável** | A porta 5432, 8080 ou 3000 já está em uso por outro processo |
-| **Correção** | Execute `lsof -i :8080` para identificar e encerrar o processo, ou altere a porta na configuração local |
-| **Como confirmar** | O contêiner inicia sem erro de porta |
+| **Symptom** | The container does not start because of a port conflict |
+| **Likely cause** | Port 5432, 8080, or 3000 is already in use by another process |
+| **Fix** | Run `lsof -i :8080` to identify and stop the process, or change the port in the local configuration |
+| **How to confirm** | The container starts without a port error |
 
-### O Docker Desktop relata `Out of memory`
+### Docker Desktop reports `Out of memory`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Os contêineres falham ou ficam lentos, e aparece um aviso de memória |
-| **Causa provável** | O limite de RAM alocado ao Docker Desktop é muito baixo |
-| **Correção** | Docker Desktop → Settings → Resources → Memory → 8 GB ou mais |
-| **Como confirmar** | Os contêineres iniciam e respondem normalmente |
+| **Symptom** | Containers fail or become slow, and a memory warning appears |
+| **Likely cause** | The RAM limit allocated to Docker Desktop is too low |
+| **Fix** | Docker Desktop → Settings → Resources → Memory → 8 GB or more |
+| **How to confirm** | Containers start and respond normally |
 
 ---
 
-## Git e GitHub
+## Git and GitHub
 
-### Push rejeitado: `protected branch`
+### Push rejected: `protected branch`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | `git push` é rejeitado com uma mensagem de branch protegida |
-| **Causa provável** | Houve uma tentativa de push direto para `main` ou `develop` |
-| **Correção** | Crie uma branch e abra um pull request. Consulte [`00-GIT-WORKFLOW.md`](../00-GIT-WORKFLOW.md) |
-| **Como confirmar** | O pull request é criado com sucesso |
+| **Symptom** | `git push` is rejected with a protected-branch message |
+| **Likely cause** | A direct push to `main` or `develop` was attempted |
+| **Fix** | Create a branch and open a pull request. See [`00-GIT-WORKFLOW.md`](../00-GIT-WORKFLOW.md) |
+| **How to confirm** | The pull request is created successfully |
 
-### Conflito de merge
+### Merge conflict
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Marcadores `<<<<<<<` aparecem nos arquivos durante um merge ou rebase |
-| **Causa provável** | Alguém alterou o mesmo arquivo em `develop` antes de você |
-| **Correção** | Execute o bloco abaixo, resolva os conflitos manualmente e conclua o rebase |
-| **Como confirmar** | `git status` não mostra mais arquivos com conflitos |
+| **Symptom** | `<<<<<<<` markers appear in files during a merge or rebase |
+| **Likely cause** | Someone changed the same file in `develop` before you |
+| **Fix** | Run the block below, resolve the conflicts manually, and complete the rebase |
+| **How to confirm** | `git status` no longer shows files with conflicts |
 
 ```bash
 git fetch origin
 git rebase origin/develop
-# Resolva os conflitos nos arquivos que contêm marcadores
+# Resolve conflicts in files containing markers
 git add <file>
 git rebase --continue
 ```
 
-### Commit feito acidentalmente diretamente em `develop`
+### Commit accidentally made directly on `develop`
 
 ```bash
 git reset --soft HEAD~1
@@ -256,78 +256,78 @@ git commit -m "..."
 
 ### `gh: command not found`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | Ocorre um erro ao usar qualquer comando `gh` |
-| **Causa provável** | O GitHub CLI não está instalado |
-| **Correção** | `brew install gh && gh auth login` |
-| **Como confirmar** | `gh --version` retorna uma versão sem erros |
+| **Symptom** | An error occurs when you use any `gh` command |
+| **Likely cause** | GitHub CLI is not installed |
+| **Fix** | `brew install gh && gh auth login` |
+| **How to confirm** | `gh --version` returns a version without errors |
 
 ---
 
-## Terraform e Azure
+## Terraform and Azure
 
 ### `Error: building AzureRM Client`
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | O Terraform falha ao inicializar o provider do Azure |
-| **Causa provável** | A sessão do Azure CLI expirou ou não foi iniciada |
-| **Correção** | Execute `az login` |
-| **Como confirmar** | `terraform plan` é executado sem erros de autenticação |
+| **Symptom** | Terraform fails while initializing the Azure provider |
+| **Likely cause** | The Azure CLI session has expired or has not been started |
+| **Fix** | Run `az login` |
+| **How to confirm** | `terraform plan` runs without authentication errors |
 
-### `terraform plan` mostra centenas de novos recursos
+### `terraform plan` shows hundreds of new resources
 
-| Campo | Detalhes |
+| Field | Details |
 |---|---|
-| **Sintoma** | A saída de `plan` lista muitos recursos para criar |
-| **Causa** | O arquivo de estado está vazio: esse é o comportamento esperado na primeira execução |
-| **Ação** | Revise o plano. Não execute `apply`. |
+| **Symptom** | The `plan` output lists many resources to create |
+| **Cause** | The state file is empty — this is the expected behavior on the first run |
+| **Action** | Review the plan. Do not run `apply`. |
 
 > [!CAUTION]
-> A imersão autoriza somente `terraform plan`. Executar `terraform apply` cria recursos reais do Azure e gera custos imediatamente.
+> The workshop authorizes only `terraform plan`. Running `terraform apply` creates real Azure resources and immediately incurs costs.
 
 ---
 
-## Plano B — indisponibilidade do Copilot
+## Plan B — Copilot outage
 
-Se o GitHub Copilot parar de responder por mais de cinco minutos:
+If Copilot Chat stops responding for more than 5 minutes:
 
 > [!WARNING]
-> Não espere passivamente. A imersão dura oito horas, e cada minuto ocioso tem um custo alto para o time.
+> Do not wait passively. The workshop lasts 8 hours, and every idle minute has a high cost for the team.
 
-- [ ] **Recarregue** — tente `Cmd+Shift+P` → _Reload Window_. Se o Copilot voltar, continue normalmente.
-- [ ] **Trabalhe manualmente** — se ele continuar offline, volte aos modelos e artefatos que o time já produziu.
-- [ ] **Estruture o próximo artefato** — use as evidências disponíveis sem inventar dados.
-- [ ] **Documente no PR** — escreva: _"Concluído manualmente em X min (Copilot offline)"_. Isso sustenta o relatório do Estágio 4.
-- [ ] **Coordene com a dupla que receberá** — combine que o artefato pode estar menos refinado que o habitual.
+- [ ] **Reload** — try `Cmd+Shift+P` → _Reload Window_. If Copilot returns, continue as usual.
+- [ ] **Work manually** — if it remains offline, return to the templates and artifacts the team has already produced.
+- [ ] **Structure the next artifact** — use the available evidence without inventing data.
+- [ ] **Document it in the PR** — write: _"Completed manually in X min (Copilot offline)"_ — this supports the Stage 4 report.
+- [ ] **Coordinate with the receiving partner** — agree that the artifact may be less refined than usual.
 
-A CI continua validando as mudanças mesmo quando o Copilot está offline. O trabalho não para.
+CI continues to validate changes even while Copilot is offline. Work does not stop.
 
-| Artefato sem Copilot | Próximo passo |
+| Artifact without Copilot | Next step |
 |---|---|
-| EARS no Estágio 2 | Use as descobertas rastreáveis e o fluxo do [Spec-Kit](../09-cheat-sheets/spec-kit-workflow.md) |
-| ADR no Estágio 2 | Preencha o [modelo de ADR](adr/0000-template.md) |
-| Implementação no Estágio 3 | Revise os requisitos EARS priorizados, os DDMs e as decisões do time |
-| Issue para o Agent no Estágio 4 | Escreva o contexto, os critérios de aceitação e a rastreabilidade da mudança |
+| EARS in Stage 2 | Use the traceable findings and the [Spec-Kit](../09-cheat-sheets/spec-kit-workflow.md) workflow |
+| ADR in Stage 2 | Complete the [ADR template](adr/0000-template.md) |
+| Implementation in Stage 3 | Review the prioritized EARS requirements, the DDMs, and the team's decisions |
+| Issue for Agent in Stage 4 | Write the context, acceptance criteria, and change traceability |
 
 ---
 
-## Quando nenhuma das soluções acima funcionar
+## When none of the solutions above work
 
-| Tempo bloqueado | Ação |
+| Time blocked | Action |
 |---|---|
-| 5 min | Leia o erro novamente com atenção. Use o modo Ask do GitHub Copilot: _"O que significa este erro: `<cole o erro>`"_ |
-| 10 min | Peça ajuda à sua dupla |
-| 20 min | Levante a mão para o facilitador (regra da §6 do TEAM-FLOW) |
-| 30 min | Pause esta tarefa e trabalhe em outra enquanto alguém ajuda |
+| 5 min | Read the error again carefully. Use Copilot Ask: _"What does this error mean: `<paste the error>`"_ |
+| 10 min | Ask your partner |
+| 20 min | Raise your hand for the facilitator (TEAM-FLOW §6 rule) |
+| 30 min | Pause this task and work on another one while someone helps |
 
 ---
 
-### Continue lendo
+### Continue reading
 
-| Anterior | Próximo |
+| Previous | Next |
 |---|---|
-| [Kit em pt-BR](../README.md)<br/><sub>Ponto de entrada principal.</sub> | [FAQ](FAQ.md)<br/><sub>Perguntas frequentes.</sub> |
+| [PT-BR Kit](../README.md)<br/><sub>Main hub.</sub> | [FAQ](FAQ.md)<br/><sub>Frequently asked questions.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

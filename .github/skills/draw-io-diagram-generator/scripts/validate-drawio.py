@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-validate-drawio.py: valida a estrutura XML de um arquivo de diagrama .drawio.
+validate-drawio.py — Validate the XML structure of a .drawio diagram file.
 
-Uso:
+Usage:
     python scripts/validate-drawio.py <path-to-file.drawio>
 
-Códigos de saída:
-    0  Todas as verificações passaram
-    1  Um ou mais erros de validação encontrados
+Exit codes:
+    0  All checks passed
+    1  One or more validation errors found
 """
 from __future__ import annotations
 
@@ -18,42 +18,42 @@ from pathlib import Path
 
 def _error(msg: str, errors: list) -> None:
     errors.append(msg)
-    print(f"  ERRO: {msg}")
+    print(f"  ERROR: {msg}")
 
 
 def validate_file(path: Path) -> list[str]:
-    """Analisa e valida um único arquivo .drawio. Retorna uma lista de strings de erro."""
+    """Parse and validate a single .drawio file. Returns list of error strings."""
     errors: list[str] = []
 
-    # --- Boa formação do XML ---
+    # --- XML well-formedness ---
     try:
         tree = ET.parse(path)
     except ET.ParseError as exc:
-        return [f"Erro de análise XML: {exc}"]
+        return [f"XML parse error: {exc}"]
 
     root = tree.getroot()
     if root.tag != "mxfile":
-        _error(f"O elemento-raiz deve ser <mxfile>, recebido <{root.tag}>", errors)
+        _error(f"Root element must be <mxfile>, got <{root.tag}>", errors)
         return errors
 
     diagrams = root.findall("diagram")
     if not diagrams:
-        _error("Nenhum elemento <diagram> encontrado dentro de <mxfile>", errors)
+        _error("No <diagram> elements found inside <mxfile>", errors)
         return errors
 
     for d_idx, diagram in enumerate(diagrams):
-        d_name = diagram.get("name", f"página-{d_idx}")
-        prefix = f"[diagrama '{d_name}']"
+        d_name = diagram.get("name", f"page-{d_idx}")
+        prefix = f"[diagram '{d_name}']"
 
-        # Localiza mxGraphModel (pode ser filho direto ou codificado em base64; tratamos somente o direto)
+        # Find mxGraphModel (may be direct child or base64-encoded; we handle direct only)
         graph_model = diagram.find("mxGraphModel")
         if graph_model is None:
-            print(f"  IGNORADO {prefix}: mxGraphModel não encontrado como filho direto (pode estar compactado)")
+            print(f"  SKIP {prefix}: mxGraphModel not found as direct child (may be compressed)")
             continue
 
         root_elem = graph_model.find("root")
         if root_elem is None:
-            _error(f"{prefix} Elemento <root> ausente dentro de <mxGraphModel>", errors)
+            _error(f"{prefix} Missing <root> element inside <mxGraphModel>", errors)
             continue
 
         cells = root_elem.findall("mxCell")
@@ -61,14 +61,14 @@ def validate_file(path: Path) -> list[str]:
         has_id0 = False
         has_id1 = False
 
-        # --- Coleta todos os IDs e verifica as células-raiz ---
+        # --- Collect all IDs, check for root cells ---
         for cell in cells:
             cid = cell.get("id")
             if cid is None:
-                _error(f"{prefix} <mxCell> encontrado sem um atributo 'id'", errors)
+                _error(f"{prefix} Found <mxCell> without an 'id' attribute", errors)
                 continue
             if cid in cell_ids:
-                _error(f"{prefix} ID de célula duplicado id='{cid}'", errors)
+                _error(f"{prefix} Duplicate cell id='{cid}'", errors)
             cell_ids[cid] = cell
             if cid == "0":
                 has_id0 = True
@@ -76,35 +76,35 @@ def validate_file(path: Path) -> list[str]:
                 has_id1 = True
 
         if not has_id0:
-            _error(f"{prefix} Célula-raiz obrigatória id='0' ausente", errors)
+            _error(f"{prefix} Missing required root cell id='0'", errors)
         if not has_id1:
-            _error(f"{prefix} Célula obrigatória da camada-padrão id='1' ausente", errors)
+            _error(f"{prefix} Missing required default-layer cell id='1'", errors)
 
-        # L2: id="0" deve ser a primeira célula; id="1", a segunda
+        # L2: id="0" must be the first cell, id="1" must be the second cell
         if len(cells) >= 1 and cells[0].get("id") != "0":
             _error(
-                f"{prefix} A primeira <mxCell> deve ter id='0', "
-                f"recebido id='{cells[0].get('id')}'",
+                f"{prefix} First <mxCell> must have id='0', "
+                f"got id='{cells[0].get('id')}'",
                 errors,
             )
         if len(cells) >= 2 and cells[1].get("id") != "1":
             _error(
-                f"{prefix} A segunda <mxCell> deve ter id='1', "
-                f"recebido id='{cells[1].get('id')}'",
+                f"{prefix} Second <mxCell> must have id='1', "
+                f"got id='{cells[1].get('id')}'",
                 errors,
             )
-        # L3: id="1" deve ter parent="0"
+        # L3: id="1" must have parent="0"
         for cell in cells:
             if cell.get("id") == "1" and cell.get("parent") != "0":
                 _error(
-                    f"{prefix} A célula id='1' deve ter parent='0', "
-                    f"recebido parent='{cell.get('parent')}'",
+                    f"{prefix} Cell id='1' must have parent='0', "
+                    f"got parent='{cell.get('parent')}'",
                     errors,
                 )
-        # H2: cada página de diagrama deve conter uma célula de título
-        # (um vértice cujo estilo contenha 'text;' e 'fontSize=18')
+        # H2: Every diagram page must contain a title cell
+        # (a vertex with style containing 'text;' and 'fontSize=18')
         def _is_title_style(style: str) -> bool:
-            """Retorna True se a string de estilo identificar uma célula de título do draw.io."""
+            """Return True if the style string identifies a draw.io title text cell."""
             return (
                 (style.startswith("text;") or ";text;" in style)
                 and "fontSize=18" in style
@@ -116,40 +116,40 @@ def validate_file(path: Path) -> list[str]:
         )
         if not has_title_cell:
             _error(
-                f"{prefix} Nenhuma célula de título encontrada; adicione um vértice com estilo "
-                "que contenha 'text;' e 'fontSize=18' no topo da página",
+                f"{prefix} No title cell found — add a vertex with style "
+                "containing 'text;' and 'fontSize=18' at the top of the page",
                 errors,
             )
 
-        # --- Verifica a validade estrutural de cada célula ---
+        # --- Check each cell for structural validity ---
         for cell in cells:
             cid = cell.get("id", "<unknown>")
             is_vertex = cell.get("vertex") == "1"
             is_edge = cell.get("edge") == "1"
 
-            # O pai deve existir (ignora a célula-raiz id=0, que não tem pai)
+            # Parent must exist (skip the root cell id=0 which has no parent)
             parent = cell.get("parent")
             if cid != "0":
                 if parent is None:
-                    _error(f"{prefix} A célula id='{cid}' não tem o atributo 'parent'", errors)
+                    _error(f"{prefix} Cell id='{cid}' is missing a 'parent' attribute", errors)
                 elif parent not in cell_ids:
                     _error(
-                        f"{prefix} A célula id='{cid}' referencia parent='{parent}' desconhecido",
+                        f"{prefix} Cell id='{cid}' references unknown parent='{parent}'",
                         errors,
                     )
 
-            # As células de vértice devem ter mxGeometry
+            # Vertex cells must have mxGeometry
             if is_vertex:
                 geom = cell.find("mxGeometry")
                 if geom is None:
                     _error(
-                        f"{prefix} A célula de vértice id='{cid}' não tem <mxGeometry>",
+                        f"{prefix} Vertex cell id='{cid}' is missing <mxGeometry>",
                         errors,
                     )
 
-            # As células de aresta devem ter source e target, e ambos devem existir.
-            # Exceção: arestas flutuantes (por exemplo, linhas de vida de diagramas de sequência)
-            # usam sourcePoint/targetPoint em mxGeometry em vez dos atributos source/target.
+            # Edge cells must have source and target, both must exist.
+            # Exception: floating edges (e.g. sequence diagram lifelines) use
+            # sourcePoint/targetPoint in mxGeometry instead of source/target attributes.
             if is_edge:
                 source = cell.get("source")
                 target = cell.get("target")
@@ -162,24 +162,24 @@ def validate_file(path: Path) -> list[str]:
                 )
                 if source is None and not has_source_point:
                     _error(
-                        f"{prefix} A célula de aresta id='{cid}' não tem o atributo 'source' "
-                        f"(nem sourcePoint em mxGeometry)",
+                        f"{prefix} Edge cell id='{cid}' is missing 'source' attribute "
+                        f"(and no sourcePoint in mxGeometry)",
                         errors,
                     )
                 elif source is not None and source not in cell_ids:
                     _error(
-                        f"{prefix} A aresta id='{cid}' referencia source='{source}' desconhecido",
+                        f"{prefix} Edge id='{cid}' references unknown source='{source}'",
                         errors,
                     )
                 if target is None and not has_target_point:
                     _error(
-                        f"{prefix} A célula de aresta id='{cid}' não tem o atributo 'target' "
-                        f"(nem targetPoint em mxGeometry)",
+                        f"{prefix} Edge cell id='{cid}' is missing 'target' attribute "
+                        f"(and no targetPoint in mxGeometry)",
                         errors,
                     )
                 elif target is not None and target not in cell_ids:
                     _error(
-                        f"{prefix} A aresta id='{cid}' referencia target='{target}' desconhecido",
+                        f"{prefix} Edge id='{cid}' references unknown target='{target}'",
                         errors,
                     )
 
@@ -188,25 +188,25 @@ def validate_file(path: Path) -> list[str]:
 
 def main() -> int:
     if len(sys.argv) < 2:
-        print("Uso: python validate-drawio.py <diagram.drawio>")
+        print("Usage: python validate-drawio.py <diagram.drawio>")
         return 1
 
     path = Path(sys.argv[1])
     if not path.exists():
-        print(f"Arquivo não encontrado: {path}")
+        print(f"File not found: {path}")
         return 1
     if not path.is_file():
-        print(f"Não é um arquivo: {path}")
+        print(f"Not a file: {path}")
         return 1
 
-    print(f"Validando: {path}")
+    print(f"Validating: {path}")
     errors = validate_file(path)
 
     if errors:
-        print(f"\nFALHA: {len(errors)} erro(s) encontrado(s).")
+        print(f"\nFAIL — {len(errors)} error(s) found.")
         return 1
 
-    print("APROVADO: nenhum erro encontrado.")
+    print("PASS — No errors found.")
     return 0
 
 

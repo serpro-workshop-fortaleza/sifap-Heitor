@@ -1,334 +1,334 @@
-# Fase 1: consultor de arquitetura
+# Phase 1: Architecture Advisor
 
-Este arquivo contém as instruções detalhadas da Fase 1. Leia-o e siga-o ao entrar nessa fase por SKILL.md.
-Usado no Caminho A (novo projeto) e no Caminho B (modificação após o exame da Fase 0).
-
----
-
-## Entrada pelo Caminho B (após analisar recursos existentes)
-
-O diagrama atual (`00_arch_current.html`) gerado na Fase 0 já existe.
-Nesse caso, pule a confirmação do nome/lista de serviços em 1-1 e converse diretamente sobre modificações:
-
-1. "O que você deseja alterar?": solicitação em linguagem natural
-2. Aplique a Regra de Confirmação das Alterações: confirme campos obrigatórios em aberto
-3. Verifique os fatos por validação cruzada no Microsoft Docs
-4. Gere o diagrama atualizado (`01_arch_diagram_draft.html`)
-5. Após a confirmação, siga para a Fase 2
+This file contains the detailed instructions for Phase 1. When entering Phase 1 from SKILL.md, read and follow this file.
+Used in both Path A (new design) and Path B (modification after Phase 0 scan).
 
 ---
 
-**Objetivo desta fase**: identificar com precisão a necessidade e finalizar a arquitetura em conjunto.
+## When Entering from Path B (After Existing Resource Analysis)
 
-### 1-1. Preparar o diagrama: coletar informações obrigatórias
+The current architecture diagram (00_arch_current.html) scanned in Phase 0 already exists.
+In this case, skip the project name/service list confirmation in 1-1 and enter the modification conversation directly:
 
-Antes de desenhar, faça perguntas até confirmar todos os itens abaixo.
-**Gere o diagrama somente após confirmar todos os itens.**
+1. "What would you like to change here?" — User's natural language request
+2. Apply Delta Confirmation Rule — Confirm undecided required fields for the changes
+3. Fact check — Cross-verify with MS Docs
+4. Generate updated diagram (01_arch_diagram_draft.html)
+5. Proceed to Phase 2 after confirmation
 
-**Primeiro, confirme o nome do projeto:**
+---
 
-Ofereça um valor padrão por `ask_user`. Se a pessoa somente pressionar Enter, aplique o padrão; aceite também um nome personalizado.
-Infira o padrão da solicitação (por exemplo, assistente de conversa RAG → `rag-chatbot`; plataforma de dados → `data-platform`).
+**Goal of this Phase**: Accurately identify what the user wants and finalize the architecture together.
+
+### 1-1. Diagram Preparation — Gathering Required Information
+
+Before drawing the diagram, ask the user questions until all items below are confirmed.
+**Generate the diagram only after all items are confirmed.**
+
+**First, confirm the project name:**
+
+Provide a default value as a choice via `ask_user`. If the user just presses Enter, the default is applied; they can also type a custom name.
+The default is inferred from the user's request (e.g., RAG chatbot → `rag-chatbot`, data platform → `data-platform`).
 
 ```
 ask_user({
-  question: "Escolha um nome de projeto. Ele será usado na pasta do Bicep, no caminho do diagrama e no nome da implantação.",
+  question: "Please choose a project name. It will be used for the Bicep folder name, diagram path, and deployment name.",
   choices: ["<inferred-default>", "azure-project"]
 })
 ```
 
-O nome do projeto é usado na pasta de saída do Bicep, no caminho do diagrama, no nome da implantação etc.
+The project name is used for the Bicep output folder name, diagram save path, deployment name, etc.
 
-**🔹 Pré-carregamento paralelo com a pergunta do nome do projeto (obrigatório):**
+**🔹 Parallel Preload Along with Project Name Question (Required):**
 
-Enquanto `ask_user` aguarda a resposta sobre o nome, há tempo ocioso.
-Use-o para **pré-carregar em paralelo as informações necessárias às próximas perguntas e à geração de Bicep**.
+When asking the project name via `ask_user`, there is idle time while waiting for the user to respond.
+Utilize this time to **preload information needed for subsequent questions and Bicep generation in parallel**.
 
-**Ferramentas a chamar simultaneamente com ask_user:**
+**Tools to call simultaneously with ask_user:**
 
 ```
-// Chama ask_user e as ferramentas abaixo simultaneamente em uma única resposta
-[1] ask_user: pergunta sobre o nome do projeto
+// Call ask_user + the tools below simultaneously in a single response
+[1] ask_user — Project name question
 
-[2] view: carrega arquivos de referência (obtém previamente informações estáveis)
+[2] view — Load reference files (pre-acquire Stable information)
     - references/service-gotchas.md
     - references/ai-data.md
     - references/azure-dynamic-sources.md
     - references/architecture-guidance-sources.md
 
-[3] web_fetch: consulta previamente a orientação de arquitetura (quando identificar a carga)
-    - Até duas consultas específicas conforme architecture-guidance-sources.md
+[3] web_fetch — Pre-fetch architecture guidance (when workload type is identified)
+    - Up to 2 targeted fetches based on decision rules in architecture-guidance-sources.md
 
-[4] web_fetch: consulta o Microsoft Docs dos serviços mencionados (obtém informações dinâmicas)
-    - Por exemplo, Foundry → versão da API e disponibilidade de modelos
-    - Por exemplo, AI Search → lista de SKUs
-    - Usa padrões de URL de azure-dynamic-sources.md
+[4] web_fetch — Fetch MS Docs for services mentioned by the user (pre-acquire Dynamic information)
+    - e.g., Foundry → API version, model availability page
+    - e.g., AI Search → SKU list page
+    - Use URL patterns from azure-dynamic-sources.md
 ```
 
-**Benefícios**: enquanto a pessoa digita o nome, as informações são carregadas.
-Assim, perguntas sobre SKU/região já apresentam opções precisas após a confirmação do nome.
-Isso reduz bastante a espera em comparação com a execução sequencial.
+**Benefits**: While the user types the project name, all information is loaded,
+so SKU/region questions can be presented with accurate choices immediately after the project name is confirmed.
+Wait time is significantly reduced compared to sequential execution.
 
-**Observações:**
+**Notes:**
 
-- Pré-carregue somente informações independentes do nome do projeto
-- Execute `web_fetch` somente para serviços mencionados na solicitação inicial (sem suposições)
-- NÃO verifique a CLI do Azure (`az account show`) agora; faça isso ao finalizar a arquitetura
+- Preload targets are only information independent of the project name (nothing depends on the name)
+- web_fetch is performed only for services mentioned in the user's initial request (no guessing)
+- Azure CLI check (`az account show`) is NOT done at this point — preload at architecture finalization
 
-**🔹 Uso da orientação de arquitetura (ajuste da profundidade das perguntas):**
+**🔹 Utilizing Architecture Guidance (Adjusting Question Depth):**
 
-Extraia **pontos de decisão do projeto** dos documentos consultados no pré-carregamento
-e incorpore-os naturalmente às perguntas seguintes.
+Extract **design decision points** from the architecture guidance documents fetched during preload,
+and naturally incorporate them into subsequent user questions.
 
-**Finalidade**: não tratar somente de especificações como SKU/região,
-mas refletir nas perguntas os **pontos de decisão** recomendados pela orientação oficial.
+**Purpose**: Not just spec questions like SKU/region,
+but reflecting **design decision points** recommended by official architecture guidance into the questions.
 
-**Exemplo: solicitação de "assistente de conversa RAG":**
+**Example — When "RAG chatbot" is requested:**
 
-- Consulte Baseline Foundry Chat Architecture (A6)
-- Extraia os pontos de decisão recomendados:
-  → Nível de isolamento da rede (totalmente privada ou híbrida?)
-  → Método de autenticação (identidade gerenciada, Managed Identity, ou chave de API?)
-  → Estratégia de ingestão (indexação por envio, `push`, ou por consulta, `pull`?)
-  → Escopo do monitoramento (Application Insights é necessário?)
-- Inclua esses pontos naturalmente nas perguntas
+- Fetch Baseline Foundry Chat Architecture (A6)
+- Extract recommended design decision points from the document:
+  → Network isolation level (full private vs hybrid?)
+  → Authentication method (managed identity vs API key?)
+  → Data ingestion strategy (push vs pull indexing?)
+  → Monitoring scope (Application Insights needed?)
+- Naturally include these points in user questions
 
-**Observações:**
+**Notes:**
 
-- Extraia da orientação **"pontos a perguntar"**, não "respostas"
-- Especificações como SKU/versão da API/região continuam sendo determinadas somente por `azure-dynamic-sources.md`
-- Limite de consulta: dois documentos, sem varredura completa
+- What is extracted from architecture guidance is **"points to ask about"**, not "answers"
+- Deployment specs like SKU/API version/region are still determined only via `azure-dynamic-sources.md`
+- Fetch budget: maximum 2 documents. No full traversal
 
-**Itens de confirmação obrigatória:**
+**Required confirmation items:**
 
-- [ ] Nome do projeto (padrão: `azure-project`)
-- [ ] Lista de serviços (quais serviços do Azure usar)
-- [ ] SKU/camada de cada serviço
-- [ ] Método de rede (uso de Private Endpoint)
-- [ ] Local da implantação (região)
+- [ ] Project name (default: `azure-project`)
+- [ ] Service list (which Azure services to use)
+- [ ] SKU/tier for each service
+- [ ] Networking method (Private Endpoint usage)
+- [ ] Deployment location (region)
 
-**Princípios das perguntas:**
+**Questioning principles:**
 
-- Não repita perguntas sobre informações já mencionadas
-- Não pergunte detalhes de implementação ausentes do diagrama (método de indexação, volume de consultas etc.)
-- Não faça muitas perguntas de uma vez; pergunte de modo conciso somente os principais itens em aberto
-- Para padrões óbvios (por exemplo, PE habilitado), presuma e somente confirme. Porém, o local SEMPRE exige confirmação
-- **Ao perguntar sobre SKUs, modelos ou opções, apresente TODAS as opções verificadas no Microsoft Docs e a URL correspondente.** Não filtre opções arbitrariamente
+- Do not ask again for information the user has already mentioned
+- Do not ask about detailed implementation specifics not directly represented in the diagram (indexing method, query volume, etc.)
+- Do not ask too many questions at once; ask only key undecided items concisely
+- For items with obvious defaults (e.g., PE enabled), assume and just confirm. However, location MUST always be confirmed with the user
+- **When asking about SKUs, models, or service options, show ALL available choices verified from MS Docs, and provide the MS Docs URL as well.** This allows the user to reference and make their own judgment. Do not show only partial options or arbitrarily filter them out
 
-**🔹 Seleção de SKU de VM/recurso: pré-verificação regional obrigatória**
+**🔹 VM/Resource SKU Selection — Region Availability Pre-check Required:**
 
-**Antes** de perguntar sobre SKUs de VM ou outro recurso, consulte quais estão realmente disponíveis na região de destino.
-Se uma SKU estiver bloqueada por restrições de capacidade regionais, a implantação falhará.
+**Before** asking the user about VM or other resource SKUs, you MUST first query which SKUs are actually available in the target region.
+If a SKU is blocked due to capacity restrictions in a specific region, the deployment will fail.
 
-**Método de verificação da SKU de VM:**
+**VM SKU verification method:**
 
 ```powershell
-# Consulta somente SKUs de VM disponíveis sem restrições na região de destino
+# Query only VM SKUs available without restrictions in the target region
 az vm list-skus --location "<LOCATION>" --size Standard_D2 --resource-type virtualMachines `
   --query "[?restrictions==``[]``].name" -o tsv
 ```
 
-**Princípios:**
+**Principles:**
 
-- Não inclua SKUs não verificadas nas opções
-- Não recomende "SKUs comuns" de memória. Verifique pela CLI az ou pelo Microsoft Docs
-- Inclua somente SKUs verificadas nas opções de `ask_user`
-- Mesmo para SKUs informadas, verifique a disponibilidade antes de prosseguir
+- Do not include unverified SKUs in the choices
+- Do not recommend "commonly used SKUs" from memory — MUST verify via az cli or MS Docs
+- Include only verified SKUs in `ask_user` choices
+- Even for user-provided SKUs, verify availability before proceeding
 
-**Esse princípio se aplica a VMs e a TODOS os recursos sujeitos a restrições de capacidade (Fabric Capacity etc.).**
+**This principle applies equally not just to VMs, but to ALL resources subject to capacity restrictions (Fabric Capacity, etc.).**
 
-**🔹 Princípio de exploração de serviços: é proibido "listar de memória"**
+**🔹 Service Option Exploration Principle — "Listing from Memory" is Prohibited:**
 
-Quando houver uma pergunta sobre uma categoria ("Quais opções de Spark existem?", "Quais são as opções de fila de mensagens?") ou for necessário explorar uma funcionalidade:
+When the user asks about a service category ("What Spark options are there?", "What are the message queue options?"), or when you need to explore services for a specific capability:
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não consulte e liste somente duas ou três URLs lembradas de memória
-- Não afirme definitivamente: "No Azure, X tem A e B"
+- Directly fetch URLs for only 2-3 services from your memory and list them
+- State definitively "In Azure, X has A and B"
 
-**FAÇA isto:**
+**MUST do this:**
 
-1. **Explore a categoria inteira com web_search**: pesquise no nível da categoria, como `"Azure managed Spark options site:learn.microsoft.com"`, para descobrir os serviços
-2. **Compare com o escopo da v1**: verifique se serviços da v1 (Foundry, Fabric, AI Search, ADLS Gen2 etc.) pertencem à categoria. Exemplo: "Spark" → a carga de Engenharia de Dados (Data Engineering) do Microsoft Fabric também oferece Spark
-3. **Consulte especificamente as opções descobertas**: busque no Microsoft Docs informações precisas para comparação
-4. **Apresente todas as opções**: faça uma comparação abrangente, sem omissões
+1. **Explore the full category via web_search** — Search at the category level like `"Azure managed Spark options site:learn.microsoft.com"` to first discover what services exist
+2. **Cross-check with v1 scope** — Regardless of search results, check whether v1 scope services (Foundry, Fabric, AI Search, ADLS Gen2, etc.) fall under the relevant category. e.g.: "Spark" → Microsoft Fabric's Data Engineering workload also provides Spark
+3. **Targeted fetch of discovered options** — Fetch MS Docs for the services found via search to collect accurate comparison information
+4. **Present all options to the user** — Present all discovered options in a comprehensive comparison without omitting any
 
-**Exemplo: pergunta "Quais instâncias de Spark estão disponíveis?":**
-
-```
-Abordagem incorreta: consultar somente as URLs de Databricks + Synapse → comparar somente dois
-Abordagem correta: web_search("Azure managed Spark options") → descobrir Databricks, Synapse, Fabric Spark e HDInsight
-            → verificar a v1: Fabric faz parte do escopo e oferece Spark → DEVE ser incluído
-            → consultar cada serviço no Microsoft Docs → apresentar a tabela completa
-```
-
-Esse princípio vale para categorias e para solicitações de "alternativas", "outras opções", "comparação" etc.
-
-**🔹 Ferramenta ask_user: uso obrigatório**
-
-Para perguntas com opções, use `ask_user`. A ferramenta permite selecionar com as setas ou digitar uma resposta personalizada.
-
-**Regras de uso de ask_user:**
-
-- Perguntas com duas ou mais opções **DEVEM** usar ask_user (não as liste como texto)
-- **Passe `choices` como array de strings (`["A", "B"]`)**. Uma string (`"A, B"`) causa erro
-- Coloque a opção recomendada primeiro e acrescente `(Recomendado)`
-- Inclua referências nas opções, por exemplo: `"Standard S1 - Recomendada para produção. Ref.: https://..."`
-- **Faça somente uma pergunta por chamada**. Para vários itens, chame ask_user sequencialmente
-- Há no máximo quatro opções. Se houver cinco ou mais, inclua as três ou quatro mais comuns (também é possível digitar outra)
-- Para seleção múltipla, divida em perguntas separadas
-
-**Itens que exigem ask_user:**
-
-- Seleção do local da implantação (região)
-- Seleção de SKU/camada
-- Seleção de modelo (chat, embedding etc.)
-- Seleção do método de rede
-- Seleção de assinatura (Fase 1, Etapa 2)
-- Seleção de Resource Group (Fase 1, Etapa 3)
-- Qualquer outra pergunta que exija uma escolha
-
-**Exemplos de uso:**
+**Example — When asked "What Spark instances are available?":**
 
 ```
-// O nome do projeto é texto livre; portanto, ask_user não é usado
-// SKU, região etc. com opções definidas usam ask_user:
+Wrong approach: Fetch only Databricks URL + Synapse URL → Compare only 2
+Correct approach: web_search("Azure managed Spark options") → Discover Databricks, Synapse, Fabric Spark, HDInsight
+            → v1 scope check: Fabric is v1 scope and provides Spark → MUST include
+            → Targeted fetch of each service's MS Docs → Present full comparison table
+```
 
-// 1. Pergunta sobre SKU
+This principle applies not only to service category exploration, but to all situations where the user requests "alternatives", "other options", "comparison", etc.
+
+**🔹 ask_user Tool — Mandatory Usage:**
+
+For questions with choices, you MUST use the `ask_user` tool. It allows users to select with arrow keys for convenience, and they can also type a custom input.
+
+**ask_user usage rules:**
+
+- Questions with 2 or more choices **MUST** use ask_user (do not list them as text)
+- **`choices` MUST be passed as a string array (`["A", "B"]`)** — passing as a string (`"A, B"`) will cause an error
+- If there is a recommended option, place it first and append `(Recommended)` at the end
+- Include reference information in choices — e.g., `"Standard S1 - Recommended for production. Ref: https://..."`
+- **Only 1 question per call** — if multiple items need to be asked, call ask_user sequentially for each
+- Choices are limited to a maximum of 4. If there are 5 or more, include only the 3-4 most common ones (users can also type a custom input)
+- If multiple selections are needed, split them into separate questions
+
+**Items requiring ask_user:**
+
+- Deployment location (region) selection
+- SKU/tier selection
+- Model selection (chat model, embedding model, etc.)
+- Networking method selection
+- Subscription selection (Phase 1 Step 2)
+- Resource group selection (Phase 1 Step 3)
+- Any other question requiring a user choice
+
+**Usage examples:**
+
+```
+// Project name is free-form input so ask_user is not used (ask as text)
+// SKU, region, etc. with defined choices use ask_user:
+
+// 1. SKU question
 ask_user({
-  question: "Selecione a SKU do AI Search. Ref.: https://learn.microsoft.com/en-us/azure/search/search-sku-tier",
+  question: "Please select the SKU for AI Search. Ref: https://learn.microsoft.com/en-us/azure/search/search-sku-tier",
   choices: [
-    "Standard S1 - Recomendada para produção (Recomendado)",
-    "Basic - Para desenvolvimento/testes, até 15 índices",
-    "Standard S2 - Produção com alto tráfego",
-    "Free - Avaliação gratuita, 50 MB de armazenamento"
+    "Standard S1 - Recommended for production (Recommended)",
+    "Basic - For dev/test, up to 15 indexes",
+    "Standard S2 - High-traffic production",
+    "Free - Free trial, 50MB storage"
   ]
 })
 
-// 2. Pergunta sobre região (chamada separada; somente uma pergunta por chamada)
+// 2. Region question (separate call — only 1 question per call)
 ask_user({
-  question: "Selecione a região do Azure para a implantação. Ref.: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
+  question: "Please select the Azure region for deployment. Ref: https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models",
   choices: [
-    "Korea Central - Região da Coreia, aceita a maioria dos serviços (Recomendado)",
-    "East US - Leste dos EUA, aceita todos os modelos de IA",
-    "Japan East - Leste do Japão, próximo da Coreia"
+    "Korea Central - Korea region, supports most services (Recommended)",
+    "East US - US East, supports all AI models",
+    "Japan East - Japan East, close to Korea"
   ]
 })
 ```
 
-> **Observação**: os valores de SKU e região acima são somente ilustrativos. Ao perguntar, componha dinamicamente as opções com as informações mais recentes do Microsoft Docs obtidas por `web_fetch`. Não fixe valores.
+> **Note**: The SKU and region values in the examples above are for illustration only. When actually asking, dynamically compose choices based on the latest information by querying MS Docs via web_fetch. Do not hardcode.
 
-**Exemplo: informações insuficientes:**
-
-```
-Pessoa: "Quero criar um assistente de conversa RAG com um modelo GPT no Foundry e AI Search."
-
-→ Confirmado: Microsoft Foundry, Azure AI Search
-→ Em aberto: nome do projeto, modelo específico, modelo de embedding, rede (PE?), SKU e local
-
-O agente primeiro confirma o nome por ask_user (padrão: rag-chatbot).
-Depois oferece opções para cada item em aberto com ask_user.
-Inclua URLs do Microsoft Docs nas opções para consulta direta.
-```
-
-**🚨🚨🚨 [BLOQUEIO RÍGIDO] Coleta da especificação concluída → geração do diagrama obrigatória 🚨🚨🚨**
-
-**Assim que todos os itens estiverem confirmados, execute as etapas abaixo NA ORDEM. Pular qualquer uma deixa a Fase 1 incompleta.**
-
-1. Componha o **JSON services + JSON connections** com a lista confirmada
-2. Use o mecanismo integrado para gerar **`<project-name>/01_arch_diagram_draft.html`**
-3. Abra-o automaticamente no navegador com `Start-Process`
-4. Apresente-o no **formato de relatório** abaixo, incluindo obrigatoriamente uma **tabela detalhada**
-5. Pergunte: **"Você deseja alterar ou adicionar algo?"**
-6. Se não houver alterações → passe à transição para a Fase 2 (ask_user com orientação)
-
-**NUNCA faça isto:**
-
-- ❌ Não gerar o diagrama e perguntar: "A arquitetura está confirmada. Podemos seguir?"
-- ❌ Adiar a geração para a Fase 2 ou posterior
-- ❌ Dizer: "Criarei o diagrama depois"
-- ❌ Declarar a arquitetura confirmada somente porque a coleta terminou
-- ❌ Gerar o diagrama sem apresentar a tabela de configuração
-- ❌ Pular a pergunta sobre alterações e ir diretamente para a Fase 2
-
-**Condição de validação**: não é permitida a entrada na Fase 2 sem gerar `01_arch_diagram_draft.html`.
-
-**Formato do relatório após concluir o diagrama (TODAS as seções são OBRIGATÓRIAS):**
+**Example — When user input is insufficient:**
 
 ```
-## Diagrama de arquitetura
+User: "I want to build a RAG chatbot. Using a GPT model in Foundry and AI Search."
 
-[Link do diagrama interativo, aberto automaticamente no navegador]
+→ Confirmed: Microsoft Foundry, Azure AI Search
+→ Still undecided: Project name, specific model name, embedding model, networking (PE?), SKU, deployment location
 
-### Configuração confirmada
+The agent first confirms the project name via ask_user (default: rag-chatbot).
+Then provides choices for each undecided item via the ask_user tool.
+Include MS Docs URLs in the choices so the user can reference them directly.
+```
 
-| Serviço | Tipo | SKU/camada | Detalhes |
+**🚨🚨🚨 [HARD GATE] Spec Collection Complete → Diagram Generation Required 🚨🚨🚨**
+
+**Immediately after all confirmed items are filled in, you MUST perform the following steps IN ORDER. Skipping any step means Phase 1 is incomplete.**
+
+1. Compose **services JSON + connections JSON** based on the confirmed service list
+2. Use the built-in diagram engine to generate **`<project-name>/01_arch_diagram_draft.html`**
+3. Automatically open it in the browser via `Start-Process`
+4. Show the diagram to the user in the **report format** below — this MUST include a **detailed configuration table**
+5. Ask the user: **"Would you like to change or add anything?"**
+6. If the user has no changes → proceed to Phase 2 transition (ask_user with next step guidance)
+
+**NEVER do this:**
+
+- ❌ Not generating the diagram and asking "The architecture is confirmed. Shall we proceed to the next step?"
+- ❌ Deferring diagram generation to Phase 2 or later
+- ❌ Saying "I'll create the diagram later"
+- ❌ Declaring "architecture confirmed" based solely on spec collection completion
+- ❌ Generating the diagram but NOT showing the configuration table
+- ❌ Skipping the "anything to change?" question and jumping straight to Phase 2
+
+**Validation condition**: Phase 2 entry is NOT allowed if the `01_arch_diagram_draft.html` file has not been generated.
+
+**Report format after diagram completion (ALL sections are MANDATORY):**
+
+```
+## Architecture Diagram
+
+[Interactive diagram link — auto-opened in browser]
+
+### Confirmed Configuration
+
+| Service | Type | SKU/Tier | Details |
 |---------|------|----------|---------|
-| [Nome do serviço] | [Tipo de recurso do Azure] | [SKU] | [Configuração principal: modelo, capacidade etc.] |
+| [Service name] | [Azure resource type] | [SKU] | [Key config: model, capacity, etc.] |
 | ... | ... | ... | ... |
 
-**Rede**: [VNet + Private Endpoint / pública etc.]
-**Local**: [região confirmada]
+**Networking**: [VNet + Private Endpoint / Public / etc.]
+**Location**: [confirmed region]
 ```
 
-**Após apresentar o relatório, use imediatamente `ask_user` com opções:**
+**After showing the report, immediately use `ask_user` with choices:**
 
 ```
 ask_user({
-  question: "O diagrama de arquitetura e a configuração estão prontos. O que você deseja fazer?",
+  question: "The architecture diagram and configuration are ready. What would you like to do?",
   choices: [
-    "Está correto: seguir para a geração do código Bicep (Recomendado)",
-    "Quero modificar a arquitetura",
-    "Adicionar mais serviços"
+    "Looks good — proceed to Bicep code generation (Recommended)",
+    "I want to modify the architecture",
+    "Add more services"
   ]
 })
 ```
 
-- Se escolher "seguir" → passe à transição para a Fase 2 (colete assinatura/RG)
-- Se escolher "modificar" ou "adicionar" → aplique as alterações, gere novamente e reapresente
+- If "proceed" → move to Phase 2 transition (collect subscription/RG info)
+- If "modify" or "add" → apply changes, regenerate diagram, show report again
 
-**🚨 A tabela de configuração NÃO é opcional.** Ela permite verificar visualmente o que foi confirmado antes de prosseguir.
+**🚨 The configuration table is NOT optional.** The user needs to visually verify what was confirmed before proceeding. Without the table, the user cannot validate the architecture.
 
-### 1-2. Gerar o diagrama HTML interativo
+### 1-2. Interactive HTML Diagram Generation
 
-Use o **mecanismo de diagramas integrado** (scripts Python incluídos na habilidade) para criar o HTML interativo.
-Não é necessário executar `pip install`, pois os scripts estão em `scripts/` e não exigem rede nem instalação de pacotes.
-Mais de 605 ícones oficiais do Azure estão incluídos.
+Use the built-in **diagram engine** (Python scripts included in the skill) to create an interactive HTML diagram.
+No `pip install` is needed as the scripts are directly available in the `scripts/` folder, requiring no network connection or package installation.
+605+ official Azure icons are built in.
 
-**Convenção de nomes dos diagramas:**
+**Diagram file naming convention:**
 
-Todos os diagramas são gerados na pasta do projeto Bicep (`<project-name>/`).
-Prefixos numerados por estágio organizam os arquivos, sem sobrescrever os anteriores.
+All diagrams are generated inside the Bicep project folder (`<project-name>/`).
+They are systematically managed with numbered prefixes per stage, and previous stage files are never overwritten.
 
-| Estágio | Nome do arquivo | Quando é gerado |
+| Stage | File Name | When Generated |
 |-------|-----------|----------------|
-| Rascunho do projeto da Fase 1 | `01_arch_diagram_draft.html` | Ao confirmar o projeto da arquitetura |
-| Visualização da análise de alterações (`what-if`) da Fase 4 | `02_arch_diagram_preview.html` | Após validar a análise de alterações |
-| Resultado da implantação da Fase 4 | `03_arch_diagram_result.html` | Após concluir a implantação real |
+| Phase 1 design draft | `01_arch_diagram_draft.html` | When architecture design is confirmed |
+| Phase 4 What-if preview | `02_arch_diagram_preview.html` | After What-if validation |
+| Phase 4 deployment result | `03_arch_diagram_result.html` | After actual deployment completes |
 
-**Descoberta do caminho do módulo integrado e do Python:**
+**Built-in module path discovery + Python path discovery:**
 
-**🚨 Verifique os caminhos do Python e do módulo integrado uma vez no pré-carregamento da Fase 1 e reutilize-os. NÃO repita a descoberta.**
+**🚨 The Python path + built-in module path are verified once during Phase 1 preload, and reused for all subsequent diagram generations. Do NOT re-discover every time.**
 
 ```powershell
-# ─── Etapa 1: descoberta do caminho do Python ───
-# ⚠️ Get-Command python pode encontrar o atalho da Windows Store; por isso, primeiro pesquisa no sistema de arquivos
+# ─── Step 1: Python Path Discovery ───
+# ⚠️ Get-Command python may pick up the Windows Store alias, so filesystem discovery is done first
 $PythonCmd = $null
 
-# Prioridade 1: descoberta direta do caminho real de instalação (mais confiável)
+# Priority 1: Direct discovery of actual installation path (most reliable)
 $PythonExe = Get-ChildItem -Path "$env:LOCALAPPDATA\Programs\Python" -Filter "python.exe" -Recurse -ErrorAction SilentlyContinue |
   Where-Object { $_.FullName -notlike '*WindowsApps*' } |
   Select-Object -First 1 -ExpandProperty FullName
 if ($PythonExe) { $PythonCmd = $PythonExe }
 
-# Prioridade 2: pesquisa em Program Files
+# Priority 2: Program Files discovery
 if (-not $PythonCmd) {
   $PythonExe = Get-ChildItem -Path "$env:ProgramFiles\Python*", "$env:ProgramFiles(x86)\Python*" -Filter "python.exe" -Recurse -ErrorAction SilentlyContinue |
     Select-Object -First 1 -ExpandProperty FullName
   if ($PythonExe) { $PythonCmd = $PythonExe }
 }
 
-# Prioridade 3: pesquisa no PATH (somente se não for um atalho da Windows Store)
+# Priority 3: Find in PATH (only if not a Windows Store alias)
 if (-not $PythonCmd) {
   foreach ($cmd in @('python3', 'py')) {
     $found = Get-Command $cmd -ErrorAction SilentlyContinue
@@ -338,132 +338,132 @@ if (-not $PythonCmd) {
 
 if (-not $PythonCmd) {
   Write-Host ""
-  Write-Host "O Python não está instalado ou não foi encontrado no PATH." -ForegroundColor Red
+  Write-Host "Python is not installed or not found in PATH." -ForegroundColor Red
   Write-Host ""
-  Write-Host "Instale-o por um destes métodos:" -ForegroundColor Yellow
+  Write-Host "Please install using one of the following methods:" -ForegroundColor Yellow
   Write-Host "  1. winget install Python.Python.3.12"
-  Write-Host "  2. Baixe em https://www.python.org/downloads/"
-  Write-Host "  3. Pesquise 'Python 3.12' na Microsoft Store e instale"
+  Write-Host "  2. Download from https://www.python.org/downloads/"
+  Write-Host "  3. Search for 'Python 3.12' in the Microsoft Store and install"
   Write-Host ""
-  Write-Host "Após instalar, reinicie o terminal e tente novamente."
+  Write-Host "After installation, restart your terminal and try again."
   return
 }
 
-# ─── Etapa 2: descoberta do caminho do script integrado (sem pip install) ───
-# Prioridade 1: pasta local do skill no projeto
+# ─── Step 2: Built-in Script Path Discovery (no pip install needed) ───
+# Priority 1: Project local skill folder
 $ScriptsDir = Get-ChildItem -Path ".github\skills\azure-architecture-autopilot" -Filter "cli.py" -Recurse -ErrorAction SilentlyContinue |
   Where-Object { $_.Directory.Name -eq 'scripts' } |
   Select-Object -First 1 -ExpandProperty DirectoryName
-# Prioridade 2: pasta global do skill
+# Priority 2: Global skill folder
 if (-not $ScriptsDir) {
   $ScriptsDir = Get-ChildItem -Path "$env:USERPROFILE\.copilot\skills\azure-architecture-autopilot" -Filter "cli.py" -Recurse -ErrorAction SilentlyContinue |
     Where-Object { $_.Directory.Name -eq 'scripts' } |
     Select-Object -First 1 -ExpandProperty DirectoryName
 }
 
-# ─── Etapa 3: geração do diagrama (método CLI, execução direta do script) ───
+# ─── Step 3: Diagram Generation (CLI method — direct script execution) ───
 $OutputFile = "<project-name>\01_arch_diagram_draft.html"
 
 & $PythonCmd "$ScriptsDir\cli.py" `
   --services '<services_JSON>' `
   --connections '<connections_JSON>' `
-  --title "Título da arquitetura" `
+  --title "Architecture Title" `
   --vnet-info "10.0.0.0/16 | pe-subnet: 10.0.1.0/24" `
   --output $OutputFile
 
-# Abre automaticamente no navegador após gerar
+# Automatically open in browser after generation
 Start-Process $OutputFile
 ```
 
-**O método da interface de programação de aplicações (API) Python também está disponível (alternativa):**
+**Python API method is also available (alternative):**
 
-Quando o JSON for muito grande, chame diretamente a API Python para evitar o limite dos argumentos da CLI.
-Adicione a pasta scripts a `sys.path` para importar o módulo integrado:
+When JSON is very large, you can directly call the Python API to avoid CLI argument length limitations.
+Add the scripts folder to `sys.path` to import the built-in module:
 
 ```python
 import sys, os
-# Adiciona a pasta scripts ao caminho do Python (usa o módulo integrado sem pip install)
-scripts_dir = r"<absolute path to scripts folder>"  # Valor de $ScriptsDir encontrado na Etapa 2
+# Add scripts folder to Python path (use built-in module without pip install)
+scripts_dir = r"<absolute path to scripts folder>"  # $ScriptsDir value found in Step 2
 sys.path.insert(0, scripts_dir)
 
 from generator import generate_diagram
 
-services = [...]   # JSON services
-connections = [...] # JSON connections
+services = [...]   # services JSON
+connections = [...] # connections JSON
 
 html = generate_diagram(
     services=services,
     connections=connections,
-    title="Título da arquitetura",
+    title="Architecture Title",
     vnet_info="10.0.0.0/16 | pe-subnet: 10.0.1.0/24",
-    hierarchy=None  # Usado somente com várias assinaturas/RGs
+    hierarchy=None  # Only used for multiple subscriptions/RGs
 )
 
 with open("<project-name>/01_arch_diagram_draft.html", "w", encoding="utf-8") as f:
     f.write(html)
 ```
 
-**🔹 Critérios para escolher entre a interface de linha de comando (CLI) e a API Python:**
+**🔹 CLI vs Python API Selection Criteria:**
 
-| Cenário | Método | Motivo |
+| Scenario | Method | Reason |
 |----------|--------|--------|
-| Dez serviços ou menos | CLI (`python scripts/cli.py`) | Simples e rápido |
-| Mais de dez serviços ou uso de hierarquia | API Python (adição a sys.path) | Evita o limite de tamanho dos argumentos da CLI |
-| Diagramas com várias assinaturas/RGs | API Python + parâmetro `hierarchy` | Representa a estrutura hierárquica |
+| 10 or fewer services | CLI (`python scripts/cli.py`) | Simple and fast |
+| More than 10 services or using hierarchy | Python API (sys.path addition) | Avoids CLI argument length limits |
+| Multi-subscription/RG diagrams | Python API + `hierarchy` parameter | Hierarchical structure representation |
 
-**Lista completa dos tipos de serviço compatíveis:**
+**Full list of supported service types:**
 
-Disponível nos arquivos de referência integrados em `references/`.
-Os valores aceitos aparecem abaixo, na seção de formato do JSON `services`.
+Available in the skill's built-in reference files under `references/`.
+Supported service type values are listed below in the services JSON format section.
 
-> **Ordem da geração**: (1) verificar o caminho do Python → (2) verificar o caminho do módulo integrado → (3) compor o JSON services/connections → (4) executar. Se o Python não estiver instalado, oriente a instalação antes de compor o JSON.
+> **Diagram generation order**: (1) Verify Python path → (2) Verify built-in module path → (3) Compose services/connections JSON → (4) Execute. If Python is not installed, guide the user to install it before composing JSON. This prevents the waste of building JSON only to fail because Python is missing.
 
-> **🚨 Abertura automática do diagrama (sem exceções)**: todo HTML gerado pelo mecanismo integrado **DEVE** ser aberto no navegador. Sempre execute `Start-Process` ao gerar novamente um diagrama. A geração e a abertura ocorrem juntas no mesmo bloco do PowerShell.
+> **🚨 Automatic Diagram Open (No Exceptions)**: When an HTML file is generated with the built-in diagram engine, it **MUST always** be opened in the browser regardless of the situation. Without exception, whenever a diagram is (re)generated, execute the `Start-Process` command. Diagram generation and browser opening are always executed together in a single PowerShell command block.
 >
-> **Quando isso se aplica (inclui, mas não se limita a todos estes casos):**
+> **When this applies (not just these, but ALL times an HTML diagram is generated):**
 >
-> - Rascunho do projeto da Fase 1 (`01_arch_diagram_draft.html`)
-> - Nova geração após a Confirmação das Alterações
-> - Visualização da análise de alterações (`what-if`) da Fase 4 (`02_arch_diagram_preview.html`)
-> - Resultado da implantação da Fase 4 (`03_arch_diagram_result.html`)
-> - Alterações após a implantação (`04_arch_diagram_update_draft.html`)
-> - Qualquer outro caso de nova geração do diagrama
+> - Phase 1 design draft (`01_arch_diagram_draft.html`)
+> - Diagram regeneration after Delta Confirmation
+> - Phase 4 What-if preview (`02_arch_diagram_preview.html`)
+> - Phase 4 deployment result (`03_arch_diagram_result.html`)
+> - Architecture changes after deployment (`04_arch_diagram_update_draft.html`)
+> - Any other case where a diagram is regenerated for any reason
 
-**Formato do JSON services:**
+**services JSON format:**
 
-Composto dinamicamente com base na lista confirmada de serviços. Estrutura:
+Dynamically composed based on the user's confirmed service list. Below is the JSON structure description.
 
 ```json
 [
-  {"id": "uniqueID", "name": "Nome de exibição do serviço", "type": "iconType", "sku": "SKU", "private": true/false,
-   "details": ["Linha de detalhe 1", "Linha de detalhe 2"]}
+  {"id": "uniqueID", "name": "Service Display Name", "type": "iconType", "sku": "SKU", "private": true/false,
+   "details": ["Detail line 1", "Detail line 2"]}
 ]
 ```
 
-| Campo | Obrigatório | Tipo | Descrição |
+| Field | Required | Type | Description |
 |-------|----------|------|-------------|
-| `id` | Sim | string | Identificador exclusivo (formato kebab-case) |
-| `name` | Sim | string | Nome exibido no diagrama |
-| `type` | Sim | string | Tipo do serviço (selecione na lista abaixo) |
-| `sku` | | string | Informações de SKU/camada |
-| `private` | | boolean | Endpoint privado (Private Endpoint) conectado (padrão: false) |
-| `details` | | string[] | Informações adicionais da barra lateral |
-| `subscription` | | string | Nome da assinatura (obrigatório com hierarquia) |
-| `resourceGroup` | | string | Nome do grupo de recursos (obrigatório com hierarquia) |
+| `id` | Yes | string | Unique identifier (kebab-case) |
+| `name` | Yes | string | Display name shown on diagram |
+| `type` | Yes | string | Service type (select from list below) |
+| `sku` | | string | SKU/tier information |
+| `private` | | boolean | Private Endpoint connected (default: false) |
+| `details` | | string[] | Additional info shown in sidebar |
+| `subscription` | | string | Subscription name (required when using hierarchy) |
+| `resourceGroup` | | string | Resource group name (required when using hierarchy) |
 
-**Tipo de serviço: referência canônica**
+**Service Type — Canonical Reference:**
 
-> ⚠️ **CRÍTICO**: sempre use o **tipo canônico** da tabela. NÃO use nomes de recursos ARM do Azure (por exemplo, `private_endpoints`, `storage_accounts`, `data_factories`). O gerador normaliza variantes comuns, mas os tipos canônicos garantem ícones, detecção de PE e cores corretos.
+> ⚠️ **CRITICAL**: Always use the **canonical type** from the table below. Do NOT use Azure ARM resource names (e.g., `private_endpoints`, `storage_accounts`, `data_factories`). The generator normalizes common variants, but using canonical types ensures correct icon rendering, PE detection, and color coding.
 
-| Categoria | Tipo canônico | Recurso do Azure | Ícone |
+| Category | Canonical Type | Azure Resource | Icon |
 |----------|---------------|----------------|------|
-| **IA** | `ai_foundry` | Microsoft.CognitiveServices/accounts (kind: AIServices) | AI Foundry |
+| **AI** | `ai_foundry` | Microsoft.CognitiveServices/accounts (kind: AIServices) | AI Foundry |
 | | `openai` | Microsoft.CognitiveServices/accounts (kind: OpenAI) | Azure OpenAI |
 | | `ai_hub` | Foundry Project | AI Studio |
 | | `search` | Microsoft.Search/searchServices | Cognitive Search |
 | | `document_intelligence` | Microsoft.CognitiveServices/accounts (kind: FormRecognizer) | Form Recognizer |
 | | `aml` | Microsoft.MachineLearningServices/workspaces | Machine Learning |
-| **Dados** | `fabric` | Microsoft.Fabric/capacities | Microsoft Fabric |
+| **Data** | `fabric` | Microsoft.Fabric/capacities | Microsoft Fabric |
 | | `adf` | Microsoft.DataFactory/factories | Data Factory |
 | | `storage` | Microsoft.Storage/storageAccounts | Storage Account |
 | | `adls` | ADLS Gen2 (Storage with HNS) | Data Lake |
@@ -476,9 +476,9 @@ Composto dinamicamente com base na lista confirmada de serviços. Estrutura:
 | | `stream_analytics` | Microsoft.StreamAnalytics/streamingjobs | Stream Analytics |
 | | `postgresql` | Microsoft.DBforPostgreSQL/flexibleServers | PostgreSQL |
 | | `mysql` | Microsoft.DBforMySQL/flexibleServers | MySQL |
-| **Segurança** | `keyvault` | Microsoft.KeyVault/vaults | Key Vault |
+| **Security** | `keyvault` | Microsoft.KeyVault/vaults | Key Vault |
 | | `sentinel` | Microsoft.SecurityInsights | Sentinel |
-| **Computação** | `appservice` | Microsoft.Web/sites | App Service |
+| **Compute** | `appservice` | Microsoft.Web/sites | App Service |
 | | `function_app` | Microsoft.Web/sites (kind: functionapp) | Function App |
 | | `vm` | Microsoft.Compute/virtualMachines | Virtual Machine |
 | | `aks` | Microsoft.ContainerService/managedClusters | AKS |
@@ -486,7 +486,7 @@ Composto dinamicamente com base na lista confirmada de serviços. Estrutura:
 | | `container_apps` | Microsoft.App/containerApps | Container Apps |
 | | `static_web_app` | Microsoft.Web/staticSites | Static Web App |
 | | `spring_apps` | Microsoft.AppPlatform/Spring | Spring Apps |
-| **Rede** | `pe` | Microsoft.Network/privateEndpoints | Private Endpoint |
+| **Network** | `pe` | Microsoft.Network/privateEndpoints | Private Endpoint |
 | | `vnet` | Microsoft.Network/virtualNetworks | VNet |
 | | `nsg` | Microsoft.Network/networkSecurityGroups | NSG |
 | | `firewall` | Microsoft.Network/azureFirewalls | Firewall |
@@ -499,374 +499,374 @@ Composto dinamicamente com base na lista confirmada de serviços. Estrutura:
 | | `cdn` | Microsoft.Cdn/profiles | CDN |
 | **IoT** | `iot_hub` | Microsoft.Devices/IotHubs | IoT Hub |
 | | `digital_twins` | Microsoft.DigitalTwins/digitalTwinsInstances | Digital Twins |
-| **Integração** | `event_hub` | Microsoft.EventHub/namespaces | Event Hub |
+| **Integration** | `event_hub` | Microsoft.EventHub/namespaces | Event Hub |
 | | `event_grid` | Microsoft.EventGrid/topics | Event Grid |
 | | `apim` | Microsoft.ApiManagement/service | API Management |
 | | `service_bus` | Microsoft.ServiceBus/namespaces | Service Bus |
 | | `logic_apps` | Microsoft.Logic/workflows | Logic Apps |
-| **Monitoramento** | `log_analytics` | Microsoft.OperationalInsights/workspaces | Log Analytics |
+| **Monitoring** | `log_analytics` | Microsoft.OperationalInsights/workspaces | Log Analytics |
 | | `appinsights` | Microsoft.Insights/components | App Insights |
 | | `monitor` | Azure Monitor | Monitor |
-| **Outros** | `jumpbox`, `user`, `devops` | — | Especial |
+| **Other** | `jumpbox`, `user`, `devops` | — | Special |
 
-**Ao usar Private Endpoints: nó de PE obrigatório**
+**When Using Private Endpoints — PE Node Addition Required:**
 
-Se houver Private Endpoints, adicione obrigatoriamente um nó de PE ao JSON `services` para cada serviço. Inclua também os vínculos de PE em `connections`.
+If Private Endpoints are included in the architecture, a PE node MUST be added to the services JSON for each service, and connections must also include the PE links for them to appear in the diagram.
 
 ```json
-// Adiciona o nó de PE correspondente a cada serviço
-{"id": "pe_serviceID", "name": "PE: NomeDoServiço", "type": "pe", "details": ["groupId: groupIDCorrespondente"]}
+// Add PE node corresponding to each service
+{"id": "pe_serviceID", "name": "PE: ServiceName", "type": "pe", "details": ["groupId: correspondingGroupID"]}
 
-// Adiciona a conexão serviço → PE em connections
+// Add service → PE connection in connections
 {"from": "serviceID", "to": "pe_serviceID", "label": "", "type": "private"}
 ```
 
-**🚨🚨🚨 Conexões de PE e de lógica de negócio são distintas: inclua AMBAS 🚨🚨🚨**
+**🚨🚨🚨 PE Connections and Business Logic Connections Are Separate — BOTH MUST Be Included 🚨🚨🚨**
 
-Conexões de PE (`"type": "private"`) representam o isolamento de rede, mas NÃO mostram o **fluxo de dados/chamadas de API** real entre serviços.
+PE connections (`"type": "private"`) represent network isolation. But this alone does NOT show the actual **data flow/API calls** between services in the diagram.
 
-**Inclua os dois tipos de conexão:**
+**MUST include both types of connections:**
 
-1. **Conexões de lógica de negócio**: fluxo real entre serviços (tipos api, data e security)
-2. **Conexões de PE**: isolamento de rede entre serviço ↔ PE (tipo private)
+1. **Business logic connections** — Actual data flow between services (api, data, security types)
+2. **PE connections** — Network isolation between service ↔ PE (private type)
 
 ```json
-// ✅ Exemplo correto: Function App → Foundry
-// 1) Lógica de negócio: Function App chama Foundry para bate-papo/incorporação vetorial
-{"from": "func_app", "to": "foundry", "label": "Bate-papo RAG + incorporação vetorial", "type": "api"}
-// 2) Conexão de PE: Private Endpoint do Foundry
+// ✅ Correct example — Function App → Foundry
+// 1) Business logic: Function App calls Foundry for chat/embedding
+{"from": "func_app", "to": "foundry", "label": "RAG Chat + Embedding", "type": "api"}
+// 2) PE connection: Foundry's Private Endpoint
 {"from": "foundry", "to": "pe_foundry", "label": "", "type": "private"}
 
-// ❌ Exemplo incorreto: somente conexão de PE, sem conexão de lógica de negócio
+// ❌ Wrong example — Only PE connection, no business logic connection
 {"from": "foundry", "to": "pe_foundry", "label": "", "type": "private"}
-// → Sem linha entre Function App e Foundry; o fluxo da arquitetura não fica visível
+// → No connection line between Function App and Foundry in the diagram, so the architecture flow is not visible
 ```
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não crie somente conexões de PE omitindo as de lógica de negócio
-- Não conecte `from`/`to` da lógica de negócio aos nós de PE (use o **ID real do serviço**, não o PE)
-- Não presuma que "a linha aparecerá porque o PE existe"
+- Create only PE connections and omit business logic connections
+- Connect `from`/`to` of business logic connections to PE nodes (use the **actual service ID**, not the PE)
+- Assume "the PE is there so the connection line will show up"
 
-O `groupId` do PE varia por serviço. Consulte a tabela de mapeamento em `references/service-gotchas.md`.
+The PE groupId differs by service. Refer to the PE groupId & DNS Zone mapping table in `references/service-gotchas.md`.
 
-> **Convenção de nomes dos serviços**: use os nomes oficiais mais recentes do Azure. Em caso de dúvida, consulte o Microsoft Docs.
-> Para tipos e propriedades principais, consulte `references/ai-data.md`.
+> **Service naming convention**: MUST use the latest official Azure names. If uncertain about the name, verify with MS Docs.
+> For resource types and key properties per service, refer to `references/ai-data.md`.
 
-**Formato do JSON connections:**
+**connections JSON format:**
 
 ```json
 [
-  {"from": "serviceA_ID", "to": "serviceB_ID", "label": "Descrição da conexão", "type": "api|data|security|private"}
+  {"from": "serviceA_ID", "to": "serviceB_ID", "label": "Connection description", "type": "api|data|security|private"}
 ]
 ```
 
-**Tipos de conexão:**
+**Connection Types:**
 
-| type | Cor | Estilo | Uso |
+| type | Color | Style | Use For |
 |------|-------|-------|---------|
-| `api` | Azul | Sólido | Chamadas de API, consultas |
-| `data` | Verde | Sólido | Fluxo de dados, indexação |
-| `security` | Laranja | Tracejado | Segredos, autenticação |
-| `private` | Roxo | Tracejado | Conexões de Private Endpoint |
-| `network` | Cinza | Sólido | Roteamento de rede |
-| `default` | Cinza | Sólido | Outros |
+| `api` | Blue | Solid | API calls, queries |
+| `data` | Green | Solid | Data flow, indexing |
+| `security` | Orange | Dashed | Secrets, auth |
+| `private` | Purple | Dashed | Private Endpoint connections |
+| `network` | Gray | Solid | Network routing |
+| `default` | Gray | Solid | Other |
 
-**🔹 Princípio multilíngue do diagrama:**
+**🔹 Diagram Multilingual Principle:**
 
-- `name`, `details` em services e `label` em connections são escritos **no idioma da pessoa**
-- Exemplo: `"label": "Pesquisa RAG"`, `"label": "Ingestão de dados"`
-- Nomes oficiais dos serviços do Azure (Microsoft Foundry, AI Search etc.) permanecem no idioma oficial
+- The `name`, `details` in services and `label` in connections are written in **the user's language**
+- Example: `"label": "RAG Search"`, `"label": "Data Ingestion"`
+- Official Azure service names (Microsoft Foundry, AI Search, etc.) are always in English regardless of language
 
-**🔹 Nó da VNet: NÃO adicionar ao JSON services**
+**🔹 VNet Node — Do NOT add to services JSON:**
 
-- A VNet aparece automaticamente como **limite roxo tracejado** (quando há PEs)
-- Adicionar um nó separado de VNet a services duplica o limite e causa confusão
-- O rótulo do limite na barra lateral apresenta as informações necessárias (CIDR e sub-redes)
+- VNet is automatically displayed as a **purple dashed boundary** in the diagram (when PEs are present)
+- Adding a separate VNet node to services JSON causes confusion by duplicating with the boundary line
+- VNet information (CIDR, subnets) is sufficiently conveyed through the sidebar VNet boundary label
 
-Forneça o caminho completo do arquivo HTML gerado.
+Provide the full path of the generated HTML file to the user.
 
-### 1-3. Finalizar a arquitetura pela conversa
+### 1-3. Finalizing Architecture Through Conversation
 
-A arquitetura é finalizada incrementalmente. Ao receber alterações, NÃO repita todas as perguntas. **Aplique somente as alterações ao estado confirmado** e gere o diagrama novamente.
+The architecture is finalized incrementally through conversation with the user. When the user requests changes, do NOT ask everything from scratch; instead, **reflect only the requested changes based on the current confirmed state** and regenerate the diagram.
 
-**⚠️ Regra de Confirmação das Alterações: verificação obrigatória ao adicionar/alterar serviços**
+**⚠️ Delta Confirmation Rule — Required Verification on Service Addition/Change:**
 
-Adicionar ou alterar um serviço não é uma "atualização simples". Isso **reabre os campos obrigatórios em aberto desse serviço**.
+Service addition/change is not a "simple update" — it is an **event that reopens undecided required fields for that service**.
 
-**Processo:**
+**Process:**
 
-1. Compare o estado confirmado com a nova solicitação
-2. Identifique os campos obrigatórios dos novos serviços (`domain-packs` ou Microsoft Docs)
-3. Consulte no Microsoft Docs a disponibilidade/opções regionais
-4. Se houver campos em aberto, **pergunte primeiro por ask_user**
-5. **Gere novamente somente após concluir a confirmação**
+1. Diff the current confirmed state + new request
+2. Identify the required fields for newly added services (refer to `domain-packs` or MS Docs)
+3. Fetch the region availability/options for the service from MS Docs
+4. If any required fields are undecided, **ask the user via ask_user first**
+5. **Regenerate the diagram only after confirmation is complete**
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não finalize a atualização com campos obrigatórios em aberto
-- Não adicione arbitrariamente subcomponentes/cargas não mencionados (por exemplo, OneLake e fluxo de dados a uma solicitação do Fabric)
-- Não presuma vagamente SKU/modelo, como "SKU F", sem confirmação
+- Finalize diagram update while required fields remain undecided
+- Arbitrarily add sub-components/workloads the user did not mention (e.g., automatically adding OneLake and data pipeline to a Fabric request)
+- Vaguely assume SKU/model like "F SKU" without confirmation
 
-**Não repita perguntas sobre serviços já confirmados.** Confirme somente itens em aberto dos serviços adicionados/alterados.
+**Do not re-ask settings for already confirmed services.** Only confirm undecided items for newly added/changed services.
 
 ---
 
-**🚨🚨🚨 [Princípio prioritário] Verificação imediata de fatos durante o projeto 🚨🚨🚨**
+**🚨🚨🚨 [Top Priority Principle] Immediate Fact Check During Design Phase 🚨🚨🚨**
 
-**A Fase 1 confirma uma "arquitetura viável".**
-**Antes de refletir qualquer solicitação no diagrama, verifique se ela é possível consultando diretamente o Microsoft Docs por `web_fetch`.**
+**The purpose of Phase 1 is to confirm a "feasible architecture".**
+**No matter what the user requests, before reflecting it in the diagram, you MUST fact-check whether it is actually possible by directly querying MS Docs via web_fetch.**
 
-**Direcionamento do projeto versus especificações de implantação: caminhos separados**
+**Design Direction vs Deployment Specs — Separate Information Paths:**
 
-| Tipo de decisão | Caminho de referência | Exemplos |
+| Decision Type | Reference Path | Examples |
 |--------------|----------------|----------|
-| **Direcionamento do projeto** (padrões, práticas recomendadas, combinações) | `references/architecture-guidance-sources.md` → consulta específica | "Qual é a estrutura RAG recomendada?", "Qual é a linha de base empresarial?" |
-| **Especificações de implantação** (versão da API, SKU, região, modelo, PE) | `references/azure-dynamic-sources.md` → Microsoft Docs | "Qual é a versão da API?", "Este modelo está disponível em Korea Central?" |
+| **Design direction** (architecture patterns, best practices, service combinations) | `references/architecture-guidance-sources.md` → targeted fetch | "What's the recommended RAG structure?", "Enterprise baseline?" |
+| **Deployment specs** (API version, SKU, region, model, PE mapping) | `references/azure-dynamic-sources.md` → MS Docs fetch | "What's the API version?", "Is this model available in Korea Central?" |
 
-- **O direcionamento vem da orientação de arquitetura; os valores reais vêm das fontes dinâmicas.** Não misture os caminhos.
-- NÃO use orientação de arquitetura para determinar SKU, versão da API ou região.
-- **NÃO percorra todos os subdocumentos do Architecture Center.** Consulte especificamente no máximo dois documentos relevantes.
-- Consulte gatilhos, limites e regras em `architecture-guidance-sources.md`.
+- **Design direction comes from architecture guidance, actual deployment values from dynamic sources.** Do not mix these two paths.
+- Do NOT use Architecture guidance document content to determine SKU/API version/region.
+- **Do NOT crawl through all Architecture Center sub-documents for every request.** Perform trigger-based targeted fetch of at most 2 relevant documents.
+- For trigger/fetch budget/decision rules by question type, refer to `architecture-guidance-sources.md`.
 
-**Esse princípio se aplica a TODAS as solicitações:**
+**This principle applies to ALL requests without exception:**
 
-- Adicionar/alterar modelo → verifique existência e disponibilidade regional
-- Adicionar/alterar serviço → verifique disponibilidade regional
-- Alterar SKU → verifique validade e suporte às funcionalidades
-- Solicitar funcionalidade → verifique se há suporte
-- Combinar serviços → verifique a possibilidade de integração
-- **Qualquer outra solicitação** → verifique no Microsoft Docs
+- Model addition/change → Verify in MS Docs whether the model exists and can be deployed in the target region
+- Service addition/change → Verify in MS Docs whether the service is available in the target region
+- SKU change → Verify in MS Docs whether the SKU is valid and supports the desired features
+- Feature request → Verify in MS Docs whether the feature is actually supported
+- Service combination → Verify in MS Docs whether inter-service integration is possible
+- **Any other request** → Fact-check with MS Docs
 
-**Resultados da verificação no Microsoft Docs:**
+**MS Docs verification results:**
 
-- **Possível** → reflita no diagrama
-- **Impossível** → explique imediatamente e sugira alternativas disponíveis
+- **Possible** → Reflect in diagram
+- **Not possible** → Immediately explain the reason to the user and suggest available alternatives
 
-**Processo de verificação de fatos: validação cruzada obrigatória**
+**Fact Check Process — Cross-Verification Required:**
 
-Não faça somente uma consulta.
-**Sempre faça validação cruzada com outras páginas/fontes do Microsoft Docs.**
+Do not simply query once and move on for user requests.
+**Cross-verification using other MS Docs pages/sources MUST always be performed.**
 
-> **Restrição do ambiente GHCP**: subagentes (explore/task/general-purpose) NÃO têm `web_fetch`/`web_search`.
-> Portanto, o agente principal DEVE fazer **diretamente** as verificações no Microsoft Docs.
+> **GHCP Environment Constraint**: Sub-agents (explore/task/general-purpose) do NOT have `web_fetch`/`web_search` tools.
+> Therefore, verification requiring MS Docs queries MUST be performed **directly by the main agent**.
 
 ```
-[1ª verificação] O agente principal consulta diretamente a página principal pelo web_fetch
+[1st Verification] Main agent directly queries MS Docs via web_fetch (primary page)
     ↓
-[2ª verificação] O agente principal consulta outra página relacionada para validação cruzada
-    - Exemplo, disponibilidade do modelo → 1ª: modelos / 2ª: disponibilidade regional ou preços
-    - Exemplo, versão da API → 1ª: referência do Bicep / 2ª: referência da API REST
-    - Compare os resultados e sinalize divergências
+[2nd Verification] Main agent additionally fetches other/related MS Docs pages via web_fetch for cross-checking
+    - e.g., Model availability → 1st: models page / 2nd: regional availability or pricing page
+    - e.g., API version → 1st: Bicep reference page / 2nd: REST API reference page
+    - Compare 1st and 2nd results and flag any discrepancies
     ↓
-[Consolidação] Se as verificações coincidirem, responda
-    - Se divergirem: resolva com consultas adicionais ou informe claramente a incerteza
+[Consolidate Results] If both verifications match, respond to the user
+    - On discrepancy: Resolve with additional queries, or honestly inform the user about the uncertainty
 ```
 
-**Padrões de qualidade da verificação: seja minucioso**
+**Fact Check Quality Standards — Be Thorough, Not Cursory:**
 
-- Ao consultar uma página, **verifique TODAS as seções, guias e condições relevantes**
-- Para modelos, verifique **TODOS os tipos de implantação**, incluindo Global Standard, Standard, Provisioned, Data Zone etc. Não conclua "sem suporte" com base em somente um tipo
-- Para SKUs, verifique **integralmente** as funcionalidades compatíveis
-- Em páginas grandes, consulte as seções relevantes **várias vezes**
-- Em caso de dúvida, consulte outras páginas. **NUNCA responda por suposição**
+- When a MS Docs page is fetched, **check ALL relevant sections, tabs, and conditions without omission**
+- When checking model availability: Check **ALL deployment types** including Global Standard, Standard, Provisioned, Data Zone, etc. Do NOT conclude "not supported" based on only one deployment type
+- When checking SKUs: **Fully** verify the feature list supported by that SKU
+- If the page is large, fetch relevant sections **multiple times** to ensure accuracy
+- If uncertain, query additional pages. **NEVER answer based on guesswork**
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não adicione ao diagrama sem verificar
-- Não adie com "verificarei durante a geração do Bicep" ou "será validado na implantação"
-- Não dependa da memória nem diga "deve funcionar". **Consulte diretamente o Microsoft Docs**
-- Não conclua após leitura parcial
-- Não finalize com uma só consulta. **Faça validação cruzada**
+- Add to the diagram without verification
+- Defer verification with "I'll check during Bicep generation" or "It will be validated during deployment"
+- Rely only on your memory and answer "it should work" — **MUST directly query MS Docs**
+- Fetch MS Docs but rush to conclusions after only partially reading
+- Finalize based on a single query — **MUST cross-verify with another source**
 
-**🚫 Regras de uso de subagentes:**
+**🚫 Sub-Agent Usage Rules:**
 
-**Subagentes no GHCP = ferramenta `task`:**
+**Sub-agents in GHCP = `task` tool:**
 
-- `agent_type: "explore"`: tarefas somente leitura, como explorar código e pesquisar arquivos (**sem web_fetch/web_search**)
-- `agent_type: "task"`: execução de comandos como CLI az e bicep build
-- `agent_type: "general-purpose"`: tarefas de alto nível, como geração complexa de Bicep
+- `agent_type: "explore"` — Read-only tasks like codebase exploration, file search (**web_fetch/web_search NOT available**)
+- `agent_type: "task"` — Command execution like az cli, bicep build
+- `agent_type: "general-purpose"` — High-level tasks like complex Bicep generation
 
-> **⚠️ Restrição dos subagentes**: NENHUM subagente pode usar `web_fetch` ou `web_search`.
-> O agente principal DEVE fazer diretamente consultas ao Microsoft Docs, versões da API, disponibilidade de modelos etc.
+> **⚠️ Sub-agent tool constraint**: ALL sub-agents (explore/task/general-purpose) CANNOT use `web_fetch` or `web_search`.
+> Fact checks requiring MS Docs queries, API version verification, model availability checks, etc. MUST be performed **directly by the main agent**.
 
-**Critérios para primeiro plano versus segundo plano:**
+**Foreground vs Background Decision Criteria:**
 
-- **Se o resultado for necessário antes da próxima etapa → `mode: "sync"` (padrão)**
-  - Exemplo: consultar SKUs antes de oferecer opções; verificar o modelo antes do diagrama
-  - Executar em segundo plano deixaria a pessoa aguardando sem atividade
-- **Se houver outro trabalho independente durante a espera → `mode: "background"`**
-  - Exemplo: consultar simultaneamente várias páginas para validação cruzada
+- **If results are needed before proceeding to the next step → `mode: "sync"` (default)**
+  - e.g., Query SKU list then provide choices to user, verify model availability then reflect in diagram
+  - Running in background here would leave the user idle waiting for results
+- **If there is other independent work that can be done while waiting for results → `mode: "background"`**
+  - e.g., Simultaneously web_fetch multiple MS Docs pages for cross-verification
 
-**Execute a maioria das verificações em primeiro plano (`mode: "sync"`)**, pois o resultado é necessário à próxima pergunta.
+**Most fact checks should be run in foreground (`mode: "sync"`)** because the next question cannot be asked without the results.
 
-**Como fazer validação cruzada em paralelo:**
+**How to run cross-verification in parallel:**
 
 ```
-// Executa a 1ª e a 2ª verificação simultaneamente (diretamente pelo agente principal)
-[Simultaneamente] Consulta a página principal pelo web_fetch (1ª)
-[Simultaneamente] Consulta outra página relacionada pelo web_fetch (2ª)
-// Compara os resultados e procura divergências
-// Exemplo: disponibilidade do modelo → páginas de modelos + disponibilidade regional em paralelo
+// Execute 1st and 2nd verification simultaneously (main agent performs directly)
+[Simultaneously] Directly query primary MS Docs page via web_fetch (1st)
+[Simultaneously] Additionally query related MS Docs page via web_fetch (2nd)
+// Compare both results to check for discrepancies
+// e.g., Model availability → parallel fetch of models page + regional availability page
 ```
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não execute em segundo plano se o resultado for necessário e depois fique ocioso
-- Não delegue web_fetch/web_search a subagentes
-- Não tente ler diretamente arquivos internos dos subagentes
+- Run in background when results are needed, then sit idle doing nothing while waiting
+- Delegate tasks requiring web_fetch/web_search to sub-agents (main agent MUST perform directly)
+- Attempt to directly read files internal to sub-agents
 
 ---
 
-**⚠️ Importante: NÃO execute comandos no interpretador de comandos até haver aprovação explícita para a próxima etapa.**
-Consultas ao Microsoft Docs por `web_fetch` são a única exceção.
+**⚠️ Important: Do NOT execute any shell commands until the user explicitly approves proceeding to the next step.**
+However, MS Docs web_fetch for the above fact checks is exceptionally allowed.
 
-Após confirmar a arquitetura (sem alterações no diagrama), pergunte se deve seguir.
+Once the architecture is confirmed (user said no changes to the diagram), ask the user whether to proceed to the next step.
 
-**🚨 Pré-requisitos da transição para a Fase 2: TODOS devem ser atendidos antes da pergunta**
+**🚨 Phase 2 Transition Prerequisites — ALL of the following must be met before asking this question:**
 
-1. `01_arch_diagram_draft.html` foi **gerado** com o mecanismo integrado
-2. O diagrama foi **aberto no navegador** e **apresentado** no relatório com a **tabela de configuração**
-3. Foi feita a pergunta **"Você deseja alterar ou adicionar algo?"**, sem alterações pendentes, e houve **confirmação final**
+1. `01_arch_diagram_draft.html` has been **generated** using the built-in diagram engine
+2. The diagram has been **opened in the browser** and **displayed to the user** in the report format with the **configuration table**
+3. The user was asked **"Would you like to change or add anything?"** and responded with **no changes**, or modifications have been reflected and **final confirmation** is given
 
-**Se QUALQUER condição não for atendida, NÃO siga para a Fase 2.**
-Se o diagrama não existir, **gere-o agora** conforme 1-2.
-Se a tabela não tiver sido apresentada, **apresente-a agora** antes de perguntar sobre alterações.
+**If ANY of the above conditions are not met, do NOT proceed to Phase 2.**
+If the diagram does not exist yet, **generate it right now** — follow the procedure in section 1-2.
+If the configuration table was not shown, **show it right now** before asking about changes.
 
-**Conforme o pré-carregamento paralelo, execute `az account list` e `az group list` com ask_user para preparar previamente as opções de assinatura/RG.**
-
-```
-// Chama simultaneamente na mesma resposta:
-[1] ask_user: "A arquitetura está confirmada! Podemos seguir?"
-[2] powershell: az account show 2>&1              (verifica previamente o login)
-[3] powershell: az account list --output json      (prepara opções de assinatura)
-[4] powershell: az group list --output json        (prepara opções de grupo de recursos)
-```
-
-Formato de exibição de ask_user:
+**Following the parallel preload principle, execute `az account list` and `az group list` simultaneously with ask_user to prepare subscription/RG choices in advance.**
 
 ```
-A arquitetura está confirmada! Podemos seguir?
-
-✅ Arquitetura confirmada: [resumo]
-
-As próximas etapas são:
-1. [Geração de código Bicep]: a IA escreve o código IaC automaticamente
-2. [Revisão de código]: revisão automática de segurança e práticas recomendadas
-3. [Implantação no Azure]: criação real dos recursos (opcional)
-
-Podemos seguir? Se quiser somente o código, sem implantação, informe.
+// Call simultaneously in the same response:
+[1] ask_user — "The architecture is confirmed! Shall we proceed to the next step?"
+[2] powershell — az account show 2>&1              (pre-check login status)
+[3] powershell — az account list --output json      (pre-prepare subscription choices)
+[4] powershell — az group list --output json        (pre-prepare resource group choices)
 ```
 
-Após a aprovação, colete as informações nesta ordem.
-**Como `az account show` + `az account list` + `az group list` já foram executados, apresente imediatamente as opções de assinatura/RG.**
+ask_user display format:
 
-**Etapa 1: verificar a autenticação no Azure**
+```
+The architecture is confirmed! Shall we proceed to the next step?
 
-O resultado de `az account show` já está disponível. Não faça outra chamada.
+✅ Confirmed architecture: [summary]
 
-- Se houver autenticação → siga para a Etapa 2
-- Se não houver autenticação → oriente:
+The following steps will proceed:
+1. [Bicep Code Generation] — AI automatically writes IaC code
+2. [Code Review] — Automated security/best practice review
+3. [Azure Deployment] — Actual resource creation (optional)
+
+Shall we proceed? (If you'd like just the code without deployment, let me know)
+```
+
+Once the user approves, collect information in the following order.
+**Since `az account show` + `az account list` + `az group list` were already completed during preload, subscription/RG choices can be presented immediately.**
+
+**Step 1: Azure Login Verification**
+
+The `az account show` result is already available from preload. No additional call needed.
+
+- If logged in → Move to Step 2
+- If not logged in → Guide the user:
 
   ```
-  É necessário entrar pela CLI do Azure. Execute este comando no terminal:
+  Azure CLI login is required. Please run the following command in your terminal:
   az login
-  Informe quando terminar.
+  Please let me know once completed.
   ```
 
-**Etapa 2: selecionar a assinatura**
+**Step 2: Subscription Selection**
 
-O resultado de `az account list` já está disponível. Não faça outra chamada.
+The `az account list` result is already available from preload. No additional call needed.
 
-Ofereça até quatro assinaturas como opções de `ask_user`.
-Se houver cinco ou mais, inclua as três ou quatro mais usadas (também é possível digitar outra).
-Após a seleção, execute `az account set --subscription "<ID>"`.
+Provide up to 4 subscriptions from the query results as `ask_user` choices.
+If there are 5 or more, include the 3-4 most frequently used subscriptions as choices (users can also type a custom input).
+Once the user selects, execute `az account set --subscription "<ID>"`.
 
-**Etapa 3: confirmar o grupo de recursos**
+**Step 3: Resource Group Confirmation**
 
-O resultado de `az group list` já está disponível. Não faça outra chamada.
+The `az group list` result is already available from preload. No additional call needed.
 
-Ofereça até quatro grupos de recursos existentes como opções de `ask_user`.
-Use um grupo existente sem alterações. Se for informado um nome novo, crie-o na implantação da Fase 4.
+Provide up to 4 existing resource groups from the list as `ask_user` choices.
+If the user selects an existing group, use it as-is; if they type a new name as custom input, create it during Phase 4 deployment.
 
-**Itens de confirmação obrigatória:**
+**Required confirmed items:**
 
-- [ ] Lista de serviços e SKUs
-- [ ] Método de rede (uso de Private Endpoint)
-- [ ] ID da assinatura (confirmado na Etapa 2)
-- [ ] Nome do grupo de recursos (confirmado na Etapa 3)
-- [ ] Local (confirmado e com disponibilidade regional verificada no Microsoft Docs)
+- [ ] Service list and SKUs
+- [ ] Networking method (Private Endpoint usage)
+- [ ] Subscription ID (confirmed in Step 2)
+- [ ] Resource group name (confirmed in Step 3)
+- [ ] Location (confirmed with user — regional availability per service verified via MS Docs)
 
 ---
 
-## 🚨 Lista de conclusão da Fase 1: verificação obrigatória antes da Fase 2
+## 🚨 Phase 1 Completion Checklist — Required Verification Before Phase 2 Entry
 
-Antes de sair da Fase 1, verifique **TODOS** os itens. Se algum estiver incompleto, NÃO siga.
+Before leaving Phase 1, verify **ALL** items below. If any are incomplete, do NOT proceed to Phase 2.
 
-| Nº | Item | Método de verificação |
+| # | Item | Verification Method |
 |---|------|---------------------|
-| 1 | Especificações obrigatórias confirmadas | Nome, serviços, SKUs, região e rede confirmados |
-| 2 | Fatos verificados | Validação cruzada feita no Microsoft Docs |
-| 3 | **Diagrama gerado** | `01_arch_diagram_draft.html` gerado com o mecanismo integrado |
-| 4 | **Tabela apresentada** | Tabela detalhada de Serviço/Tipo/SKU/Detalhes no relatório |
-| 5 | **Diagrama revisado** | Abertura no navegador + relatório + pergunta sobre alterações |
-| 6 | Aprovação final | Confirmação sem alterações e seleção para seguir |
+| 1 | All required specs confirmed | Project name, services, SKUs, region, and networking method are all confirmed |
+| 2 | Fact check completed | MS Docs cross-verification has been performed |
+| 3 | **Diagram generated** | `01_arch_diagram_draft.html` file has been generated using the built-in diagram engine |
+| 4 | **Configuration table shown** | Detailed table with Service/Type/SKU/Details displayed to user in report format |
+| 5 | **User reviewed diagram** | Browser auto-open + report format + "anything to change?" question asked |
+| 6 | User final approval | User confirmed no changes, then selected "proceed to next step" |
 
-**⚠️ NÃO pergunte o item 6 enquanto os itens 3 a 5 estiverem incompletos.** Fluxo: diagrama → tabela → alterações → confirmação → próxima etapa.
+**⚠️ Do NOT ask item 6 while items 3-5 are incomplete.** The flow must be: diagram → table → ask changes → confirm → next step.
 
 ---
 
-## Encaminhamento à Fase 2: agente gerador de Bicep
+## Phase 2 Handoff: Bicep Generation Agent
 
-Após a aprovação, leia `references/bicep-generator.md` e gere o modelo Bicep.
-Como alternativa, delegue a um subagente.
+Once the user agrees to proceed, read the `references/bicep-generator.md` instructions and generate the Bicep template.
+Alternatively, this can be delegated to a separate sub-agent.
 
-**Princípio de tratamento de informações confidenciais (NUNCA viole):**
+**Sensitive Information Handling Principle (NEVER violate):**
 
-- NUNCA peça senhas de VM, chaves de API ou outros valores confidenciais no chat e NUNCA os armazene nos parâmetros
-- Se a revisão encontrar valores confidenciais em texto não criptografado em `main.bicepparam`, remova-os imediatamente
+- NEVER ask for VM passwords, API keys, or other sensitive values in chat, and NEVER store them in parameter files
+- During code review, if sensitive values are found in plaintext in `main.bicepparam`, remove them immediately
 
-**🔹 Valores confidenciais informados, como senhas de VM: validação de complexidade obrigatória**
+**🔹 User-Input Sensitive Values Like VM Passwords — Complexity Validation Required:**
 
-Ao receber uma senha administrativa de VM ou semelhante, valide a complexidade **antes** de enviá-la ao Azure.
-As VMs do Azure devem atender a TODAS as condições:
+When the user inputs a VM admin password or similar, validate complexity requirements **before** sending to Azure.
+Azure VMs must satisfy ALL of the following conditions:
 
-- 12 caracteres ou mais
-- Conter pelo menos três destes grupos: maiúsculas, minúsculas, números e caracteres especiais
+- 12 characters or more
+- Contains at least 3 of: uppercase letters, lowercase letters, numbers, special characters
 
-**Se a validação falhar:** NÃO tente implantar; peça imediatamente outra senha:
-> **⚠️ A senha não atende aos requisitos de complexidade do Azure.** Ela deve ter pelo menos 12 caracteres e conter três destes grupos: maiúsculas, minúsculas, números e caracteres especiais.
+**On validation failure:** Do NOT attempt deployment; immediately ask the user to re-enter:
+> **⚠️ The password does not meet Azure complexity requirements.** It must be 12 characters or more and contain at least 3 of: uppercase + lowercase + numbers + special characters.
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não avise apenas que "talvez não atenda" e tente implantar. **BLOQUEIE**
-- Não envie ao Azure sem validar a complexidade
+- Warn "it may not meet requirements" but attempt deployment anyway — **MUST block**
+- Send to Azure without complexity validation, causing deployment failure
 
-**🚨 Princípio de compatibilidade entre parâmetros `@secure()` e `.bicepparam`:**
+**🚨 `@secure()` Parameter and `.bicepparam` Compatibility Principle:**
 
-Quando `.bicepparam` tem a diretiva `using './main.bicep'`, NÃO é possível usar opções `--parameters` adicionais com `az deployment group what-if/create`.
-Portanto, trate parâmetros `@secure()` assim:
+When a `.bicepparam` file has a `using './main.bicep'` directive, additional `--parameters` flags CANNOT be used together with `az deployment group what-if/create`.
+Therefore, `@secure()` parameter handling follows these rules:
 
-1. **Parâmetros `@secure()` DEVEM ter valores padrão**: use funções Bicep como `newGuid()` e `uniqueString()`
+1. **`@secure()` parameters MUST have default values** — Use Bicep functions like `newGuid()`, `uniqueString()`
 
    ```bicep
    @secure()
-   param sqlAdminPassword string = newGuid()  // Gerado automaticamente na implantação; armazene no Key Vault se necessário
+   param sqlAdminPassword string = newGuid()  // Auto-generated at deployment, store in Key Vault if needed
    ```
 
-2. **Se houver parâmetros `@secure()` que exigem valores informados:**
-   - NÃO use `.bicepparam`; combine `--template-file` + `--parameters`
-   - Ou gere um arquivo JSON separado (`main.parameters.json`)
+2. **If there are `@secure()` parameters that require user-specified values:**
+   - Do NOT use `.bicepparam` file; instead use `--template-file` + `--parameters` combination
+   - Or generate a separate JSON parameter file (`main.parameters.json`)
 
    ```powershell
-   # Quando .bicepparam não puder ser usado, substitua-o por um arquivo de parâmetros JSON
+   # When .bicepparam cannot be used — substitute with JSON parameter file
    az deployment group what-if `
      --template-file main.bicep `
      --parameters main.parameters.json `
      --parameters sqlAdminPassword='user-input-value'
    ```
 
-3. **NÃO use `.bicepparam` e `--parameters` simultaneamente no comando de implantação**
+3. **Do NOT use `.bicepparam` and `--parameters` simultaneously in a deployment command**
 
    ```
    ❌ az deployment group create --parameters main.bicepparam --parameters key=value
@@ -874,101 +874,101 @@ Portanto, trate parâmetros `@secure()` assim:
    ✅ az deployment group create --template-file main.bicep --parameters main.parameters.json --parameters key=value
    ```
 
-**Critérios de decisão:**
+**Decision criteria:**
 
-- Todos os parâmetros `@secure()` têm valores padrão (`newGuid` etc.) → pode usar `.bicepparam`
-- Algum parâmetro `@secure()` exige entrada → use JSON em vez de `.bicepparam`
+- All `@secure()` parameters have default values (newGuid, etc.) → `.bicepparam` can be used
+- Any `@secure()` parameter requires user input → Use JSON parameter file instead of `.bicepparam`
 
-**Quando a consulta ao Microsoft Docs falhar:**
+**When MS Docs fetch fails:**
 
-- Se `web_fetch` falhar por limite de taxa etc., informe:
+- If web_fetch fails due to rate limiting, etc., MUST notify the user:
 
   ```
-  ⚠️ Falha ao consultar a versão da API no Microsoft Docs. Será usada a última versão estável conhecida.
-  Recomenda-se confirmar a versão mais recente antes da implantação.
-  Deseja continuar?
+  ⚠️ MS Docs API version lookup failed. Generating with the last known stable version.
+  Verifying the actual latest version before deployment is recommended.
+  Shall we continue?
   ```
 
-- NÃO prossiga silenciosamente com uma versão fixa sem aprovação
+- Do NOT silently proceed with a hardcoded version without user approval
 
-**Referências anteriores à geração do Bicep:**
+**Pre-Bicep generation reference files:**
 
-- `references/service-gotchas.md`: propriedades obrigatórias, erros comuns e mapeamento de `groupId` de PE/DNS Zone
-- `references/ai-data.md`: guia de serviços de IA/dados (domínio v1)
-- `references/azure-common-patterns.md`: padrões de PE, segurança e nomenclatura
-- `references/azure-dynamic-sources.md`: registro de URLs do Microsoft Docs
-- Para outros serviços, consulte diretamente o Microsoft Docs para verificar tipos, propriedades e PEs
+- `references/service-gotchas.md` — Required properties, common mistakes, PE groupId/DNS Zone mapping
+- `references/ai-data.md` — AI/Data service configuration guide (v1 domain)
+- `references/azure-common-patterns.md` — PE/security/naming common patterns
+- `references/azure-dynamic-sources.md` — MS Docs URL registry (for API version fetch)
+- For services not covered in the above files, directly fetch MS Docs to verify resource types, properties, and PE mappings
 
-**Estrutura de saída:**
+**Output structure:**
 
 ```
 <project-name>/
-├── main.bicep              # Orquestração principal
-├── main.bicepparam         # Parâmetros (valores específicos do ambiente)
+├── main.bicep              # Main orchestration
+├── main.bicepparam         # Parameters (environment-specific values)
 └── modules/
-    ├── network.bicep       # VNet, Subnet (inclui sub-rede de Private Endpoint)
-    ├── ai.bicep            # Serviços de IA (conforme os requisitos)
+    ├── network.bicep       # VNet, Subnet (including private endpoint subnet)
+    ├── ai.bicep            # AI services (configured per user requirements)
     ├── storage.bicep       # ADLS Gen2 (isHnsEnabled: true)
-    ├── fabric.bicep        # Microsoft Fabric (se necessário)
+    ├── fabric.bicep        # Microsoft Fabric (if needed)
     ├── keyvault.bicep      # Key Vault
-    └── private-endpoints.bicep  # Todos os PEs + DNS Zones
+    └── private-endpoints.bicep  # All PEs + DNS Zones
 ```
 
-**Princípios obrigatórios do Bicep:**
+**Bicep mandatory principles:**
 
-- Parametrize todos os nomes: `param openAiName string = 'oai-${uniqueString(resourceGroup().id)}'`
-- Serviços privados DEVEM ter `publicNetworkAccess: 'Disabled'`
-- Defina `privateEndpointNetworkPolicies: 'Disabled'` em pe-subnet
-- Private DNS Zone + VNet Link + DNS Zone Group: os três são obrigatórios
-- Com Microsoft Foundry, **crie também o Foundry Project (`accounts/projects`)**; sem ele, o portal não funciona
-- ADLS Gen2 DEVE ter `isHnsEnabled: true` (a omissão cria Blob Storage comum)
-- Armazene segredos no Key Vault e referencie-os por parâmetros `@secure()`
-- Adicione comentários em português do Brasil que expliquem a finalidade de cada seção
+- Parameterize all resource names — `param openAiName string = 'oai-${uniqueString(resourceGroup().id)}'`
+- Private services MUST have `publicNetworkAccess: 'Disabled'`
+- Set `privateEndpointNetworkPolicies: 'Disabled'` on pe-subnet
+- Private DNS Zone + VNet Link + DNS Zone Group — all 3 required
+- When using Microsoft Foundry, **Foundry Project (`accounts/projects`) MUST be created alongside** — without it, the portal is unusable
+- ADLS Gen2 MUST have `isHnsEnabled: true` (omitting this creates a regular Blob Storage)
+- Store secrets in Key Vault, reference via `@secure()` parameters
+- Add English comments explaining the purpose of each section
 
-Após concluir a geração, passe imediatamente à Fase 3.
+Immediately transition to Phase 3 after generation is complete.
 
 ---
 
-## Encaminhamento à Fase 3: agente revisor de Bicep
+## Phase 3 Handoff: Bicep Review Agent
 
-Revise conforme `references/bicep-reviewer.md`.
+Review according to `references/bicep-reviewer.md` instructions.
 
-**⚠️ Ponto principal: NÃO faça somente inspeção visual e declare aprovação. Execute `az bicep build` para verificar a compilação real.**
+**⚠️ Key Point: Do NOT just visually inspect and say "pass". You MUST run `az bicep build` to verify actual compilation results.**
 
 ```powershell
 az bicep build --file main.bicep 2>&1
 ```
 
-1. Erros/avisos de compilação → corrija
-2. Lista de verificação → corrija
-3. Compile novamente
-4. Relate os resultados, incluindo a compilação
+1. Compilation errors/warnings → Fix
+2. Checklist review → Fix
+3. Re-compile to confirm
+4. Report results (including compilation results)
 
-Consulte as listas e os procedimentos detalhados em `references/bicep-reviewer.md`.
+For detailed checklists and fix procedures, see `references/bicep-reviewer.md`.
 
-Após a revisão, apresente os resultados antes da Fase 4 e **oriente as próximas etapas**.
+After review is complete, show the user the results before transitioning to Phase 4, and **MUST guide the user on the next steps.**
 
-**🚨 Formato obrigatório do relatório ao concluir a Fase 3:**
+**🚨 Required Report Format When Phase 3 Is Complete:**
 
 ```
-## Revisão do código Bicep concluída
+## Bicep Code Review Complete
 
-[Resumo da revisão no formato da Etapa 6 de bicep-reviewer.md]
+[Review result summary — bicep-reviewer.md Step 6 format]
 
 ---
 
-**Próxima etapa: Fase 4 (implantação no Azure)**
+**Next Step: Phase 4 (Azure Deployment)**
 
-Revisão concluída. As próximas etapas são:
-1. **Análise de alterações (`what-if`)**: visualiza os recursos planejados sem alterações reais
-2. **Diagrama de visualização**: arquitetura baseada no resultado da análise de alterações (`02_arch_diagram_preview.html`)
-3. **Implantação real**: cria os recursos no Azure após a confirmação
+The review is complete. The following steps will proceed:
+1. **What-if Validation** — Preview planned resources without making actual changes
+2. **Preview Diagram** — Architecture visualization based on What-if results (02_arch_diagram_preview.html)
+3. **Actual Deployment** — Create resources in Azure after user confirmation
 
-Prosseguir com a implantação? Se quiser somente o código, informe.
+Shall we proceed with deployment? (If you'd like just the code without deployment, let me know)
 ```
 
-**NUNCA faça isto:**
+**NEVER do this:**
 
-- Não conclua a Fase 3 fornecendo apenas `az deployment group create`, sem orientação
-- Não implante diretamente sem análise de alterações nem peça que a pessoa execute os comandos
-- Não pule as etapas da Fase 4 (análise de alterações → diagrama de visualização → implantação)
+- Completing Phase 3 and just providing the `az deployment group create` command without further guidance
+- Deploying directly without What-if validation, or telling the user to run commands themselves
+- Skipping the Phase 4 steps (What-if → Preview Diagram → Deployment)

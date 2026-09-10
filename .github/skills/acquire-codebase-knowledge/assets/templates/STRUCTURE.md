@@ -1,44 +1,44 @@
-# Estrutura da base de código
+# Codebase Structure
 
-## Seções principais (obrigatórias)
+## Core Sections (Required)
 
-### 1) Mapa de nível superior
+### 1) Top-Level Map
 
-Liste somente os diretórios e arquivos relevantes de nível superior.
+List only meaningful top-level directories and files.
 
-| Caminho | Finalidade | Evidência |
+| Path | Purpose | Evidence |
 |------|---------|----------|
-| [caminho/] | [finalidade] | [fonte] |
+| [path/] | [purpose] | [source] |
 
-### 2) Pontos de entrada
+### 2) Entry Points
 
-- Entrada principal do ambiente de execução: [ARQUIVO]
-- Pontos de entrada secundários (processo em segundo plano/CLI/tarefas): [ARQUIVOS ou NENHUM]
-- Como a entrada é selecionada (script/configuração): [NOTA]
+- Main runtime entry: [FILE]
+- Secondary entry points (worker/cli/jobs): [FILES or NONE]
+- How entry is selected (script/config): [NOTE]
 
-### 3) Limites dos módulos
+### 3) Module Boundaries
 
-| Limite | O que pertence aqui | O que não deve estar aqui |
+| Boundary | What belongs here | What must not be here |
 |----------|-------------------|------------------------|
-| [módulo/camada] | [responsabilidade] | [lógica proibida] |
+| [module/layer] | [responsibility] | [forbidden logic] |
 
-### 4) Regras de nomenclatura e organização
+### 4) Naming and Organization Rules
 
-- Padrão de nomes de arquivos: [kebab/camel/Pascal + exemplos]
-- Padrão de organização dos diretórios: [funcionalidade/camada/domínio]
-- Convenções de nomes alternativos de importação ou caminhos: [REGRA]
+- File naming pattern: [kebab/camel/Pascal + examples]
+- Directory organization pattern: [feature/layer/domain]
+- Import aliasing or path conventions: [RULE]
 
-### 5) Evidências
+### 5) Evidence
 
 - [path/to/root-tree-source]
 - [path/to/entry-config]
 - [path/to/key-module]
 
-## Seções ampliadas (opcionais)
+## Extended Sections (Optional)
 
-Adicione somente quando a complexidade do repositório exigir:
+Add only when repository complexity requires it:
 
-- Mapas detalhados de subdiretórios por funcionalidade/camada
-- Detalhes da ordem de componentes intermediários/inicialização
-- Limites entre a estrutura gerada e o código-fonte
-- Mapas da estrutura de espaços de trabalho do monorepositório
+- Subdirectory deep maps by feature/layer
+- Middleware/boot order details
+- Generated-vs-source layout boundaries
+- Monorepo workspace-level structure maps

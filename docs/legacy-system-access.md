@@ -1,38 +1,38 @@
-# Sistema legado compartilhado — acesso de consulta
+# Shared Legacy System — Viewer Access
 
-> **Trilha:** [Kit do Time](../README.md) › [Documentação](README.md) › **Visualizador do legado**
+> **Path:** [Team Kit](../README.md) › [Docs](README.md) › **Legacy Viewer**
 
-A imersão oferece um ambiente Natural/Adabas compartilhado com dados sintéticos do SIFAP. Participantes usam um perfil restrito de consulta; o facilitador opera o ambiente separadamente.
+The workshop provides one shared Natural/Adabas environment with synthetic SIFAP data. Participants use a restricted viewer role; the facilitator operates the environment separately.
 
-## Entre no sistema
+## Sign in
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
 | URL | <https://sifap-lab-438k30.eastus2.cloudapp.azure.com/terminal/> |
-| Usuário | `viewer` |
-| Senha | Compartilhada em particular pelo facilitador |
+| Username | `viewer` |
+| Password | Shared privately by the facilitator |
 
-## Permissões do visualizador
+## Viewer permissions
 
-O terminal de consulta abre o programa Natural gerado `VIEWBENF`.
+The viewer terminal opens the generated `VIEWBENF` Natural program.
 
-- Pode consultar dados de beneficiários e histórico de pagamentos.
-- Não possui caminho de escrita no Adabas.
-- Não pode abrir o console de administração do Adabas.
-- Não pode acessar a linha de comando do Natural.
-- Não pode executar programas de cadastro ou jobs batch.
-- Não pode implantar, iniciar, parar nem configurar recursos do Azure.
+- It can query beneficiary data and payment history.
+- It has no Adabas write path.
+- It cannot open the Adabas administration console.
+- It cannot reach the Natural command line.
+- It cannot run registration or batch programs.
+- It cannot deploy, start, stop, or configure Azure resources.
 
-O visualizador fornece acesso somente leitura no nível da aplicação a um runtime compartilhado. Ele não é um tenant separado nem uma cópia privada do banco de dados.
+The viewer is application-level read-only access to a shared runtime. It is not a separate tenant or a private copy of the database.
 
-## Se o acesso falhar
+## If access fails
 
-1. Confirme que você usou a URL exata com `/terminal/`.
-2. Confirme que o usuário é `viewer`.
-3. Peça ao facilitador que verifique a senha atual e o estado do ambiente.
+1. Confirm that you used the exact `/terminal/` URL.
+2. Confirm the username is `viewer`.
+3. Ask the facilitator to verify the current password and environment status.
 
-Não tente provisionar, reparar nem administrar o laboratório compartilhado a partir deste repositório.
+Do not attempt to provision, repair, or administer the shared lab from this repository.
 
 ---
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

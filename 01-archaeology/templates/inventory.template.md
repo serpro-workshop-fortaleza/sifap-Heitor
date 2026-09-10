@@ -1,7 +1,7 @@
 ---
 
-title: "Template: Inventário do Estágio 1"
-description: "Esqueleto para o inventário da base de código legada produzido por /archaeology-kickoff"
+title: "Template: Stage 1 Inventory"
+description: "Skeleton for the legacy codebase inventory produced by /archaeology-kickoff"
 author: "Paula Silva, AI-Native Software Engineer, Americas Global Black Belt at Microsoft"
 date: "2026-04-29"
 version: "1.0.0"
@@ -9,78 +9,78 @@ status: "approved"
 tags: ["template", "inventory", "archaeology", "stage-1"]
 ---
 
-# Template: Inventário do Legado — Estágio 1
+# Template: Legacy Inventory — Stage 1
 
-> **Trilha:** [Kit do Time](../../README.md) › [Estágio 1](../README.md) › **Templates** › **inventory**
+> **Track:** [Team Kit](../../README.md) › [Stage 1](../README.md) › **Templates** › **inventory**
 
-**Template de inventário da base de código legada para o Passo 1 do Estágio 1.**
+**Legacy codebase inventory template for Stage 1, Step 1.**
 
 > [!NOTE]
-> **Este arquivo é um template.** Copie-o para o repositório do seu time e preencha com dados reais. Não edite o original.
+> **This file is a template.** Copy it to your team repository and complete it with real data. Do not edit the original.
 
 > [!TIP]
-> Monte o inventário sem abrir nenhum programa. Trabalhe apenas com nomes de arquivo e estrutura de pastas.
+> Build the inventory without opening any program. Work only from file names and folder structure.
 
-**Data:** <!-- preencher: AAAA-MM-DD -->
-**Caminho varrido:** `01-archaeology/legacy-sifap/`
+**Date:** <!-- placeholder: YYYY-MM-DD -->
+**Scanned path:** `01-archaeology/legacy-sifap/`
 
 ---
 
-## Estrutura de pastas
+## Folder structure
 
 ```text
-<!-- preencher: árvore de diretórios -->
+<!-- placeholder: directory tree -->
 ```
 
 ---
 
-## Contagem de arquivos por tipo
+## File count by type
 
-| Extensão | Contagem | Finalidade provável |
+| Extension | Count | Likely purpose |
 |---|---|---|
-| `.NSN` | <!-- preencher --> | Programas-fonte Natural |
-| `.ddm` | <!-- preencher --> | Data Definition Modules (Adabas) |
+| `.NSN` | <!-- placeholder --> | Natural source programs |
+| `.ddm` | <!-- placeholder --> | Data Definition Modules (Adabas) |
 
 ---
 
-## Padrões da convenção de nomes
+## Naming convention patterns
 
-| Prefixo | Contagem | Hipótese de domínio |
+| Prefix | Count | Domain hypothesis |
 |---|---|---|
-| <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
+| <!-- placeholder --> | <!-- placeholder --> | <!-- placeholder --> |
 
 ---
 
-## Itens estranhos (top 3)
+## Unusual items (top 3)
 
-| # | Caminho do arquivo | O que o torna estranho | Investigação sugerida |
+| # | File path | What makes it unusual | Suggested investigation |
 |---|---|---|---|
-| 1 | <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
-| 2 | <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
-| 3 | <!-- preencher --> | <!-- preencher --> | <!-- preencher --> |
+| 1 | <!-- placeholder --> | <!-- placeholder --> | <!-- placeholder --> |
+| 2 | <!-- placeholder --> | <!-- placeholder --> | <!-- placeholder --> |
+| 3 | <!-- placeholder --> | <!-- placeholder --> | <!-- placeholder --> |
 
 ---
 
-## Ordem de leitura proposta
+## Proposed reading order
 
-1. Arquivos DDM primeiro.
-2. <!-- preencher: pontos de entrada do batch -->
-3. <!-- preencher: programas mais conectados -->
-
----
-
-## Definição de pronto
-
-- [ ] O inventário existe com contagens corretas.
-- [ ] 3 padrões de nomenclatura ou mais identificados.
-- [ ] 3 itens estranhos sinalizados.
+1. DDM files first.
+2. <!-- placeholder: batch entry points -->
+3. <!-- placeholder: most connected programs -->
 
 ---
 
-### Continue lendo
+## Definition of done
 
-| Anterior | Próximo |
+- [ ] The inventory exists with accurate counts.
+- [ ] 3 or more naming patterns identified.
+- [ ] 3 unusual items flagged.
+
+---
+
+### Continue reading
+
+| Previous | Next |
 |---|---|
-| [GUIDE do Estágio 1](../GUIDE.md)<br/><sub>Cronograma passo a passo.</sub> | [Outros templates](.) <br/><sub>Outros templates do estágio.</sub> |
+| [Stage 1 GUIDE](../GUIDE.md)<br/><sub>Step-by-step schedule.</sub> | [Other templates](.) <br/><sub>Other stage templates.</sub> |
 
-<sub>[Voltar ao índice do kit](../../README.md)</sub>
+<sub>[Back to the kit index](../../README.md)</sub>

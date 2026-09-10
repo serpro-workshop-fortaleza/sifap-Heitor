@@ -1,12 +1,12 @@
 # MockMvcTester
 
-Testes de controladores Spring MVC no estilo AssertJ (Spring Boot 3.4+).
+AssertJ-style testing for Spring MVC controllers (Spring Boot 3.2+).
 
-## Visão geral
+## Overview
 
-MockMvcTester fornece asserções fluentes no estilo AssertJ para testes da camada web. É mais legível e tem tipagem mais segura que o MockMvc tradicional.
+MockMvcTester provides fluent, AssertJ-style assertions for web layer testing. More readable and type-safe than traditional MockMvc.
 
-**Padrão recomendado**: converta JSON em objetos reais e verifique-os com AssertJ:
+**Recommended Pattern**: Convert JSON to real objects and assert with AssertJ:
 
 ```java
 assertThat(mvc.get().uri("/orders/1"))
@@ -19,7 +19,7 @@ assertThat(mvc.get().uri("/orders/1"))
   });
 ```
 
-## Uso básico
+## Basic Usage
 
 ```java
 @WebMvcTest(OrderController.class)
@@ -33,9 +33,9 @@ class OrderControllerTest {
 }
 ```
 
-## Recomendado: padrão de conversão de objetos
+## Recommended: Object Conversion Pattern
 
-### Resposta com um único objeto
+### Single Object Response
 
 ```java
 @Test
@@ -54,7 +54,7 @@ void shouldGetOrder() {
 }
 ```
 
-### Resposta com lista
+### List Response
 
 ```java
 @Test
@@ -76,7 +76,7 @@ void shouldGetAllOrders() {
 }
 ```
 
-### Objetos aninhados
+### Nested Objects
 
 ```java
 @Test
@@ -93,7 +93,7 @@ void shouldGetOrderWithCustomer() {
 }
 ```
 
-### Asserções complexas
+### Complex Assertions
 
 ```java
 @Test
@@ -111,9 +111,9 @@ void shouldCalculateOrderTotal() {
 }
 ```
 
-## Métodos HTTP
+## HTTP Methods
 
-### POST com corpo da solicitação
+### POST with Request Body
 
 ```java
 @Test
@@ -128,7 +128,7 @@ void shouldCreateOrder() {
 }
 ```
 
-### Solicitação PUT
+### PUT Request
 
 ```java
 @Test
@@ -140,7 +140,7 @@ void shouldUpdateOrder() {
 }
 ```
 
-### Solicitação DELETE
+### DELETE Request
 
 ```java
 @Test
@@ -150,7 +150,7 @@ void shouldDeleteOrder() {
 }
 ```
 
-## Asserções de status
+## Status Assertions
 
 ```java
 assertThat(mvc.get().uri("/orders/1"))
@@ -164,7 +164,7 @@ assertThat(mvc.get().uri("/orders/1"))
   .hasStatus(HttpStatus.CREATED);   // 201
 ```
 
-## Asserções de tipo de conteúdo
+## Content Type Assertions
 
 ```java
 assertThat(mvc.get().uri("/orders/1"))
@@ -172,7 +172,7 @@ assertThat(mvc.get().uri("/orders/1"))
   .hasContentTypeCompatibleWith(MediaType.APPLICATION_JSON);
 ```
 
-## Asserções de cabeçalhos
+## Header Assertions
 
 ```java
 assertThat(mvc.post().uri("/orders"))
@@ -180,9 +180,9 @@ assertThat(mvc.post().uri("/orders"))
   .hasHeader("X-Request-Id", matchesPattern("[a-z0-9-]+"));
 ```
 
-## Alternativa: JSON Path (use com moderação)
+## Alternative: JSON Path (Use Sparingly)
 
-Use apenas quando não for possível converter para um objeto tipado:
+Only use when you cannot convert to a typed object:
 
 ```java
 assertThat(mvc.get().uri("/orders/1"))
@@ -193,24 +193,24 @@ assertThat(mvc.get().uri("/orders/1"))
   .isEqualTo("Berlin");
 ```
 
-## Parâmetros da solicitação
+## Request Parameters
 
 ```java
-// Parâmetros de consulta
+// Query parameters
 assertThat(mvc.get().uri("/orders?status=PENDING&page=0"))
   .hasStatusOk();
 
-// Parâmetros de path
+// Path parameters
 assertThat(mvc.get().uri("/orders/{id}", 1L))
   .hasStatusOk();
 
-// Cabeçalhos
+// Headers
 assertThat(mvc.get().uri("/orders/1")
   .header("X-Api-Key", "secret"))
   .hasStatusOk();
 ```
 
-## Corpo da solicitação com JacksonTester
+## Request Body with JacksonTester
 
 ```java
 @Autowired
@@ -227,7 +227,7 @@ void shouldCreateOrder() {
 }
 ```
 
-## Respostas de erro
+## Error Responses
 
 ```java
 @Test
@@ -240,13 +240,13 @@ void shouldReturnValidationErrors() {
     .bodyJson()
     .convertTo(ErrorResponse.class)
     .satisfies(error -> {
-      assertThat(error.getMessage()).isEqualTo("Pedido 999 não encontrado");
+      assertThat(error.getMessage()).isEqualTo("Order 999 not found");
       assertThat(error.getCode()).isEqualTo("ORDER_NOT_FOUND");
     });
 }
 ```
 
-## Teste de erros de validação
+## Validation Error Testing
 
 ```java
 @Test
@@ -268,19 +268,19 @@ void shouldRejectInvalidOrder() {
 }
 ```
 
-## Comparação: MockMvcTester versus MockMvc clássico
+## Comparison: MockMvcTester vs Classic MockMvc
 
-| Recurso | MockMvcTester | MockMvc clássico |
+| Feature | MockMvcTester | Classic MockMvc |
 | ------- | ------------- | --------------- |
-| Estilo | AssertJ fluente | Matchers do MockMvc |
-| Legibilidade | Alta | Média |
-| Segurança de tipos | Melhor | Menor |
-| Suporte da IDE | Excelente | Bom |
-| Conversão de objetos | Nativa | Manual |
+| Style | AssertJ fluent | MockMvc matchers |
+| Readability | High | Medium |
+| Type Safety | Better | Less |
+| IDE Support | Excellent | Good |
+| Object Conversion | Native | Manual |
 
-## Migração do MockMvc clássico
+## Migration from Classic MockMvc
 
-### Antes (clássico)
+### Before (Classic)
 
 ```java
 mvc.perform(get("/orders/1"))
@@ -289,7 +289,7 @@ mvc.perform(get("/orders/1"))
   .andExpect(jsonPath("$.totalToPay").value(99.99));
 ```
 
-### Depois (Tester com conversão de objetos)
+### After (Tester with Object Conversion)
 
 ```java
 assertThat(mvc.get().uri("/orders/1"))
@@ -302,10 +302,10 @@ assertThat(mvc.get().uri("/orders/1"))
   });
 ```
 
-## Pontos principais
+## Key Points
 
-1. **Prefira `convertTo()` a `extractingPath()`**: tem tipagem segura e permite refatoração
-2. **Use `satisfies()` para várias asserções**: mantém os testes legíveis
-3. **Importe estaticamente `org.assertj.core.api.Assertions.assertThat`**
-4. **Funciona com genéricos por `TypeReference`**: para respostas `List<T>`
-5. **Facilita a refatoração pela IDE**: ao renomear campos, a IDE atualiza os testes
+1. **Prefer `convertTo()` over `extractingPath()`** - Type-safe, refactorable
+2. **Use `satisfies()` for multiple assertions** - Keeps tests readable
+3. **Import static `org.assertj.core.api.Assertions.assertThat`**
+4. **Works with generics via `TypeReference`** - For `List<T>` responses
+5. **IDE refactoring friendly** - Rename fields, IDE updates tests

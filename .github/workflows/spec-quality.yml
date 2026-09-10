@@ -1,7 +1,5 @@
-name: Análise de Markdown e qualidade das especificações
+name: Lint Markdown and Spec Quality
 
-# `portugues-br` espelha todo o kit em pt-BR, portanto precisa das mesmas verificações de Markdown,
-# primitivas e rastreabilidade que `main`. Consulte a mesma observação em ci.yml.
 on:
   push:
     branches: [main, develop, portugues-br, espanol, "spec/**"]
@@ -22,37 +20,37 @@ concurrency:
 
 jobs:
   markdown-lint:
-    name: Análise de Markdown
+    name: Markdown lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Executar markdownlint
+      - name: Run markdownlint
         uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v20
         with:
-          # As exclusões ficam em .markdownlint-cli2.jsonc, que é a fonte única
-          # da verdade. Não as liste novamente aqui: uma segunda lista diverge.
+          # Exclusions live in .markdownlint-cli2.jsonc, which is the single
+          # source of truth. Do not re-list them here: a second list drifts.
           globs: "**/*.md"
 
   copilot-primitives:
-    name: Verificação de divergência das primitivas do Copilot
+    name: Copilot primitive drift check
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Validar agentes, prompts, instruções, habilidades e ganchos (hooks)
+      - name: Validate agents, prompts, instructions, skills, and hooks
         shell: bash
         run: |
           set -euo pipefail
           python3 .github/scripts/validate-copilot-primitives.py
 
   spec-traceability:
-    name: Relatar rastreabilidade de testes por REQ-ID
+    name: Report REQ-ID test traceability
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Relatar REQ-IDs ainda não referenciados por testes
+      - name: Report REQ-IDs not yet referenced by tests
         shell: bash
         run: |
           set -euo pipefail
@@ -77,7 +75,7 @@ jobs:
 
           specs_directory = Path("specs")
           if not specs_directory.is_dir():
-              print("O diretório specs/ ainda não existe. Ignorando o relatório de rastreabilidade de testes.")
+              print("No specs/ directory yet. Skipping test traceability report.")
               raise SystemExit
 
           spec_requirements = {
@@ -125,7 +123,7 @@ jobs:
                       try:
                           test_source = path.read_text(encoding="utf-8")
                       except UnicodeDecodeError:
-                          print(f"::warning file={path}::Entrada de teste sem UTF-8 ignorada no relatório informativo de REQ-IDs.")
+                          print(f"::warning file={path}::Skipping non-UTF-8 test input in the advisory REQ-ID report.")
                           continue
                       test_requirements.update(
                           requirement_reference_pattern.findall(test_source)
@@ -134,23 +132,23 @@ jobs:
           missing = sorted(spec_requirements - test_requirements)
           if missing:
               print(
-                  "::warning::REQ-IDs declarados em specs/, mas ainda não referenciados "
-                  "por testes automatizados:"
+                  "::warning::REQ-IDs declared in specs/ but not yet referenced "
+                  "by automated tests:"
               )
               print("\n".join(missing))
           elif spec_requirements:
-              print("Todos os REQ-IDs declarados em specs/ são referenciados por testes automatizados.")
+              print("All REQ-IDs declared in specs/ are referenced by automated tests.")
           else:
-              print("Nenhum REQ-ID foi encontrado em specs/ até o momento.")
+              print("No REQ-IDs found in specs/ yet.")
           PY
 
   legacy-traceability:
-    name: Verificação de rastreabilidade com o legado (todo REQ-ID deve citar um .NSN/.ddm ou uma nova implementação [GREENFIELD])
+    name: Legacy traceability gate (every REQ-ID must cite a .NSN/.ddm or [GREENFIELD])
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Verificar source_legacy em todos os requisitos
+      - name: Verify source_legacy on every requirement
         shell: bash
         run: |
           set -euo pipefail
@@ -160,7 +158,7 @@ jobs:
 
           requirements_directory = Path("specs")
           if not requirements_directory.is_dir():
-              print("O diretório specs/ ainda não existe. Ignorando a verificação de rastreabilidade com o legado.")
+              print("No specs/ directory yet. Skipping legacy-traceability gate.")
               raise SystemExit
 
           requirement_id = r"REQ-(?:\d+|[A-Z]+(?:-[A-Z]+)*-\d+)"
@@ -233,23 +231,23 @@ jobs:
 
           if failures:
               print(
-                  "::error::Todo REQ-ID deve ter uma linha source_legacy: válida "
-                  "até 20 linhas após sua declaração."
+                  "::error::Every REQ-ID must have a valid source_legacy: line "
+                  "within 20 lines of its declaration."
               )
               print("\n".join(failures))
               print(
-                  "\nUse "
+                  "\nUse either "
                   "source_legacy: "
                   "01-archaeology/legacy-sifap/natural-programs/<FILE>.NSN"
                   "#L<start>-L<end>"
               )
               print(
-                  'ou source_legacy: "[GREENFIELD] <justificativa em uma linha>"'
+                  'or source_legacy: "[GREENFIELD] <one-line justification>"'
               )
               raise SystemExit(1)
 
           if requirements_found:
-              print("Todos os REQ-IDs declaram um source_legacy válido. A verificação foi aprovada.")
+              print("All REQ-IDs declare a valid source_legacy. Gate passes.")
           else:
-              print("Nenhum REQ-ID foi encontrado em specs/ até o momento.")
+              print("No REQ-IDs found in specs/ yet.")
           PY

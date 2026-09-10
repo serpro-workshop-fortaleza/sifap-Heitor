@@ -1,41 +1,41 @@
-# Estágio 3 — Implementação
+# Stage 3 — Implementation
 
-> **Trilha:** [Kit do Time](../README.md) › **Estágio 3 — Implementação**
+> **Path:** [Team Kit](../README.md) › **Stage 3 — Implementation**
 
-**Neste estágio, as Duplas 3 e 4 criam do zero o protótipo do SIFAP 2.0: um backend Java 21 + Spring Boot 3.3, um frontend Next.js 15 e PostgreSQL 16, orientados pelos REQ-IDs do Estágio 2.**
+**In this stage, Pairs 3 and 4 build the SIFAP 2.0 prototype from scratch: a Java 21 + Spring Boot 3.3 backend, a Next.js 15 frontend, and PostgreSQL 16, guided by the REQ-IDs from Stage 2.**
 
-![Estágio 3](https://img.shields.io/badge/Est%C3%A1gio-3%20%C2%B7%20Implementa%C3%A7%C3%A3o-171717?style=flat-square) ![Liderado pelas Duplas 3 e 4](https://img.shields.io/badge/Lideran%C3%A7a-Duplas%203%20e%204-404040?style=flat-square) ![Entregável: código e testes](https://img.shields.io/badge/Entreg%C3%A1vel-C%C3%B3digo%20%2B%20testes-737373?style=flat-square)
+![Stage 3](https://img.shields.io/badge/Stage-3%20%C2%B7%20Implementation-171717?style=flat-square) ![Led by Pairs 3 and 4](https://img.shields.io/badge/Lead-Pairs%203%20and%204-404040?style=flat-square) ![Deliverable Code and Tests](https://img.shields.io/badge/Deliverable-Code%20%2B%20Tests-737373?style=flat-square)
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Duplas 3 (TL+Dev) e 4 (DBA+QA); a Dupla 5 prepara a estrutura da CI |
-| **Pré-requisitos** | Handoff H2 aceito; `spec.md`, `plan.md` e `tasks.md` prontos |
-| **Tempo estimado** | 70 min (15:00–16:10) |
-| **Estágio** | Estágio 3 — Implementação |
-| **Resultado esperado** | Protótipo funcional com endpoint, testes e migração rastreados até os REQ-IDs |
+| **Target audience** | Pairs 3 (TL+Dev) and 4 (DBA+QA); Pair 5 scaffolds CI |
+| **Prerequisites** | H2 handoff accepted; `spec.md`, `plan.md`, and `tasks.md` ready |
+| **Estimated time** | 70 min (15:00–16:10) |
+| **Stage** | Stage 3 — Implementation |
+| **Expected outcome** | Functional prototype with an endpoint, tests, and migration traced to REQ-IDs |
 
 ---
 
-## Onde este estágio se encaixa no fluxo do dia
+## Where this fits in the day's flow
 
-![Linha do tempo do dia: pré-evento, quatro estágios e demo, com os três handoffs H1, H2 e H3](../assets/timeline-stages.svg)
+![Day timeline: pre-event, 4 stages, and demo, with the three H1, H2, and H3 handoffs](../assets/timeline-stages.svg)
 
-## Quem trabalha neste estágio
+## Who works here
 
-![Distribuição das personas por dupla: visão, arquitetura, implementação, qualidade e operações](../assets/personas-team.svg)
+![Persona distribution by pair: vision, architecture, implementation, quality, and operations](../assets/personas-team.svg)
 
-## Conteúdo desta pasta
+## Contents of this folder
 
-| Arquivo | Finalidade |
+| File | Purpose |
 |---|---|
-| [`GUIDE.md`](GUIDE.md) | Guia passo a passo do estágio |
+| [`GUIDE.md`](GUIDE.md) | Stage step-by-step guide |
 
 ---
 
-### Continue lendo
+### Continue reading
 
-| Anterior | Próximo |
+| Previous | Next |
 |---|---|
-| [Estágio 2 — Especificação](../02-modern-spec/README.md)<br/><sub>Resumo da especificação moderna e links para templates de ADR.</sub> | [Estágio 3 — GUIDE](GUIDE.md)<br/><sub>15:00–16:10 · Java 21 + Spring Boot + Next.js, com testes.</sub> |
+| [Stage 2 — Specification](../02-modern-spec/README.md)<br/><sub>Modern specification summary and links to ADR templates.</sub> | [Stage 3 — GUIDE](GUIDE.md)<br/><sub>15:00–16:10 · Java 21 + Spring Boot + Next.js, with tests.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

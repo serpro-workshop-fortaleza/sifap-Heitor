@@ -1,64 +1,63 @@
-# Compilações e ACR Tasks
+# Builds & ACR Tasks
 
-## Sumário
+## Table of Contents
 
-- [Compilação rápida (az acr build)](#compilação-rápida-az-acr-build)
-- [Executar uma vez um comando ou tarefa com várias etapas (az acr run)](#executar-uma-vez-um-comando-ou-tarefa-com-várias-etapas-az-acr-run)
+- [Quick Build (az acr build)](#quick-build-az-acr-build)
+- [Run a Command or Multi-Step Task Once (az acr run)](#run-a-command-or-multi-step-task-once-az-acr-run)
 - [ACR Tasks (az acr task)](#acr-tasks-az-acr-task)
-- [Gatilhos](#gatilhos)
-- [YAML de tarefa com várias etapas](#yaml-de-tarefa-com-várias-etapas)
-- [Conjuntos de agentes](#conjuntos-de-agentes)
+- [Triggers](#triggers)
+- [Multi-Step Task YAML](#multi-step-task-yaml)
+- [Agent Pools](#agent-pools)
 
 ---
 
-## Compilação rápida (az acr build)
+## Quick Build (az acr build)
 
-Compila no Azure e envia ao registro, sem exigir um serviço local em segundo plano do Docker:
+Builds in Azure and pushes to the registry — no local Docker daemon required:
 
 ```bash
-# Compila a partir do diretório atual e envia a imagem
+# Build from the current directory and push
 az acr build --registry {registry} --image app:v1 .
 
-# Dockerfile personalizado, argumentos de compilação e plataforma de destino
+# Custom Dockerfile, build args, target platform
 az acr build --registry {registry} --image app:v1 \
   --file docker/Dockerfile.prod \
   --build-arg VERSION=1.2.3 \
   --platform linux/amd64 .
 
-# Multiplataforma: cada compilação produz UMA imagem de arquitetura única para a plataforma de destino
+# Cross-platform: each build produces ONE single-architecture image for the target platform
 az acr build --registry {registry} --image app:v1-arm64 --platform linux/arm64 .
-# Para uma imagem realmente multiarch, compile uma vez por plataforma com tags específicas
-# da arquitetura; depois, monte e envie uma lista de manifestos (docker manifest create/push
-# ou docker buildx local)
+# For a true multi-arch image, build once per platform under arch-specific tags, then
+# assemble and push a manifest list (docker manifest create/push, or docker buildx locally)
 
-# Compila diretamente de um repositório Git (sem clone local)
+# Build directly from a Git repo (no local clone)
 az acr build --registry {registry} --image app:v1 https://github.com/{org}/{repo}.git#{branch}:{folder}
 
-# Compila sem fazer push (somente validação)
+# Build without pushing (validation only)
 az acr build --registry {registry} --image app:test --no-push .
 ```
 
-Notas:
+Notes:
 
-- O contexto de compilação é enviado. Use `.dockerignore` para mantê-lo pequeno.
-- Use uma tag com valor único por compilação (SHA do git ou ID da execução). Evite depender de `latest`.
+- The build context is uploaded; use a `.dockerignore` to keep it small.
+- Tag with a unique value per build (git SHA, run ID) — avoid relying on `latest`.
 
-## Executar uma vez um comando ou tarefa com várias etapas (az acr run)
+## Run a Command or Multi-Step Task Once (az acr run)
 
 ```bash
-# Executa um comando de contêiner no executor de tarefas do registro (contexto /dev/null = sem upload)
+# Run a container command in the registry's task runner (context /dev/null = no upload)
 az acr run --registry {registry} --cmd '{registry}.azurecr.io/app:v1' /dev/null
 
-# Executa um arquivo de tarefa com várias etapas no diretório atual
+# Execute a multi-step task file against the current directory
 az acr run --registry {registry} --file acb.yaml .
 ```
 
 ## ACR Tasks (az acr task)
 
-Definições de compilação persistentes que podem ser acionadas:
+Persistent, triggerable build definitions:
 
 ```bash
-# Cria uma tarefa que compila a cada confirmação (commit) em main
+# Create a task that builds on every commit to main
 az acr task create --registry {registry} --name build-app \
   --image "app:{{.Run.ID}}" \
   --context https://github.com/{org}/{repo}.git#main \
@@ -67,48 +66,48 @@ az acr task create --registry {registry} --name build-app \
   --commit-trigger-enabled true \
   --base-image-trigger-enabled true
 
-# Aciona, lista e inspeciona manualmente
+# Manually trigger, list, inspect
 az acr task run --registry {registry} --name build-app
 az acr task list --registry {registry} --output table
 az acr task list-runs --registry {registry} --name build-app --output table
-az acr task logs --registry {registry} --name build-app        # execução mais recente
+az acr task logs --registry {registry} --name build-app        # latest run
 az acr task logs --registry {registry} --run-id {run-id}
 
-# Atualiza/desativa/exclui
+# Update / disable / delete
 az acr task update --registry {registry} --name build-app --image "app:{{.Run.ID}}"
 az acr task update --registry {registry} --name build-app --status Disabled
 az acr task delete --registry {registry} --name build-app --yes
 ```
 
-Variáveis úteis de execução para `--image`: `{{.Run.ID}}`, `{{.Run.Commit}}`, `{{.Run.Branch}}`, `{{.Run.Date}}`.
+Useful run variables for `--image`: `{{.Run.ID}}`, `{{.Run.Commit}}`, `{{.Run.Branch}}`, `{{.Run.Date}}`.
 
-⚠️ Em **registros com ABAC** (`roleAssignmentMode` = `AbacRepositoryPermissions`), tarefas e compilações/execuções rápidas não têm acesso padrão ao registro de origem. Passe `--source-acr-auth-id [caller]` para `az acr build`/`az acr run` e `--source-acr-auth-id [system]` (ou o ID de recurso de uma identidade atribuída pelo usuário) para `az acr task create`/`update`. Depois, conceda a essa identidade as funções `Container Registry Repository ...`. Antes de referenciá-la, confirme se a tarefa realmente tem essa identidade: adicione `--assign-identity [system]` durante a criação ou execute `az acr task identity assign` em uma tarefa existente.
+⚠️ On **ABAC-enabled registries** (`roleAssignmentMode` = `AbacRepositoryPermissions`), tasks and quick builds/runs have no default access to the source registry. Pass `--source-acr-auth-id [caller]` to `az acr build`/`az acr run`, and `--source-acr-auth-id [system]` (or a user-assigned identity resource ID) to `az acr task create`/`update`, then grant that identity the `Container Registry Repository ...` roles. Ensure the task actually has that identity — add `--assign-identity [system]` at creation, or run `az acr task identity assign` on an existing task, before referencing it.
 
-## Gatilhos
+## Triggers
 
 ```bash
-# Gatilho de temporizador (cron em UTC), por exemplo, recompilação noturna
+# Timer trigger (cron in UTC) — e.g., nightly rebuild
 az acr task timer add --registry {registry} --name build-app \
   --timer-name nightly --schedule "0 2 * * *"
 az acr task timer list --registry {registry} --name build-app
 az acr task timer remove --registry {registry} --name build-app --timer-name nightly
 ```
 
-- **Gatilho de confirmação**: recompila após o envio para a ramificação monitorada (`--commit-trigger-enabled`).
-- **Gatilho de imagem base**: recompila automaticamente quando a imagem base (por exemplo, uma imagem corrigida de `mcr.microsoft.com`) é atualizada (`--base-image-trigger-enabled`). É essencial para correções do sistema operacional e da estrutura de software.
-- **Gatilho de temporizador**: agendamentos cron; também é a forma padrão de agendar a limpeza com `acr purge` (consulte `images-and-artifacts.md`).
+- **Commit trigger**: rebuild on push to the tracked branch (`--commit-trigger-enabled`).
+- **Base image trigger**: rebuild automatically when the base image (e.g., a patched `mcr.microsoft.com` image) is updated (`--base-image-trigger-enabled`) — key for OS/framework patching.
+- **Timer trigger**: cron schedules; also the standard way to schedule `acr purge` cleanup (see `images-and-artifacts.md`).
 
-Tarefas que acessam outros registros ou recursos do Azure podem usar uma identidade:
+Tasks that access other registries or Azure resources can use an identity:
 
 ```bash
-az acr task identity assign --registry {registry} --name build-app   # atribuída pelo sistema
+az acr task identity assign --registry {registry} --name build-app   # system-assigned
 az acr task credential add --registry {registry} --name build-app \
   --login-server {other-registry}.azurecr.io --use-identity [system]
 ```
 
-## YAML de tarefa com várias etapas
+## Multi-Step Task YAML
 
-`acb.yaml`: compila, testa e envia a imagem somente em caso de sucesso:
+`acb.yaml` — build, test, then push only on success:
 
 ```yaml
 version: v1.1.0
@@ -120,31 +119,31 @@ steps:
 ```
 
 ```bash
-# Executa uma vez
+# Run once
 az acr run --registry {registry} --file acb.yaml .
 
-# Ou cria uma tarefa acionável a partir do YAML
+# Or create a triggered task from the YAML
 az acr task create --registry {registry} --name build-test-push \
   --file acb.yaml \
   --context https://github.com/{org}/{repo}.git#main \
   --git-access-token {pat}
 ```
 
-## Conjuntos de agentes
+## Agent Pools
 
-SKU Premium. Computação dedicada para tarefas, para ter mais CPU ou usar uma das duas formas compatíveis de executar tarefas em um registro com restrição de rede. A outra forma combina serviços confiáveis e a política de desvio de rede para tarefas. Consulte `networking-and-geo.md`:
+Premium SKU. Dedicated task compute — for more CPU, or one of the two supported ways to run tasks against a network-restricted registry (the other being trusted services + the task network bypass policy, see `networking-and-geo.md`):
 
 ```bash
 az acr agentpool create --registry {registry} --name pool1 --tier S2   # S1/S2/S3/I6
 
-# No cenário de firewall/VNet, o conjunto DEVE estar anexado a uma sub-rede que acesse
-# o ponto de extremidade privado do registro; sem --subnet-id, ele executa fora da VNet
+# For the firewall/VNet scenario, the pool MUST be attached to a subnet that can
+# reach the registry's private endpoint — without --subnet-id it runs outside the VNet
 az acr agentpool create --registry {registry} --name pool1 --tier S2 \
   --subnet-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{subnet}
 
 az acr agentpool list --registry {registry} --output table
 
-# Direciona ao conjunto de agentes
+# Target the pool
 az acr build --registry {registry} --agent-pool pool1 --image app:v1 .
 az acr task create --registry {registry} --name build-app --agent-pool pool1 ...
 ```

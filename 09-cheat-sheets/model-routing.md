@@ -1,42 +1,42 @@
-# Escolha de modelo Claude — cartão de referência
+# Claude Model Routing — Reference Card
 
-> **Trilha:** [Kit do Time](../README.md) › [Cartões de referência](README.md) › **Escolha de modelo**
+> **Path:** [Team Kit](../README.md) › [Reference Cards](README.md) › **Model Routing**
 
-**Use o menor modelo capaz de resolver a sua tarefa: Haiku para geração mecânica, Sonnet para o trabalho do dia a dia e Opus para decisões de arquitetura que afetam todo o projeto.**
+**Use the smallest model that can solve your task: Haiku for mechanical generation, Sonnet for everyday work, and Opus for project-wide architecture decisions.**
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Público-alvo** | Qualquer pessoa do time antes de enviar um prompt ao Copilot |
-| **Pré-requisitos** | Nenhum |
-| **Tempo estimado** | 2 min |
-| **Estágio** | Todos |
-| **Resultado esperado** | Escolher o modelo certo sem desperdiçar tempo nem custo |
+| **Target audience** | Any team member before sending a prompt to Copilot |
+| **Prerequisites** | None |
+| **Estimated time** | 2 min |
+| **Stage** | All |
+| **Expected outcome** | Choose the right model without wasting time or cost |
 
-![Cartão 03 de 03](https://img.shields.io/badge/Cart%C3%A3o-03%20de%2003-171717?style=flat-square)
-![Tema: escolha de modelo](https://img.shields.io/badge/Tema-Escolha%20de%20modelo-404040?style=flat-square)
+![Card 03 of 03](https://img.shields.io/badge/Card-03%20of%2003-171717?style=flat-square)
+![Topic: Model Routing](https://img.shields.io/badge/Topic-Model%20routing-404040?style=flat-square)
 
 ---
 
-## Princípio: o menor modelo suficiente
+## Principle: the smallest sufficient model
 
-Um modelo maior significa mais capacidade e mais latência. Trocar de modelo custa menos que esperar 30 segundos pelo modelo errado.
+A larger model means more capability and more latency. Switching models is less costly than waiting 30 seconds for the wrong one.
 
 > [!IMPORTANT]
-> Usar Opus para uma tarefa mecânica desperdiça tempo. Usar Haiku para uma decisão de arquitetura cria risco. Escolha pelo tipo de tarefa, não pelo prestígio do modelo.
+> Using Opus for a mechanical task wastes time. Using Haiku for an architecture decision creates risk. Choose by task type, not model prestige.
 
 ---
 
-## Tabela rápida de decisão
+## Quick decision table
 
-| Tipo de tarefa | Modelo | Quando usar |
+| Task type | Model | When to use |
 |---|---|---|
-| Geração mecânica, transformação simples, contexto pequeno | **Haiku 4.5** | Gerar DDL repetitivo, escrever um teste unitário simples, ajustar YAML trivial |
-| Código, testes, refatoração, explicação do dia a dia | **Sonnet 4.6** | Padrão para a maioria das tarefas da imersão |
-| Decisão de arquitetura, análise de impacto, trade-off | **Opus 4.6** | Escolha de padrão, definição de bounded context, análise de risco |
+| Mechanical generation, simple transformation, small context | **Haiku 4.5** | Generate repetitive DDL, write a simple unit test, adjust trivial YAML |
+| Code, tests, refactoring, everyday explanation | **Sonnet 4.6** | Default for most workshop tasks |
+| Architecture decision, impact analysis, trade-off | **Opus 4.6** | Pattern selection, bounded-context definition, risk analysis |
 
 ---
 
-## Fluxo visual de decisão
+## Visual decision flow
 
 ```mermaid
 %%{init: {'theme':'neutral','themeVariables':{'fontFamily':'ui-sans-serif, system-ui, sans-serif','primaryColor':'#F5F5F5','primaryTextColor':'#171717','primaryBorderColor':'#171717','lineColor':'#525252','secondaryColor':'#FFFFFF','tertiaryColor':'#FAFAFA','background':'#FFFFFF'}}}%%
@@ -44,111 +44,111 @@ flowchart TB
     classDef step fill:#F5F5F5,stroke:#171717,color:#171717
     classDef result fill:#FFFFFF,stroke:#171717,color:#171717,stroke-width:2px
 
-    Q["Que tipo de tarefa é essa?"]:::step
-    Q --> M["Mecânica<br/>geração simples<br/>contexto pequeno"]:::step
-    Q --> D["Trabalho do dia a dia<br/>código, testes, refatoração"]:::step
-    Q --> A["Decisão de arquitetura<br/>trade-off<br/>análise de impacto"]:::step
+    Q["What type of task is it?"]:::step
+    Q --> M["Mechanical<br/>simple generation<br/>small context"]:::step
+    Q --> D["Everyday work<br/>code, tests, refactoring"]:::step
+    Q --> A["Architecture decision<br/>trade-off<br/>impact analysis"]:::step
 
-    M --> Haiku["Haiku 4.5<br/>Rápido"]:::result
-    D --> Sonnet["Sonnet 4.6<br/>Padrão"]:::result
-    A --> Opus["Opus 4.6<br/>Profundo"]:::result
+    M --> Haiku["Haiku 4.5<br/>Fast"]:::result
+    D --> Sonnet["Sonnet 4.6<br/>Default"]:::result
+    A --> Opus["Opus 4.6<br/>Deep"]:::result
 ```
 
 ---
 
-## Os três modelos
+## The three models
 
-| Modelo | Custo relativo | Velocidade | Quando usar |
+| Model | Relative cost | Speed | When to use |
 |---|---|---|---|
-| **Haiku 4.5** | Baixo | Rápida | Tarefa mecânica, transformação simples, contexto pequeno |
-| **Sonnet 4.6** | Médio | Média | Padrão do dia a dia: código, testes, refatoração, explicação |
-| **Opus 4.6** | Alto | Lenta | Decisão de arquitetura, análise de impacto, discussão de trade-off |
+| **Haiku 4.5** | Low | Fast | Mechanical task, simple transformation, small context |
+| **Sonnet 4.6** | Medium | Medium | Everyday default: code, tests, refactoring, explanation |
+| **Opus 4.6** | High | Slow | Architecture decision, impact analysis, trade-off discussion |
 
 ---
 
-## Escolha por persona e situação
+## Routing by persona and situation
 
-### Product Owner e Requirements Engineer
+### Product Owner and Requirements Engineer
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Escrever uma user story | Sonnet |
-| Refinar requisitos EARS existentes | Haiku |
-| Decidir se um requisito entra na v1 ou na v2 | Opus (uma vez; decida e siga em frente) |
+| Write a user story | Sonnet |
+| Refine existing EARS requirements | Haiku |
+| Decide whether a requirement belongs in v1 or v2 | Opus (once; decide and move forward) |
 
-### Arquitetos (Enterprise + Software)
+### Architects (Enterprise + Software)
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Desenhar um diagrama C4 em Mermaid | Sonnet |
-| Escolher entre padrões (hexagonal vs. em camadas) | Opus |
-| Gerar uma variação de sintaxe de um diagrama existente | Haiku |
+| Draw a C4 diagram in Mermaid | Sonnet |
+| Choose between patterns (hexagonal vs. layered) | Opus |
+| Generate a syntax variation of an existing diagram | Haiku |
 
 ### Technical Lead
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Revisar um PR de tamanho médio | Sonnet |
-| Decidir um padrão para todo o projeto | Opus no início; Sonnet para aplicar |
-| Verificar se um trecho compila | Haiku |
+| Review a medium-sized PR | Sonnet |
+| Decide a project-wide pattern | Opus initially; Sonnet to apply it |
+| Check whether a snippet compiles | Haiku |
 
 ### Developer
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Implementar um service | Sonnet |
-| Escrever um teste unitário simples | Haiku |
-| Discutir a estrutura de classes antes de escrever o código | Opus |
+| Implement a service | Sonnet |
+| Write a simple unit test | Haiku |
+| Discuss class structure before writing code | Opus |
 
 ### DBA
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Traduzir um DDM do Adabas para SQL | Sonnet (Opus para casos complexos) |
-| Gerar DDL repetitivo | Haiku |
-| Decidir uma estratégia de particionamento | Opus |
+| Translate an Adabas DDM to SQL | Sonnet (Opus for complex cases) |
+| Generate repetitive DDL | Haiku |
+| Decide a partitioning strategy | Opus |
 
 ### QA Engineer
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Gerar um esqueleto de JUnit 5 | Haiku |
-| Escrever um teste de integração não trivial | Sonnet |
-| Escolher entre Testcontainers e um mock | Opus |
+| Generate a JUnit 5 skeleton | Haiku |
+| Write a nontrivial integration test | Sonnet |
+| Choose between Testcontainers and a mock | Opus |
 
 ### DevOps Engineer
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Gerar um YAML padrão de GitHub Actions | Sonnet |
-| Ajustar comandos triviais do pipeline | Haiku |
-| Decidir a topologia no Azure | Opus |
+| Generate standard GitHub Actions YAML | Sonnet |
+| Adjust trivial pipeline commands | Haiku |
+| Decide the Azure topology | Opus |
 
 ### Tech Writer
 
-| Situação | Modelo |
+| Situation | Model |
 |---|---|
-| Revisar o estilo de um README | Haiku |
-| Rascunhar um ADR | Sonnet |
-| Decidir a estrutura geral da documentação | Opus, uma vez |
+| Review README style | Haiku |
+| Draft an ADR | Sonnet |
+| Decide the overall documentation structure | Opus, once |
 
 ---
 
-## Sinais de que você está usando o modelo errado
+## Signs that you are using the wrong model
 
-| Sintoma | Diagnóstico | Ação |
+| Symptom | Diagnosis | Action |
 |---|---|---|
-| Esperar 30 segundos por uma resposta trivial | O modelo é maior que o necessário | Troque por um modelo menor |
-| Resposta superficial para uma decisão crítica | O modelo é menor que o necessário | Suba para o Opus |
-| Resposta correta, mas sem discussão | O modelo é menor que o necessário | Suba para o Opus |
-| Empilhar prompts para gerar centenas de arquivos | Modelo errado para uma tarefa em lote | Troque por Sonnet ou Haiku |
+| Waiting 30 seconds for a trivial response | Model is larger than necessary | Switch to a smaller model |
+| Shallow response to a critical decision | Model is smaller than necessary | Move up to Opus |
+| Correct response without discussion | Model is smaller than necessary | Move up to Opus |
+| Stacking prompts to generate hundreds of files | Wrong model for a batch task | Switch to Sonnet or Haiku |
 
 ---
 
-### Continue lendo
+### Continue reading
 
-| Anterior | Próximo |
+| Previous | Next |
 |---|---|
-| [Spec-Kit em 1 página](spec-kit-workflow.md)<br/><sub>Sequência: specify — clarify — plan — tasks — analyze.</sub> | [Cartões de referência](README.md)<br/><sub>Índice dos três cartões de referência rápida.</sub> |
+| [Spec-Kit on 1 Page](spec-kit-workflow.md)<br/><sub>Sequence: specify — clarify — plan — tasks — analyze.</sub> | [Reference Cards](README.md)<br/><sub>Index of the three quick reference cards.</sub> |
 
-<sub>[Voltar ao índice do kit](../README.md)</sub>
+<sub>[Back to the kit index](../README.md)</sub>

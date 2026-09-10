@@ -1,55 +1,55 @@
-# Portal de documentação trilíngue
+# Trilingual documentation portal
 
-Esta é uma nova superfície de distribuição do kit, não uma alteração no comportamento de negócio do SIFAP.
+This is a greenfield delivery surface for the kit, not a change to SIFAP business behavior.
 
-## Requisitos
+## Requirements
 
-### REQ-PORTAL-001: Cobertura completa do repositório
+### REQ-PORTAL-001: Complete repository coverage
 
-QUANDO uma compilação de produção resolver as branches de idioma, o portal DEVE inventariar cada arquivo versionado e fornecer um documento, visualização de código ou download original para cada arquivo.
-source_legacy: "[GREENFIELD] O portal de distribuição do repositório não existe na aplicação Natural/Adabas."
+WHEN a production build resolves the language branches, the portal SHALL inventory every tracked file and provide a document, source view or original download for each file.
+source_legacy: "[GREENFIELD] The repository delivery portal does not exist in the Natural/Adabas application."
 
-### REQ-PORTAL-002: Três edições completas de idioma
+### REQ-PORTAL-002: Three complete language editions
 
-O portal DEVE fornecer rotas em inglês, espanhol e português do Brasil baseadas em `main`, `espanol` e `portugues-br`, sem substituir silenciosamente documentação traduzida ausente por inglês.
-source_legacy: "[GREENFIELD] A distribuição de documentação trilíngue é uma nova capacidade do kit."
+The portal SHALL provide English, Spanish and Brazilian Portuguese routes backed by `main`, `espanol` and `portugues-br`, without silently replacing missing translated documentation with English.
+source_legacy: "[GREENFIELD] Trilingual documentation delivery is a new kit capability."
 
-### REQ-PORTAL-003: Navegação persistente entre idiomas
+### REQ-PORTAL-003: Persistent language navigation
 
-QUANDO uma pessoa alterar o idioma de um documento, o portal DEVE abrir o mesmo caminho lógico de origem na edição selecionada.
-source_legacy: "[GREENFIELD] A navegação de idiomas do site não tem equivalente legado."
+WHEN a reader changes the language of a document, the portal SHALL open the same logical source path in the selected edition.
+source_legacy: "[GREENFIELD] Website language navigation has no legacy equivalent."
 
-### REQ-PORTAL-004: Links corretos e proveniência da fonte
+### REQ-PORTAL-004: Correct links and source provenance
 
-QUANDO o portal renderizar um link do repositório, ele DEVE resolver o documento ou recurso correspondente no site e manter um link explícito para a fonte Git original e seu commit.
-source_legacy: "[GREENFIELD] O roteamento web e a proveniência da fonte pertencem ao novo portal."
+WHEN the portal renders a repository link, it SHALL resolve the corresponding website document or asset and retain an explicit link to the original Git source and commit.
+source_legacy: "[GREENFIELD] Web routing and source provenance belong to the new portal."
 
-### REQ-PORTAL-005: Descoberta interativa
+### REQ-PORTAL-005: Interactive discovery
 
-QUANDO uma pessoa buscar ou filtrar o catálogo, o portal DEVE mostrar o conteúdo correspondente no idioma ativo e anunciar de forma acessível os estados de carregamento, vazio e erro.
-source_legacy: "[GREENFIELD] A busca de documentação no navegador é uma nova capacidade."
+WHEN a reader searches or filters the catalog, the portal SHALL show matching content in the active language and announce loading, empty and error states accessibly.
+source_legacy: "[GREENFIELD] Browser-side documentation search is a new capability."
 
-### REQ-PORTAL-006: Interface responsiva e acessível
+### REQ-PORTAL-006: Responsive and accessible interface
 
-ENQUANTO a janela for estreita, o portal DEVE manter a navegação de idiomas visível e os controles acessíveis pelo teclado sem transbordamento horizontal da página.
-source_legacy: "[GREENFIELD] A navegação web responsiva é independente do comportamento da aplicação legada."
+WHILE the viewport is narrow, the portal SHALL retain visible language navigation and keyboard-accessible controls without horizontal page overflow.
+source_legacy: "[GREENFIELD] Responsive web navigation is independent of legacy application behavior."
 
-### REQ-PORTAL-007: Movimento e preferências
+### REQ-PORTAL-007: Motion and preferences
 
-QUANDO uma pessoa selecionar um tema, marcar progresso de leitura ou solicitar movimento reduzido, o portal DEVE aplicar a preferência sem ocultar conteúdo obrigatório nem alterar dados do repositório.
-source_legacy: "[GREENFIELD] Preferências locais de leitura e controles de animação são novos comportamentos do portal."
+WHEN a reader selects a theme, marks reading progress or requests reduced motion, the portal SHALL apply the preference without hiding required content or changing repository data.
+source_legacy: "[GREENFIELD] Local reading preferences and animation controls are new portal behavior."
 
-### REQ-PORTAL-008: Preservar fontes técnicas
+### REQ-PORTAL-008: Preserve technical sources
 
-O portal DEVE preservar os bytes originais dos arquivos para download, renderizar código como texto não executável e evitar atravessar links simbólicos Git para fora do repositório.
-source_legacy: "[GREENFIELD] A distribuição segura de arquivos-fonte é uma nova preocupação de publicação do repositório."
+The portal SHALL preserve original file bytes for downloads, render code as non-executable text and avoid traversing Git symlinks outside the repository.
+source_legacy: "[GREENFIELD] Safe source-file delivery is a new repository publishing concern."
 
-### REQ-PORTAL-009: Proteger o conteúdo privado do instrutor
+### REQ-PORTAL-009: Protect private instructor content
 
-SE o repositório de origem for privado e a visibilidade do Pages for pública ou desconhecida, ENTÃO a implantação DEVE parar antes de publicar seu conteúdo.
-source_legacy: "[GREENFIELD] O controle de acesso do Pages privado protege material do instrutor fora do sistema legado."
+IF a source repository is private and Pages visibility is public or unknown, THEN the deployment SHALL stop before publishing its content.
+source_legacy: "[GREENFIELD] Private Pages access control protects instructor material outside the legacy system."
 
-### REQ-PORTAL-010: Validação reproduzível da publicação
+### REQ-PORTAL-010: Reproducible release validation
 
-QUANDO uma versão for compilada, o portal DEVE registrar IDs dos commits de origem, cobertura de idiomas e resultados de validação de links internos e DEVE falhar se alguma verificação obrigatória falhar.
-source_legacy: "[GREENFIELD] A validação reproduzível de publicação da documentação é um novo requisito do kit."
+WHEN a release is built, the portal SHALL record source commit IDs, language coverage and internal-link validation results and SHALL fail if a required check fails.
+source_legacy: "[GREENFIELD] Reproducible documentation release validation is a new kit requirement."
