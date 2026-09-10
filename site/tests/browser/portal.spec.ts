@@ -59,13 +59,24 @@ test("searches the active edition using the keyboard-accessible dialog", async (
   await page.getByRole("button", { name: t("es").searchHint, exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("status")).toHaveText(t("es").searchPrompt);
   await dialog.getByRole("searchbox").fill("SIFAP");
+  await expect(dialog.getByRole("status")).toHaveText(t("es").loading);
   await expect(dialog.locator(".search-results a").first()).toBeVisible();
   const href = await dialog.locator(".search-results a").first().getAttribute("href");
   expect(href).toContain("/es/");
   await page.keyboard.press("Escape");
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole("button", { name: t("es").searchHint, exact: true })).toBeFocused();
+});
+
+test("announces a search-index failure immediately", async ({ page }) => {
+  // REQ-PORTAL-005
+  await page.route("**/pagefind/pagefind.js", (route) => route.abort());
+  await page.goto("en/");
+  await page.getByRole("button", { name: t("en").searchHint, exact: true }).click();
+  await page.getByRole("dialog").getByRole("searchbox").fill("SIFAP");
+  await expect(page.getByRole("dialog").getByRole("alert")).toHaveText(t("en").searchError);
 });
 
 test("keeps the complete Markdown and the same source path when switching languages", async ({ page, request }) => {

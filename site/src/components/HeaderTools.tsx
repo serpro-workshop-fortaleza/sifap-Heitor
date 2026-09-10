@@ -120,7 +120,7 @@ export default function HeaderTools({ locale, basePath }: { locale: Locale; base
         <button className="icon-button" type="button" onClick={() => setOpen(false)} aria-label={words.close}><CloseIcon size={18} /></button>
       </header>
       <div className="search-content">
-        <p role="status">{state === "loading" ? words.loading : state === "error" ? words.searchError :
+        <p role={state === "error" ? "alert" : "status"}>{state === "loading" ? words.loading : state === "error" ? words.searchError :
           state === "idle" ? words.searchPrompt : results.length ? `${results.length} ${words.results}` : words.noResults}</p>
         {state === "error" && <a href={`${basePath}${locale}/library/`}>{words.library}</a>}
         <ul className="search-results">

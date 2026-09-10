@@ -33,6 +33,7 @@ export interface Entry {
   html?: string;
   text?: string;
   headings: Heading[];
+    anchors: string[];
 }
 
 export interface Edition {

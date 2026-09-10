@@ -22,7 +22,8 @@ export default defineConfig({
   use: { baseURL, trace: "retain-on-failure", screenshot: "only-on-failure" },
   projects: [
     { name: "desktop", use: { viewport: { width: 1440, height: 960 } } },
-    { name: "mobile", use: { viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true } },
+    { name: "tablet", use: { viewport: { width: 768, height: 1024 }, hasTouch: true } },
+    { name: "mobile", use: { viewport: { width: 375, height: 800 }, isMobile: true, hasTouch: true } },
   ],
   webServer: liveURL ? undefined : {
     command: preview.command,
