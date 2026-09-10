@@ -10,8 +10,12 @@ import { addEquivalentHeadingAliases, unresolvedFragments } from "./lib/anchors.
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = resolve(siteRoot, "..");
 const settings = JSON.parse(readFileSync(resolve(siteRoot, "repository.json"), "utf8"));
-const repository = repositorySlug(repositoryRoot);
-if (settings.repository !== repository || !["team", "instructor"].includes(settings.audience)) {
+const localRepository = repositorySlug(repositoryRoot);
+const deploymentRepository = process.env.GITHUB_REPOSITORY;
+const repository = deploymentRepository || localRepository;
+const repositoryIsValid = /^[\w.-]+\/[\w.-]+$/.test(repository);
+const localConfigurationMatches = process.env.GITHUB_ACTIONS === "true" || settings.repository === localRepository;
+if (!repositoryIsValid || !localConfigurationMatches || !["team", "instructor"].includes(settings.audience)) {
   throw new Error("site/repository.json must identify the current GitHub repository and audience.");
 }
 if (process.env.GITHUB_ACTIONS === "true" && !process.env.SITE_URL) {
