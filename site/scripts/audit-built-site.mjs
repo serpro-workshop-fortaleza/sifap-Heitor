@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
-import { resolve, relative } from "node:path";
+import { isAbsolute, resolve, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { inspectRenderedHtml } from "./lib/html.mjs";
 
@@ -24,7 +24,10 @@ function targetFile(pathname) {
   const base = decodeURIComponent(catalog.basePath);
   if (!decoded.startsWith(base)) return undefined;
   const path = resolve(dist, `.${decoded.slice(base.length - 1)}`);
-  if (path !== dist && !path.startsWith(`${dist}/`)) throw new Error("Output link escapes dist.");
+  const outputRelative = relative(dist, path);
+  if (isAbsolute(outputRelative) || outputRelative === ".." || outputRelative.startsWith(`..${sep}`)) {
+    throw new Error("Output link escapes dist.");
+  }
   if (existsSync(path) && statSync(path).isFile()) return path;
   const index = resolve(path, "index.html");
   return existsSync(index) ? index : undefined;
